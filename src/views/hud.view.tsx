@@ -1,4 +1,4 @@
-/** The in-match HUD: score, risk, clock, my placement and the leaderboard toggle, dot reticle, stone state, double-jump launch ring, banners and the controls hint. */
+/** The in-match HUD: score, risk, clock, my placement and the leaderboard toggle, dot reticle, stone state, double-jump launch ring, banners, the announcement toasts and the controls hint. */
 import { Widget, defineView } from '@gameengine/ui';
 
 export interface HudRow {
@@ -6,6 +6,15 @@ export interface HudRow {
   name: string;
   score: number;
   me: boolean;
+}
+
+/** One announcement toast at the top centre; `gone` fades it out before it is dropped. */
+export interface HudToast {
+  id: number;
+  head: string;
+  taunt: string;
+  mine: boolean;
+  gone: boolean;
 }
 
 export interface HudModel {
@@ -32,11 +41,13 @@ export interface HudModel {
   board: boolean;
   /** Leaderboard rows, best first (at most 8). */
   rows: HudRow[];
+  /** Announcement toasts, oldest first (at most 3). */
+  toasts: HudToast[];
 }
 
 const base: HudModel = {
   score: 3, penalty: 2, timeText: '02:34', urgent: false, stone: 'loaded', cd: 0, ring: 1, ready: true, readyPulse: 0,
-  banner: '', bannerSub: '', tone: 'hit', bannerPop: 0, hint: false, placeText: '3rd / 9', first: false, board: false, rows: [],
+  banner: '', bannerSub: '', tone: 'hit', bannerPop: 0, hint: false, placeText: '3rd / 9', first: false, board: false, rows: [], toasts: [],
 };
 
 const eight: HudRow[] = [
@@ -52,7 +63,7 @@ const eight: HudRow[] = [
 
 export const HudView = defineView<HudModel>({
   name: 'Hud',
-  description: 'Score, risk, clock, my placement with the leaderboard toggle and board, reticle dot, stone state, launch cooldown ring and the centre banner. Intents: toggleBoard.',
+  description: 'Score, risk, clock, my placement with the leaderboard toggle and board, reticle dot, stone state, launch cooldown ring, the centre banner and up to 3 announcement toasts at the top centre. Intents: toggleBoard.',
   samples: {
     play: { ...base, hint: true },
     cooling: { ...base, score: 7, penalty: 4, timeText: '01:12', stone: 'flying', cd: 23, ring: 0.42, ready: false },
@@ -64,6 +75,16 @@ export const HudView = defineView<HudModel>({
     soloFirst: {
       ...base, score: 9, placeText: '1st / 9', first: true, board: true,
       rows: ['You', 'Bot 3', 'Bot 1', 'Bot 6', 'Bot 2', 'Bot 8', 'Bot 4', 'Bot 5'].map((name, i) => ({ rank: i + 1, name, score: 9 - i, me: i === 0 })),
+    },
+    feedEmpty: { ...base, toasts: [] },
+    feedOne: { ...base, toasts: [{ id: 1, head: 'Bot 3 plonked Player 2!', taunt: 'Right on the acorn.', mine: false, gone: false }] },
+    feedThree: {
+      ...base, score: 6, cd: 23, ring: 0.42, ready: false, banner: '+1 PLONK!', bannerSub: 'Nice shot', tone: 'hit', rows: eight,
+      toasts: [
+        { id: 1, head: 'Player 2 sniped Player 4 out of the trees!', taunt: 'Nice branch you had there.', mine: false, gone: false },
+        { id: 2, head: 'You plonked Bot 3!', taunt: 'Close. If the target was in another zip code.', mine: true, gone: false },
+        { id: 3, head: 'You missed!', taunt: 'Hope you enjoyed that stone, it was your only one.', mine: true, gone: false },
+      ],
     },
     over: { ...base, score: 9, penalty: 5, timeText: '00:00', urgent: true, stone: 'gone', banner: "TIME'S UP!", bannerSub: 'You scored 9', tone: 'over' },
   },
@@ -89,6 +110,7 @@ export const HudView = defineView<HudModel>({
         first: () => model().first,
         board: () => model().board,
         rows: () => model().rows.map((r, i) => ({ key: `r${i}`, rank: String(r.rank), name: r.name, score: r.score, me: r.me })),
+        toasts: () => model().toasts.map((t) => ({ key: `t${t.id}`, head: t.head, taunt: t.taunt, mine: t.mine, gone: t.gone })),
       }}
       onIntent={(_, e) => {
         if (e.path.at(-1) === 'leaderboard') intent('toggleBoard');

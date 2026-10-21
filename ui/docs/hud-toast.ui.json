@@ -1,0 +1,114 @@
+{
+  "$schemaVersion": 1,
+  "guid": "c51e65c4-6178-42d1-ba7d-2d79cf2f180c",
+  "name": "hud-toast",
+  "title": "HUD announcement toast",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Hud toast",
+      "style": {
+        "dir": "column",
+        "pad": [
+          1,
+          26,
+          5,
+          26
+        ],
+        "align": "center",
+        "image": "ui/pill",
+        "sliceScale": 0.7,
+        "gap": 0,
+        "opacity": 0.92,
+        "tintMode": "multiply",
+        "tint": "#ffffffff",
+        "tintAmount": 0
+      },
+      "children": [
+        "ht_head",
+        "ht_taunt"
+      ]
+    },
+    "ht_head": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "head",
+      "style": {
+        "fontSize": 28,
+        "weight": 800,
+        "color": "#fff3d6ff",
+        "fitMin": 22,
+        "textAlign": "center"
+      }
+    },
+    "ht_taunt": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "taunt",
+      "style": {
+        "fontSize": 23,
+        "weight": 700,
+        "color": "#ffb52eff",
+        "fitMin": 20,
+        "textAlign": "center"
+      }
+    }
+  },
+  "properties": {
+    "head": {
+      "type": "text",
+      "default": "You plonked Bot 3!"
+    },
+    "taunt": {
+      "type": "text",
+      "default": "Right on the acorn."
+    },
+    "mine": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "root": {
+              "tint": "#ffd23fff",
+              "tintAmount": 1
+            }
+          }
+        }
+      }
+    },
+    "gone": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "root": {
+              "opacity": 0,
+              "ty": -6
+            }
+          },
+          "transition": {
+            "type": "easeOut",
+            "ms": 400
+          }
+        }
+      }
+    }
+  },
+  "samples": {
+    "other": {
+      "head": "Player 2 missed!",
+      "taunt": "Even the squirrels are laughing."
+    },
+    "mine": {
+      "head": "You missed!",
+      "taunt": "Hope you enjoyed that stone, it was your only one.",
+      "mine": true
+    }
+  }
+}

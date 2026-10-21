@@ -15,3 +15,15 @@ export const [onlineSens, setOnlineSens] = createSignal(1);
 
 /** The leaderboard under the clock is open (Tab or the chevron). */
 export const [boardOpen, setBoardOpen] = createSignal(false);
+
+/** One announcement line of the feed under the top of the HUD; `id` makes each one new. */
+export interface FeedLine {
+  id: number;
+  head: string;
+  taunt: string;
+  /** Whether the local player did it (or it was done to them). */
+  mine: boolean;
+}
+
+/** The latest announcements, newest last (the HUD shows the last three for a few seconds each). */
+export const [feed, setFeed] = createSignal<readonly FeedLine[]>([]);

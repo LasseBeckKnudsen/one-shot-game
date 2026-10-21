@@ -113,7 +113,7 @@ root.append({'name': 'Sun', 'id': 'sun',
              'Light': {'color': '#ffdcae', 'intensity': 2.6, 'castShadows': True, 'shadowDistance': 70, 'shadowBias': 0.04, 'sunAngle': 0.03},
              'LocalTransform': {'rotation': yaw_q(2.35, -0.45)}})
 root.append({'name': 'Sky', 'id': 'sky',
-             'Environment': {'map': 'env/sky.jpg', 'intensity': 1.15, 'skybox': True, 'tint': '#c4dcff'},
+             'Environment': {'map': 'env/sky.jpg', 'intensity': 1.15, 'skybox': True, 'tint': '#c4dcff', 'ambient': '#7b9bc0'},
              'LocalTransform': {}})
 
 env = []
@@ -237,12 +237,12 @@ for k in range(nseg):
     x, z = math.sin(a) * BOUND_R, -math.cos(a) * BOUND_R
     bound.append({'name': 'Fence', 'id': eid('fence'),
                   'LocalTransform': {'position': [round(x, 3), 0, round(z, 3)], 'rotation': yaw_q(-a)},
-                  'MeshRenderer': {'mesh': 'models/fence.glb'},
+                  'MeshRenderer': {'mesh': 'models/fence.glb', 'castShadows': False},
                   'Solid': {'radius': 1.6, 'height': 2.0}})
 for k in range(46):
     a = rnd.uniform(0, 2 * PI)
     r = BOUND_R + rnd.uniform(-1.2, 2.4)
-    bound.append(prop('BoundaryBush', 'bush', math.sin(a) * r, -math.cos(a) * r, yaw=rnd.uniform(0, 6.28), s=rnd.uniform(1.3, 2.1), shadows=True))
+    bound.append(prop('BoundaryBush', 'bush', math.sin(a) * r, -math.cos(a) * r, yaw=rnd.uniform(0, 6.28), s=rnd.uniform(1.3, 2.1), shadows=False))
 for k in range(26):
     a = rnd.uniform(0, 2 * PI)
     r = BOUND_R + rnd.uniform(-0.8, 3.2)
@@ -291,7 +291,7 @@ scatter(18, 'barrel', 'Barrel', 4, 36, 1.2, solid=(0.55, 1.0), scale=(0.9, 1.4))
 scatter(14, 'log_pillar', 'LogPillar', 4, 36, 0.9, solid=(0.32, 1.4), scale=(0.9, 1.5))
 scatter(6, 'rock', 'Rock', 8, 36, 2.2, solid=(1.1, 0.9), scale=(1.0, 1.8))
 scatter(16, 'rock', 'BigRock', 6, 37, 4.2, solid=(1.1, 0.9), scale=(2.4, 3.8))
-scatter(34, 'bush', 'Bush', 6, 38, 2.0, solid=(0.95, 1.0), scale=(1.1, 1.9))
+scatter(34, 'bush', 'Bush', 6, 38, 2.0, solid=(0.95, 1.0), scale=(1.1, 1.9), shadows=False)
 scatter(8, 'planter_box', 'PlanterBox', 4, 30, 1.6, solid=(0.8, 0.6), scale=(1.0, 1.4))
 scatter(8, 'stump', 'Stump', 4, 34, 1.1, solid=(0.5, 0.6), scale=(1.0, 1.8))
 scatter(330, 'tuft', 'Tuft', 12.5, 39, 0.25, scale=(0.9, 1.9), shadows=False, tries=8)

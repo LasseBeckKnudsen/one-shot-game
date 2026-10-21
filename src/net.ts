@@ -4,8 +4,9 @@
  */
 import { defineSystem, query, read, write, math, multiplayer, Camera, PlayerInputs, playerInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
 import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
-import { Critter, Flow, LocalHud, Match, NetLook, Player, SeatCam, VmRig } from './schema.gen.ts';
-import { boardOpen, onlinePaused, onlineSens, setBoardOpen, setOnlinePaused } from './netstate.ts';
+import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatCam, VmRig } from './schema.gen.ts';
+import { announcement } from './announce.ts';
+import { boardOpen, feed, onlinePaused, onlineSens, setBoardOpen, setFeed, setOnlinePaused } from './netstate.ts';
 
 const SENS = 0.0022;
 
@@ -117,6 +118,24 @@ export const SeatVisibility = defineSystem({
     }
     const mask = (0xffffffff & ~(2 << me)) >>> 0;
     for (const c of cams.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Camera, i).layerMask !== mask) c.set(Camera, i, { layerMask: mask });
+  },
+});
+
+let feedId = 0;
+
+/** Announcements for the HUD: who hit or missed whom, with a random taunt (picked here, in presentation, so it never touches the sim). */
+export const AnnounceFeed = defineSystem({
+  name: 'AnnounceFeed',
+  stage: 'LateUpdate',
+  events: [Announce],
+  run(ctx) {
+    const me = localSeat();
+    const fresh = [];
+    for (const e of ctx.events.read(Announce)) {
+      const { head, taunt } = announcement(e.kind, e.a, e.b, me, Math.random());
+      fresh.push({ id: ++feedId, head, taunt, mine: e.a === me || (e.kind === 0 && e.b === me) });
+    }
+    if (fresh.length > 0) setFeed([...feed(), ...fresh].slice(-6));
   },
 });
 

@@ -29,6 +29,7 @@ export const lobby = defineUI({
     const [status, setStatus] = createSignal(IDLE_STATUS);
     const [error, setError] = createSignal(false);
     let foundKey = '';
+    let noLan = false; // the browser cannot search a network or host a match: only a game server will do there
 
     const say = (text: string, isError = false) => {
       setStatus(text);
@@ -73,8 +74,15 @@ export const lobby = defineUI({
         setJoined(st.hosting?.joined ?? 1);
       } else if (mode() === 'joining') {
         if (!error()) say(st.phase === 'waiting' ? `Joined ${joining()}. Waiting for the others...` : `Connecting to ${joining()}...`);
-      } else {
-        const hosts = multiplayer.lanHosts().filter((h) => h.sameBuild).slice(0, 4);
+      } else if (!noLan) {
+        let hosts: LanHost[];
+        try {
+          hosts = multiplayer.lanHosts().filter((h) => h.sameBuild).slice(0, 4);
+        } catch (e) {
+          noLan = true;
+          say(`${message(e)} Online play in the browser needs a game server, which is not set up yet.`, true);
+          return;
+        }
         const key = hosts.map((h) => `${h.url}|${h.room}|${h.name}|${h.joined}/${h.players}`).join(',');
         if (key !== foundKey) {
           foundKey = key;
@@ -89,7 +97,11 @@ export const lobby = defineUI({
       const on = lobbyOpen() && flow().screen === 'Start';
       if (on && !handle) {
         reset();
-        multiplayer.events(); // drop what arrived while the lobby was closed
+        try {
+          multiplayer.events(); // drop what arrived while the lobby was closed
+        } catch {
+          // no match client here (a build without multiplayer)
+        }
         handle = views.push(LobbyView, untrack(model), {
           onIntent: (name, payload) => {
             const p = payload as { players?: number; key?: string } | undefined;

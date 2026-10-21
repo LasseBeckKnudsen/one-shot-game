@@ -16,6 +16,7 @@
       },
       "children": [
         "h_top",
+        "h_feed",
         "h_mid",
         "h_bot",
         "h_banners"
@@ -730,6 +731,38 @@
       "type": "repeat",
       "doc": "hud-row",
       "property": "rows"
+    },
+    "h_feed": {
+      "type": "element",
+      "name": "Feed",
+      "children": [
+        "h_toasts"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "align": "center",
+        "gap": 6,
+        "w": 700,
+        "position": "anchored",
+        "anchor": [
+          0.5,
+          0
+        ],
+        "pivot": [
+          0.5,
+          0
+        ],
+        "offset": [
+          0,
+          22
+        ]
+      }
+    },
+    "h_toasts": {
+      "type": "repeat",
+      "doc": "hud-toast",
+      "property": "toasts"
     }
   },
   "view": {
@@ -954,6 +987,11 @@
     "rows": {
       "type": "list",
       "of": "hud-row",
+      "default": []
+    },
+    "toasts": {
+      "type": "list",
+      "of": "hud-toast",
       "default": []
     }
   },

@@ -62,13 +62,14 @@ declare module '@gameengine/ui' {
      *   - `first`: yesno, default false
      *   - `board`: yesno, default false
      *   - `rows`: list of hud-row
+     *   - `toasts`: list of hud-toast
      * Events: `leaderboard`
      * Code areas: none
      * Refs: `leaderboard`
      * Samples (`view render doc:hud --sample …`): `play`, `cooling`, `hit`, `miss`, `over`, `hurt`
      */
     'hud': {
-      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over'; placeText: string | { loc: string } | LocText; first: boolean; board: boolean; rows: readonly { key: string; rank?: string | { loc: string } | LocText; name?: string | { loc: string } | LocText; score?: number; me?: boolean }[] };
+      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over'; placeText: string | { loc: string } | LocText; first: boolean; board: boolean; rows: readonly { key: string; rank?: string | { loc: string } | LocText; name?: string | { loc: string } | LocText; score?: number; me?: boolean }[]; toasts: readonly { key: string; head?: string | { loc: string } | LocText; taunt?: string | { loc: string } | LocText; mine?: boolean; gone?: boolean }[] };
       areas: never;
       refs: 'leaderboard';
     };
@@ -102,6 +103,24 @@ declare module '@gameengine/ui' {
      */
     'hud-row': {
       props: { rank: string | { loc: string } | LocText; name: string | { loc: string } | LocText; score: number; me: boolean };
+      areas: never;
+      refs: never;
+    };
+    /**
+     * HUD announcement toast: a widget (ui/docs/hud-toast.ui.json)
+     *
+     * Properties:
+     *   - `head`: text, default "You plonked Bot 3!"
+     *   - `taunt`: text, default "Right on the acorn."
+     *   - `mine`: yesno, default false
+     *   - `gone`: yesno, default false
+     * Events: none
+     * Code areas: none
+     * Refs: none
+     * Samples (`view render doc:hud-toast --sample …`): `other`, `mine`
+     */
+    'hud-toast': {
+      props: { head: string | { loc: string } | LocText; taunt: string | { loc: string } | LocText; mine: boolean; gone: boolean };
       areas: never;
       refs: never;
     };
@@ -177,13 +196,13 @@ declare module '@gameengine/ui' {
      *   - `fromStart`: yesno, default false
      * Events: `resume`, `quit`, `back`
      * Code areas: `sens.hit`, `master.hit`, `music.hit`, `sfx.hit`
-     * Refs: `resume`, `quit`, `back`, `k1`, `k2`, `k3`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `sens`, `master`, `music`, `sfx`
+     * Refs: `resume`, `quit`, `back`, `k1`, `k2`, `k3`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `k10`, `sens`, `master`, `music`, `sfx`
      * Samples (`view render doc:pause-menu --sample …`): `default`
      */
     'pause-menu': {
       props: { sensAmount: number; sensText: string | { loc: string } | LocText; masterAmount: number; masterText: string | { loc: string } | LocText; musicAmount: number; musicText: string | { loc: string } | LocText; sfxAmount: number; sfxText: string | { loc: string } | LocText; fromStart: boolean };
       areas: 'sens.hit' | 'master.hit' | 'music.hit' | 'sfx.hit';
-      refs: 'resume' | 'quit' | 'back' | 'k1' | 'k2' | 'k3' | 'k4' | 'k5' | 'k6' | 'k7' | 'k8' | 'k9' | 'sens' | 'master' | 'music' | 'sfx';
+      refs: 'resume' | 'quit' | 'back' | 'k1' | 'k2' | 'k3' | 'k4' | 'k5' | 'k6' | 'k7' | 'k8' | 'k9' | 'k10' | 'sens' | 'master' | 'music' | 'sfx';
     };
     /**
      * Rule row: a widget (ui/docs/rule-row.ui.json)

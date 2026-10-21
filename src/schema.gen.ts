@@ -254,6 +254,32 @@ export const schemaIr = {
       "package": "OneShot"
     },
     {
+      "name": "Announce",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "kind",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "a",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "b",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
       "name": "Blocker",
       "kind": "component",
       "sim": true,
@@ -1409,6 +1435,19 @@ export interface VmRigValue {
 }
 /** VmRig (component, sim) */
 export const VmRig = typeToken<VmRigViews, VmRigValue>('VmRig', 'component', { sig: 'index:u32:1', read: (v: VmRigViews, i: number, o: Record<string, unknown>) => { o.index = v.index[i]; return o; } });
+
+export interface AnnounceViews {
+  kind: Uint32Array;
+  a: Uint32Array;
+  b: Uint32Array;
+}
+export interface AnnounceValue {
+  kind: number;
+  a: number;
+  b: number;
+}
+/** Announce (event, sim) */
+export const Announce = typeToken<AnnounceViews, AnnounceValue>('Announce', 'event', { sig: 'kind:u32:1,a:u32:1,b:u32:1', read: (v: AnnounceViews, i: number, o: Record<string, unknown>) => { o.kind = v.kind[i]; o.a = v.a[i]; o.b = v.b[i]; return o; } });
 
 export interface BlockerViews {
   /** Disc footprint radius (0: use the rectangle) */

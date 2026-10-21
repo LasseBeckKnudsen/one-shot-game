@@ -248,6 +248,32 @@
       "package": "OneShot"
     },
     {
+      "name": "Announce",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "kind",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "a",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "b",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
       "name": "Blocker",
       "kind": "component",
       "sim": true,

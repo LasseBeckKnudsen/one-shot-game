@@ -1,6 +1,7 @@
 // The app flow as the UI drives it: start screen -> loading (its controller decides when the game is ready) -> HUD,
 // Escape -> pause menu (resume, sliders, quit). Nothing here emits GameReady: the loading controller does.
 import { expect, renderTest } from '@gameengine/test';
+import { feed, setFeed } from '../src/netstate.ts';
 import { Flow, LocalHud, Match, Player, Settings } from '../src/schema.gen.ts';
 
 const ESCAPE = 39;
@@ -185,4 +186,26 @@ renderTest('the HUD shows my placement under the clock and the chevron opens and
   await ui.press('leaderboard');
   await step(5);
   expect(boardGreen()).toBeGreaterThan(open + 30);
+});
+
+renderTest('an announcement shows as a toast at the top centre and fades out after a few seconds', async ({ world, step, input, ui }) => {
+  await toMatch(input, step, ui, world);
+  await step(10);
+  setFeed([...feed(), { id: 9001, head: 'You missed!', taunt: 'Hope you enjoyed that stone, it was your only one.', mine: true }].slice(-6));
+  await step(5);
+  const r = ui.rect('t9001')!;
+  expect(r).toBeTruthy();
+  // centred at the top, at most 700 px wide, above the banner and clear of the score and clock pills
+  expect(Math.abs(r.x + r.width / 2 - 960)).toBeLessThan(4);
+  expect(r.width).toBeLessThan(701);
+  expect(r.y).toBeLessThan(250);
+  expect(r.x).toBeGreaterThan(1920 / 2 - 360);
+  await step(60);
+  expect(ui.rect('t9001')).toBeTruthy();
+  // 4.5 s up and a 0.4 s fade, then it is gone (65 frames since it was set)
+  let frames = 65;
+  for (; frames < 500 && ui.rect('t9001'); frames++) await step(1);
+  expect(ui.rect('t9001')).toBeFalsy();
+  expect(frames).toBeGreaterThan(280); // about 4.9 s at 60 steps a second
+  expect(frames).toBeLessThan(310);
 });

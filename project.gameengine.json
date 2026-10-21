@@ -83,8 +83,8 @@
       "web": {
         "features": {
           "bloom": true,
-          "ssao": true,
-          "softShadows": true
+          "ssao": false,
+          "softShadows": false
         },
         "sceneDepth": true
       }
@@ -164,6 +164,18 @@
           "axis": 1
         }
       ]
+    }
+  },
+  "build": {
+    "web": {
+      "loading": {
+        "title": "",
+        "message": "Loading\u2026",
+        "background": "#2b1b0f",
+        "textColor": "#fff3d6",
+        "image": "branding/web_launch.png",
+        "fit": "contain"
+      }
     }
   }
 }

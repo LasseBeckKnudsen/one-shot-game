@@ -95,6 +95,9 @@ export const Viewmodel = component(
   { sim: false, doc: 'A first-person weapon part the presentation animates (recoil, bob, loaded stone).' },
 );
 
+/** Who did what to whom, for the announcements: kind 0 a hit, 1 a miss; actors are a seat (0..3) or 100 + a bot's number (b is 0 for a miss). */
+export const Announce = event('Announce', { kind: u32(), a: u32(), b: u32() }, { sim: true });
+
 export const PlayerHit = event('PlayerHit', { by: u32(), seat: u32({ doc: 'The seat that was hit' }) }, { sim: true });
 
 export const Ladder = component(

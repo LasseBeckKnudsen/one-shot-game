@@ -7,7 +7,7 @@
 import { setAnimParam, triggerAnim, Animator, defineSystem, query, read, write, math, multiplayer, playerInput, PlayerInputs, KeyEvent, ActionState, LocalTransform, MouseDown, MouseUp, PlayMusic, PlaySound, PointerDown, PointerHover, PointerMove, PointerUp } from '@gameengine/runtime';
 import { AirReady } from './schema.gen.ts';
 import { Blocker, Ladder, Jumped, SuperJumped, VmRig, Settings, SetSensitivity, Flow, GameReady, QuitToMenu, ResumeGame, StartSolo } from './schema.gen.ts';
-import { Critter, CritterHit, PlayerHit, Match, Platform, Player, PlayerRespawned, SeatBody, ShotFired, Solid, SoloLook, SpawnPoint, Stone, StoneMissed, Temp } from './schema.gen.ts';
+import { Announce, Critter, CritterHit, PlayerHit, Match, Platform, Player, PlayerRespawned, SeatBody, ShotFired, Solid, SoloLook, SpawnPoint, Stone, StoneMissed, Temp } from './schema.gen.ts';
 import { BTN_AIM, BTN_BOARD, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
 
 export const EYE = 1.65;
@@ -35,6 +35,8 @@ const CRITTER_R = 0.55;
 const CRITTER_TOP = 1.75;
 const ROUND_SECONDS = 360;
 const RESPAWN = 3;
+/** Seconds nobody can hit a player who just respawned (firing ends it early). */
+const RESPAWN_PROTECT = 8;
 
 type Circle = { x: number; z: number; r: number; h: number };
 
@@ -486,11 +488,13 @@ export const StoneFlight = defineSystem({
           continue;
         }
         ctx.commands.despawn(stoneEntity);
+        const shooterCode = fromSeat ? shooterSeat : 100 + s.owner;
         const shooterPlayer = fromSeat ? seats.get(shooterSeat) ?? null : null;
         const shooterBot = fromSeat ? null : bots.get(s.owner) ?? null;
         if (outcome === 'hit' && victim) {
           const v = victim;
           targets.splice(targets.indexOf(v), 1);
+          ctx.events.emit(Announce, { kind: 0, a: shooterCode, b: v.kind === 'bot' ? 100 + v.id : v.id });
           // The shooter scores and its stone comes straight back.
           if (shooterPlayer) {
             const sp = shooterPlayer.chunk.get(Player, shooterPlayer.row);
@@ -514,11 +518,13 @@ export const StoneFlight = defineSystem({
             ctx.events.emit(PlayerHit, { by: s.owner, seat: vp.index });
             if (shooterSeat >= 0) ctx.events.emit(CritterHit, { position: [v.x, 1.0, v.z], seat: shooterSeat });
             ctx.events.emit(PlaySound, { sound: 'audio/miss', volume: 1, spatial: true, position: [v.x, 1.2, v.z] });
-            ctx.commands.spawn({ LocalTransform: { position: [v.x, 1.0, v.z] }, ParticleSystem: { effect: 'fx/hit_burst.vfx.json' }, Temp: { life: 2.2 } });
+            // the burst goes where the body falls, behind the victim's eyes: on the camera it would fill the whole view
+            ctx.commands.spawn({ LocalTransform: { position: [v.x + math.sin(vp.yaw) * 1.6, 1.0, v.z + math.cos(vp.yaw) * 1.6] }, ParticleSystem: { effect: 'fx/hit_burst.vfx.json' }, Temp: { life: 2.2 } });
           }
         } else {
           // A miss costs the shooter a point and its life.
           ctx.events.emit(StoneMissed, { position: [x, y, z], seat: shooterSeat < 0 ? 99 : shooterSeat });
+          ctx.events.emit(Announce, { kind: 1, a: shooterCode, b: 0 });
           ctx.commands.spawn({ LocalTransform: { position: [x, math.max(0.05, y), z] }, ParticleSystem: { effect: 'fx/impact.vfx.json' }, Temp: { life: 1.5 } });
           if (shooterPlayer) {
             const pp = shooterPlayer.chunk.get(Player, shooterPlayer.row);
@@ -588,7 +594,7 @@ export const Respawn = defineSystem({
             }
           }
         }
-        pc.set(Player, i, { state: 'Alive', loaded: true, protect: 1.5, vy: 0, climbing: false });
+        pc.set(Player, i, { state: 'Alive', loaded: true, protect: RESPAWN_PROTECT, vy: 0, climbing: false });
         pc.set(LocalTransform, i, { position: [best[0], EYE, best[1]] });
         pc.set(Player, i, { eye: EYE, crouch: false });
         ctx.commands.spawn({ LocalTransform: { position: [best[0], 0.05, best[1]] }, ParticleSystem: { effect: 'fx/respawn.vfx.json' }, Temp: { life: 2.2 } });

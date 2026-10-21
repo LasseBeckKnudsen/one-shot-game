@@ -3,9 +3,9 @@
  * from Match. UI only: it reads resources and never writes the world.
  */
 import { createEffect, createMemo, createSignal, defineUI, onCleanup, onUiFrame, untrack, useResource, views, type ViewHandle } from '@gameengine/ui';
-import { boardOpen, setBoardOpen } from '../netstate.ts';
+import { boardOpen, feed, setBoardOpen } from '../netstate.ts';
 import { Flow, LocalHud, Match, type LocalHudValue } from '../schema.gen.ts';
-import { HudView, type HudModel, type HudRow } from '../views/hud.view.tsx';
+import { HudView, type HudModel, type HudRow, type HudToast } from '../views/hud.view.tsx';
 
 /** Seconds of the double-jump launch cooldown (the sim's SUPER_COOLDOWN). */
 const SUPER_COOLDOWN = 40;
@@ -36,6 +36,11 @@ const clock = (s: number) => {
 const HINT_SECONDS = 20;
 /** Seconds the "+1 PLONK!" banner stays up. */
 const HIT_SECONDS = 1.1;
+/** Seconds an announcement toast stays up, then how long it fades out before it is dropped. */
+const TOAST_SECONDS = 4.5;
+const TOAST_FADE = 0.4;
+/** Announcement toasts shown at once (the oldest goes when a fourth arrives). */
+const TOAST_MAX = 3;
 
 export const hud = defineUI({
   name: 'Hud',
@@ -56,6 +61,10 @@ export const hud = defineUI({
     let lastHits = untrack(() => mine().hits);
     let lastCd = untrack(() => mine().superCd);
     const [peakCd, setPeakCd] = createSignal(0);
+    // announcement toasts, oldest first; each new line's expiry is stamped from the UI clock on the next frame
+    const [toasts, setToasts] = createSignal<readonly HudToast[]>([]);
+    const toastEnds = new Map<number, number>(); // id -> UI time it starts fading (-1: stamp on the next frame)
+    let feedIds = new Set(untrack(() => feed().map((l) => l.id)));
 
     createEffect(() => {
       // a new match (Loading just ended): the hint comes back for 20 s
@@ -63,6 +72,18 @@ export const hud = defineUI({
       hintDeadline = -1;
       setHintOn(true);
       setHitFlash(false);
+      setToasts([]);
+      toastEnds.clear();
+    });
+    createEffect(() => {
+      const lines = feed();
+      const fresh = lines.filter((l) => !feedIds.has(l.id));
+      feedIds = new Set(lines.map((l) => l.id));
+      if (fresh.length === 0) return;
+      const next = [...untrack(toasts), ...fresh.map((l) => ({ ...l, gone: false }))].slice(-TOAST_MAX);
+      for (const l of fresh) toastEnds.set(l.id, -1);
+      for (const id of toastEnds.keys()) if (!next.some((t) => t.id === id)) toastEnds.delete(id);
+      setToasts(next);
     });
     createEffect(() => {
       const hits = mine().hits;
@@ -89,7 +110,7 @@ export const hud = defineUI({
     createEffect(() => {
       if (bannerKind() !== '') setBannerPop((n) => n + 1);
     });
-    // one tiny frame callback for the two timers; it only does work while a timer is running
+    // one tiny frame callback for the timers; it only does work while a timer is running
     const stop = onUiFrame((now) => {
       if (hintDeadline < 0) hintDeadline = now + HINT_SECONDS;
       else if (hintOn() && now > hintDeadline) setHintOn(false);
@@ -99,6 +120,22 @@ export const hud = defineUI({
       } else if (flashDeadline > 0 && now > flashDeadline) {
         flashDeadline = 0;
         setHitFlash(false);
+      }
+      if (toastEnds.size > 0) {
+        let changed = false;
+        const next = toasts().filter((t) => {
+          let end = toastEnds.get(t.id)!;
+          if (end < 0) toastEnds.set(t.id, (end = now + TOAST_SECONDS));
+          if (now < end + TOAST_FADE) return true;
+          toastEnds.delete(t.id);
+          changed = true;
+          return false;
+        }).map((t) => {
+          if (t.gone || now < toastEnds.get(t.id)!) return t;
+          changed = true;
+          return { ...t, gone: true };
+        });
+        if (changed) setToasts(next);
       }
     });
     onCleanup(stop);
@@ -147,6 +184,7 @@ export const hud = defineUI({
         first: m.rank === 1,
         board: boardOpen(),
         rows: boardRows(m),
+        toasts: [...toasts()],
       };
     };
 
