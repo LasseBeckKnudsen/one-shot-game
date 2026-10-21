@@ -2,10 +2,10 @@
  * Presentation side of play, solo or online (all LateUpdate: it reads the sim and never changes a hash):
  * which seat this device plays, its input in an online match, the camera and first-person rig of that seat, and its HUD data.
  */
-import { defineSystem, query, read, write, math, multiplayer, PlayerInputs, playerInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
-import { BTN_AIM, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
-import { Critter, Flow, LocalHud, Match, NetLook, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
-import { onlinePaused, onlineSens, setOnlinePaused } from './netstate.ts';
+import { defineSystem, query, read, write, math, multiplayer, Camera, PlayerInputs, playerInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
+import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
+import { Critter, Flow, LocalHud, Match, NetLook, Player, SeatCam, VmRig } from './schema.gen.ts';
+import { boardOpen, onlinePaused, onlineSens, setBoardOpen, setOnlinePaused } from './netstate.ts';
 
 const SENS = 0.0022;
 
@@ -70,6 +70,20 @@ export const NetInput = defineSystem({
   },
 });
 
+/** Tab shows or hides the leaderboard, solo or online: it is a button of this seat's own input (the mouse is captured while playing, so the chevron cannot be clicked then). */
+export const BoardToggle = defineSystem({
+  name: 'BoardToggle',
+  stage: 'LateUpdate',
+  resources: [write(NetLook), read(PlayerInputs)],
+  run(ctx) {
+    const held = down(playerInput(ctx.get(PlayerInputs), localSeat()).buttons, BTN_BOARD);
+    if (held !== ctx.get(NetLook).boardHeld) {
+      ctx.setField(NetLook, 'boardHeld', held);
+      if (held) setBoardOpen(!boardOpen());
+    }
+  },
+});
+
 /** Everything below shows the seat this device plays. */
 
 /** The camera shows this device's seat: its camera pose gets the top priority. */
@@ -88,12 +102,12 @@ export const SeatCamera = defineSystem({
   },
 });
 
-/** Only this seat's first-person rig is shown, and its own body is hidden from its own camera. */
+/** Only this seat's first-person rig is shown, and its own body is left out of its own camera (the bodies sit on render layers 2 << seat). */
 export const SeatVisibility = defineSystem({
   name: 'SeatVisibility',
   stage: 'LateUpdate',
-  queries: { rigs: query(read(VmRig), write(VisualOffset)), bodies: query(read(SeatBody), write(VisualOffset)) },
-  run(ctx, { rigs, bodies }) {
+  queries: { rigs: query(read(VmRig), write(VisualOffset)), cams: query(write(Camera)) },
+  run(ctx, { rigs, cams }) {
     const me = localSeat();
     for (const c of rigs.chunks()) {
       for (let i = 0; i < c.length; i++) {
@@ -101,12 +115,8 @@ export const SeatVisibility = defineSystem({
         if (c.get(VisualOffset, i).scale[0] !== k) c.set(VisualOffset, i, { scale: [k, k, k] });
       }
     }
-    for (const c of bodies.chunks()) {
-      for (let i = 0; i < c.length; i++) {
-        const k = c.get(SeatBody, i).index === me ? 0 : 1;
-        if (c.get(VisualOffset, i).scale[0] !== k) c.set(VisualOffset, i, { scale: [k, k, k] });
-      }
-    }
+    const mask = (0xffffffff & ~(2 << me)) >>> 0;
+    for (const c of cams.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Camera, i).layerMask !== mask) c.set(Camera, i, { layerMask: mask });
   },
 });
 

@@ -26,7 +26,7 @@
       "name": "Element",
       "children": [
         "h_left",
-        "h_clock"
+        "h_right"
       ],
       "style": {
         "pad": [
@@ -590,6 +590,146 @@
         "shadowY": 3,
         "shadowColor": "#2a1708ff"
       }
+    },
+    "h_right": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "h_clock",
+        "h_placerow"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "align": "end",
+        "gap": 10
+      }
+    },
+    "h_placerow": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "h_place",
+        "h_chev",
+        "h_board"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "row",
+        "align": "center",
+        "gap": 10,
+        "position": "anchored",
+        "anchor": [
+          1,
+          1
+        ],
+        "pivot": [
+          1,
+          0
+        ],
+        "offset": [
+          -8,
+          10
+        ],
+        "attach": true
+      }
+    },
+    "h_place": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "h_star",
+        "h_placetxt"
+      ],
+      "style": {
+        "pad": [
+          2,
+          24,
+          6,
+          16
+        ],
+        "image": "ui/pill",
+        "sliceScale": 0.45,
+        "dir": "row",
+        "align": "center",
+        "gap": 10,
+        "opacity": 0.92
+      }
+    },
+    "h_star": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/star",
+        "tint": "#fff3d6ff",
+        "tintAmount": 1,
+        "tintMode": "multiply",
+        "w": 34,
+        "h": 34
+      }
+    },
+    "h_placetxt": {
+      "type": "label",
+      "name": "Label",
+      "text": "{placeText}",
+      "style": {
+        "fontSize": 34,
+        "weight": 800,
+        "color": "#fff3d6ff"
+      }
+    },
+    "h_chev": {
+      "type": "use",
+      "doc": "hud-chevron",
+      "key": "leaderboard",
+      "props": {
+        "open": {
+          "property": "board"
+        }
+      }
+    },
+    "h_board": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "h_rows"
+      ],
+      "style": {
+        "pad": [
+          16,
+          18,
+          20,
+          18
+        ],
+        "image": "ui/panel",
+        "sliceScale": 0.5,
+        "dir": "column",
+        "gap": 2,
+        "w": 360,
+        "opacity": 0.95,
+        "position": "anchored",
+        "anchor": [
+          1,
+          1
+        ],
+        "pivot": [
+          1,
+          0
+        ],
+        "offset": [
+          0,
+          12
+        ],
+        "attach": true
+      },
+      "show": "board"
+    },
+    "h_rows": {
+      "type": "repeat",
+      "doc": "hud-row",
+      "property": "rows"
     }
   },
   "view": {
@@ -786,6 +926,35 @@
           }
         }
       }
+    },
+    "placeText": {
+      "type": "text",
+      "default": "1st / 1"
+    },
+    "first": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "h_star": {
+              "tint": "#ffd23fff"
+            },
+            "h_placetxt": {
+              "color": "#ffd23fff"
+            }
+          }
+        }
+      }
+    },
+    "board": {
+      "type": "yesno",
+      "default": false
+    },
+    "rows": {
+      "type": "list",
+      "of": "hud-row",
+      "default": []
     }
   },
   "reactions": {

@@ -625,6 +625,12 @@
           "lanes": 1
         },
         {
+          "name": "boardHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
           "name": "seeded",
           "kind": "bool",
           "scalar": "u8",

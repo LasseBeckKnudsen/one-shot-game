@@ -1,0 +1,122 @@
+{
+  "$schemaVersion": 1,
+  "guid": "ebee3d79-5467-40b8-a780-310535f37c7b",
+  "name": "hud-row",
+  "title": "HUD leaderboard row",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Hud row",
+      "style": {
+        "dir": "row",
+        "pad": [
+          0,
+          16,
+          0,
+          12
+        ],
+        "align": "center",
+        "bg": "#00000000",
+        "radius": 21,
+        "gap": 12,
+        "w": "100%",
+        "h": 44
+      },
+      "children": [
+        "hl_rank",
+        "hl_name",
+        "hl_score"
+      ]
+    },
+    "hl_rank": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "rank",
+      "style": {
+        "fontSize": 28,
+        "weight": 800,
+        "color": "#d9c7a0ff",
+        "w": 36,
+        "textAlign": "right"
+      }
+    },
+    "hl_name": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "name",
+      "style": {
+        "fontSize": 28,
+        "weight": 800,
+        "color": "#fff3d6ff",
+        "w": 0,
+        "grow": 1,
+        "fitMin": 20
+      }
+    },
+    "hl_score": {
+      "type": "label",
+      "name": "Label",
+      "text": "{score}",
+      "style": {
+        "fontSize": 28,
+        "weight": 800,
+        "color": "#ffb52eff"
+      }
+    }
+  },
+  "properties": {
+    "rank": {
+      "type": "text",
+      "default": "1"
+    },
+    "name": {
+      "type": "text",
+      "default": "You"
+    },
+    "score": {
+      "type": "number",
+      "default": 0,
+      "format": "value"
+    },
+    "me": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "root": {
+              "bg": "#ffd23f33"
+            },
+            "hl_rank": {
+              "color": "#ffd23fff"
+            },
+            "hl_name": {
+              "color": "#ffd23fff"
+            },
+            "hl_score": {
+              "color": "#ffd23fff"
+            }
+          }
+        }
+      }
+    }
+  },
+  "samples": {
+    "other": {
+      "rank": "2",
+      "name": "Bot 3",
+      "score": 7,
+      "me": false
+    },
+    "mine": {
+      "rank": "3",
+      "name": "You",
+      "score": 5,
+      "me": true
+    }
+  }
+}

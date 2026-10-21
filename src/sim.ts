@@ -8,7 +8,7 @@ import { setAnimParam, triggerAnim, Animator, defineSystem, query, read, write, 
 import { AirReady } from './schema.gen.ts';
 import { Blocker, Ladder, Jumped, SuperJumped, VmRig, Settings, SetSensitivity, Flow, GameReady, QuitToMenu, ResumeGame, StartSolo } from './schema.gen.ts';
 import { Critter, CritterHit, PlayerHit, Match, Platform, Player, PlayerRespawned, SeatBody, ShotFired, Solid, SoloLook, SpawnPoint, Stone, StoneMissed, Temp } from './schema.gen.ts';
-import { BTN_AIM, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
+import { BTN_AIM, BTN_BOARD, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
 
 export const EYE = 1.65;
 const WALK = 5.6;
@@ -112,6 +112,7 @@ export const SoloInput = defineSystem({
     if ((act['crouch'] ?? 0) > 0.5) buttons |= BTN_CROUCH;
     if (clicking || (act['fire'] ?? 0) > 0.5) buttons |= BTN_FIRE;
     if (aiming) buttons |= BTN_AIM;
+    if ((act['board'] ?? 0) > 0.5) buttons |= BTN_BOARD;
     ctx.set(PlayerInputs, { players: 1, buttons0: buttons >>> 0, stick0: [act['moveX'] ?? 0, act['moveY'] ?? 0] });
   },
 });

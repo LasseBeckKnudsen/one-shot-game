@@ -1,7 +1,7 @@
 // The app flow as the UI drives it: start screen -> loading (its controller decides when the game is ready) -> HUD,
 // Escape -> pause menu (resume, sliders, quit). Nothing here emits GameReady: the loading controller does.
 import { expect, renderTest } from '@gameengine/test';
-import { Flow, Match, Player, Settings } from '../src/schema.gen.ts';
+import { Flow, LocalHud, Match, Player, Settings } from '../src/schema.gen.ts';
 
 const ESCAPE = 39;
 
@@ -152,4 +152,37 @@ renderTest('the launch cooldown shows in the HUD and the ready state comes back'
   expect(world.get(world.entities(Player)[0]!, Player).superCd).toBeGreaterThan(20);
   // the ring area looks different while recharging (the gold READY ring is replaced by a dark disc with a partial ring)
   expect(JSON.stringify(cooling.regions[0]!.mean)).not.toBe(JSON.stringify(ready.regions[0]!.mean));
+});
+
+renderTest('the HUD shows my placement under the clock and the chevron opens and closes the leaderboard', async ({ world, step, input, ui, render }) => {
+  await toMatch(input, step, ui, world);
+  await step(10);
+  const hud = world.resource(LocalHud);
+  expect(hud.rank).toBeGreaterThan(0);
+  expect(hud.players).toBe(9); // solo: me and 8 bots
+  expect(hud.rows).toBe(8);
+  // the placement row (pill and chevron) sits under the clock at the top right
+  const chev = ui.rect('leaderboard')!;
+  expect(chev.x).toBeGreaterThan(1920 * 0.8);
+  expect(chev.y).toBeGreaterThan(100);
+  expect(chev.y).toBeLessThan(200);
+  // a strip of the board's left padding: the dark panel while it is open, the world while it is hidden
+  const boardGreen = () => render.probe({ regions: [[1536, 220, 16, 320]], width: 1920, height: 1080 }).regions[0]!.mean[1]!;
+  const closed = boardGreen();
+  // the board starts hidden; the mouse is captured in play, so the chevron is pressed by its id
+  await ui.press('leaderboard');
+  await step(5);
+  const open = boardGreen();
+  expect(open).toBeLessThan(80);
+  expect(closed).toBeGreaterThan(open + 30);
+  const first = ui.rect('r0')!;
+  expect(first.height).toBeGreaterThan(30);
+  expect(first.y).toBeGreaterThan(chev.y + chev.height);
+  const last = ui.rect('r7')!; // all 8 rows, on screen and clear of the reticle in the middle
+  expect(last.height).toBeGreaterThan(30);
+  expect(last.y + last.height).toBeLessThan(1080);
+  expect(last.x).toBeGreaterThan(1920 / 2 + 100);
+  await ui.press('leaderboard');
+  await step(5);
+  expect(boardGreen()).toBeGreaterThan(open + 30);
 });

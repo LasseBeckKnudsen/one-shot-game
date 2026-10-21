@@ -58,13 +58,50 @@ declare module '@gameengine/ui' {
      *   - `readyPulse`: trigger (a counter: each change fires it)
      *   - `bannerPop`: trigger (a counter: each change fires it)
      *   - `tone`: enum hit | miss | hurt | over, default "hit"
-     * Events: none
+     *   - `placeText`: text, default "1st / 1"
+     *   - `first`: yesno, default false
+     *   - `board`: yesno, default false
+     *   - `rows`: list of hud-row
+     * Events: `leaderboard`
      * Code areas: none
-     * Refs: none
+     * Refs: `leaderboard`
      * Samples (`view render doc:hud --sample …`): `play`, `cooling`, `hit`, `miss`, `over`, `hurt`
      */
     'hud': {
-      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over' };
+      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over'; placeText: string | { loc: string } | LocText; first: boolean; board: boolean; rows: readonly { key: string; rank?: string | { loc: string } | LocText; name?: string | { loc: string } | LocText; score?: number; me?: boolean }[] };
+      areas: never;
+      refs: 'leaderboard';
+    };
+    /**
+     * HUD leaderboard toggle: a widget, button (ui/docs/hud-chevron.ui.json)
+     *
+     * Properties:
+     *   - `open`: yesno, default false
+     * Events: `<id>`
+     * Code areas: none
+     * Refs: none
+     * Samples (`view render doc:hud-chevron --sample …`): `closed`, `opened`
+     */
+    'hud-chevron': {
+      props: { open: boolean };
+      areas: never;
+      refs: never;
+    };
+    /**
+     * HUD leaderboard row: a widget (ui/docs/hud-row.ui.json)
+     *
+     * Properties:
+     *   - `rank`: text, default "1"
+     *   - `name`: text, default "You"
+     *   - `score`: number, default 0
+     *   - `me`: yesno, default false
+     * Events: none
+     * Code areas: none
+     * Refs: none
+     * Samples (`view render doc:hud-row --sample …`): `other`, `mine`
+     */
+    'hud-row': {
+      props: { rank: string | { loc: string } | LocText; name: string | { loc: string } | LocText; score: number; me: boolean };
       areas: never;
       refs: never;
     };

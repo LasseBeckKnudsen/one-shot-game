@@ -12,3 +12,6 @@ export const [lobbyOpen, setLobbyOpen] = createSignal(false);
 
 /** Mouse sensitivity of an online match (the sim's Settings resource only reaches a solo match: UI events never reach an online sim). */
 export const [onlineSens, setOnlineSens] = createSignal(1);
+
+/** The leaderboard under the clock is open (Tab or the chevron). */
+export const [boardOpen, setBoardOpen] = createSignal(false);

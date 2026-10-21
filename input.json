@@ -46,6 +46,11 @@
       {
         "key": "ShiftRight"
       }
+    ],
+    "board": [
+      {
+        "key": "Tab"
+      }
     ]
   }
 }

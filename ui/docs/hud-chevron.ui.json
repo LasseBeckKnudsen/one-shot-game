@@ -1,0 +1,85 @@
+{
+  "$schemaVersion": 1,
+  "guid": "5142d7f5-2aaf-425c-ac2e-2ee54d57d7b1",
+  "name": "hud-chevron",
+  "title": "HUD leaderboard toggle",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Hud chevron",
+      "style": {
+        "dir": "row",
+        "pad": 0,
+        "align": "center",
+        "bg": "#00000000",
+        "radius": 0,
+        "image": "ui/pill",
+        "sliceScale": 0.45,
+        "w": 64,
+        "h": 54,
+        "justify": "center",
+        "opacity": 0.92
+      },
+      "children": [
+        "hc_chev"
+      ]
+    },
+    "hc_chev": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/chevrons",
+        "tint": "#fff3d6ff",
+        "tintAmount": 1,
+        "tintMode": "multiply",
+        "w": 36,
+        "h": 36,
+        "rotate": 180
+      }
+    }
+  },
+  "behaviour": "button",
+  "properties": {
+    "open": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "hc_chev": {
+              "rotate": 0,
+              "tint": "#ffd23fff"
+            }
+          }
+        }
+      }
+    }
+  },
+  "states": {
+    "pressed": {
+      "set": {
+        "root": {
+          "scale": 0.92,
+          "ty": 2,
+          "brightness": 0.88
+        }
+      },
+      "transition": {
+        "type": "easeOut",
+        "ms": 110
+      }
+    }
+  },
+  "samples": {
+    "closed": {
+      "open": false
+    },
+    "opened": {
+      "open": true
+    }
+  }
+}

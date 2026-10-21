@@ -130,6 +130,11 @@
         {
           "key": "Escape"
         }
+      ],
+      "board": [
+        {
+          "key": "Tab"
+        }
       ]
     },
     "stick": {

@@ -167,6 +167,6 @@ export const SeatCam = component('SeatCam', { seat: u32() }, { sim: false });
 /** Online only, presentation: this device's mouse look, integrated before it is sent as the local input. */
 export const NetLook = resource(
   'NetLook',
-  { yaw: f32(), pitch: f32(), aiming: bool(), menuHeld: bool(), seeded: bool({ doc: 'yaw and pitch were taken from the seat once' }) },
+  { yaw: f32(), pitch: f32(), aiming: bool(), menuHeld: bool(), boardHeld: bool(), seeded: bool({ doc: 'yaw and pitch were taken from the seat once' }) },
   { sim: false },
 );

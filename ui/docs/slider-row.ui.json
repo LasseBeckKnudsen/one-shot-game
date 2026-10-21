@@ -69,8 +69,8 @@
       "name": "Element",
       "children": [
         "sl_fill",
-        "sl_knob",
-        "sli_codearea"
+        "sli_codearea",
+        "sl_knob"
       ],
       "style": {
         "pad": 6,
@@ -106,6 +106,8 @@
         "w": 62,
         "h": 62,
         "position": "anchored",
+        "attach": true,
+        "tx": 0,
         "anchor": [
           0,
           0.5
@@ -113,8 +115,7 @@
         "pivot": [
           0,
           0.5
-        ],
-        "attach": true
+        ]
       }
     },
     "sli_codearea": {
@@ -166,7 +167,11 @@
                   0,
                   0.5
                 ],
-                "tx": 0
+                "tx": 0,
+                "pivot": [
+                  0,
+                  0.5
+                ]
               }
             }
           },
@@ -180,7 +185,11 @@
                   0,
                   0.5
                 ],
-                "tx": 506
+                "tx": 426,
+                "pivot": [
+                  0,
+                  0.5
+                ]
               }
             }
           }

@@ -12,10 +12,11 @@
         "near": 0.04,
         "far": 600,
         "clearColor": "#a8d4ffff",
-        "postProfile": "post/day.post.json"
+        "postProfile": "post/day.post.json",
+        "layerMask": 4294967293
       },
       "CameraShake": { "maxOffset": [0.06, 0.06, 0.0], "maxAngle": 0.02, "decay": 2.5 },
-      "Fog": { "color": "#c4d9ecff", "start": 45, "end": 280 },
+      "Fog": { "color": "#b4d2f0ff", "start": 60, "end": 340 },
       "LocalTransform": {},
       "VisualOffset": {},
       "children": [
@@ -174,16 +175,15 @@
           "id": "body0",
           "Animator": { "controller": "anim/guy.animctrl.json" },
           "LocalTransform": { "position": [0.0, 0, 15.7] },
-          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ff7a6e" },
+          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ff7a6e", "layers": 2 },
           "SeatBody": {},
-          "VisualOffset": { "scale": [0, 0, 0] },
           "children": [
             {
               "name": "Sling",
               "id": "body0sling",
               "BoneAttach": { "rig": "@body0", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
-              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 2 }
             }
           ]
         },
@@ -192,16 +192,15 @@
           "id": "body1",
           "Animator": { "controller": "anim/guy.animctrl.json" },
           "LocalTransform": { "position": [-15.7, 0, 0.0] },
-          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#6eb4ff" },
+          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#6eb4ff", "layers": 4 },
           "SeatBody": { "index": 1 },
-          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
               "id": "body1sling",
               "BoneAttach": { "rig": "@body1", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
-              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 4 }
             }
           ]
         },
@@ -210,16 +209,15 @@
           "id": "body2",
           "Animator": { "controller": "anim/guy.animctrl.json" },
           "LocalTransform": { "position": [-0.0, 0, -15.7] },
-          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ffd95c" },
+          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ffd95c", "layers": 8 },
           "SeatBody": { "index": 2 },
-          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
               "id": "body2sling",
               "BoneAttach": { "rig": "@body2", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
-              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 8 }
             }
           ]
         },
@@ -228,16 +226,15 @@
           "id": "body3",
           "Animator": { "controller": "anim/guy.animctrl.json" },
           "LocalTransform": { "position": [15.7, 0, -0.0] },
-          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#7ae89a" },
+          "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#7ae89a", "layers": 16 },
           "SeatBody": { "index": 3 },
-          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
               "id": "body3sling",
               "BoneAttach": { "rig": "@body3", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
-              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+              "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 16 }
             }
           ]
         }
@@ -7876,11 +7873,11 @@
         {
           "name": "Cloud",
           "id": "cloud1",
-          "Cloud": { "angle": -0.0126, "radius": 225.6, "speed": 0.00654 },
+          "Cloud": { "angle": 0.0598, "radius": 216.3, "speed": 0.00613 },
           "LocalTransform": {
-            "position": [-2.8, 122.8, -225.6],
-            "rotation": [0.0, 0.0063, -0.0, 0.99998],
-            "scale": [110.4, 55.2, 1]
+            "position": [12.9, 52.9, -215.9],
+            "rotation": [0.0, -0.02991, 0.0, 0.99955],
+            "scale": [164.0, 82.0, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7893,11 +7890,11 @@
         {
           "name": "Cloud",
           "id": "cloud2",
-          "Cloud": { "angle": 0.327, "radius": 237.6, "speed": 0.00884 },
+          "Cloud": { "angle": 0.257, "radius": 227.9, "speed": 0.00897 },
           "LocalTransform": {
-            "position": [76.3, 128.6, -225.0],
-            "rotation": [0.0, -0.16276, 0.0, 0.98667],
-            "scale": [126.8, 63.4, 1]
+            "position": [57.9, 75.9, -220.4],
+            "rotation": [0.0, -0.12817, 0.0, 0.99175],
+            "scale": [103.1, 51.5, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7910,11 +7907,11 @@
         {
           "name": "Cloud",
           "id": "cloud3",
-          "Cloud": { "angle": 0.6393, "radius": 247.4, "speed": 0.00753 },
+          "Cloud": { "angle": 0.5237, "radius": 242.6, "speed": 0.00645 },
           "LocalTransform": {
-            "position": [147.6, 121.2, -198.5],
-            "rotation": [0.0, -0.31424, 0.0, 0.94934],
-            "scale": [154.3, 77.1, 1]
+            "position": [121.3, 39.8, -210.0],
+            "rotation": [0.0, -0.25888, 0.0, 0.96591],
+            "scale": [176.1, 88.1, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7927,11 +7924,11 @@
         {
           "name": "Cloud",
           "id": "cloud4",
-          "Cloud": { "angle": 1.0661, "radius": 235.5, "speed": 0.007 },
+          "Cloud": { "angle": 0.8481, "radius": 225.4, "speed": 0.00727 },
           "LocalTransform": {
-            "position": [206.2, 112.6, -113.9],
-            "rotation": [0.0, -0.50816, 0.0, 0.86126],
-            "scale": [150.9, 75.4, 1]
+            "position": [169.0, 89.8, -149.1],
+            "rotation": [0.0, -0.41144, 0.0, 0.91144],
+            "scale": [106.5, 53.2, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7944,11 +7941,11 @@
         {
           "name": "Cloud",
           "id": "cloud5",
-          "Cloud": { "angle": 1.4646, "radius": 215.9, "speed": 0.00772 },
+          "Cloud": { "angle": 0.9646, "radius": 238.9, "speed": 0.00655 },
           "LocalTransform": {
-            "position": [214.7, 111.2, -22.9],
-            "rotation": [0.0, -0.66858, 0.0, 0.74364],
-            "scale": [101.5, 50.7, 1]
+            "position": [196.4, 71.1, -136.1],
+            "rotation": [0.0, -0.46383, 0.0, 0.88592],
+            "scale": [108.4, 54.2, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7961,8 +7958,12 @@
         {
           "name": "Cloud",
           "id": "cloud6",
-          "Cloud": { "angle": 1.8381, "radius": 201.5, "speed": 0.00912 },
-          "LocalTransform": { "position": [194.4, 85.1, 53.2], "rotation": [0.0, -0.79501, 0.0, 0.60659], "scale": [133.4, 66.7, 1] },
+          "Cloud": { "angle": 1.2252, "radius": 210.0, "speed": 0.00937 },
+          "LocalTransform": {
+            "position": [197.6, 72.7, -71.1],
+            "rotation": [0.0, -0.57499, 0.0, 0.81816],
+            "scale": [129.4, 64.7, 1]
+          },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_1.mat.json",
@@ -7974,11 +7975,11 @@
         {
           "name": "Cloud",
           "id": "cloud7",
-          "Cloud": { "angle": 2.1393, "radius": 234.3, "speed": 0.00635 },
+          "Cloud": { "angle": 1.4861, "radius": 242.0, "speed": 0.00959 },
           "LocalTransform": {
-            "position": [197.5, 127.6, 126.2],
-            "rotation": [0.0, -0.87702, 0.0, 0.48045],
-            "scale": [138.2, 69.1, 1]
+            "position": [241.1, 98.9, -20.5],
+            "rotation": [0.0, -0.67652, 0.0, 0.73642],
+            "scale": [156.6, 78.3, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -7991,12 +7992,8 @@
         {
           "name": "Cloud",
           "id": "cloud8",
-          "Cloud": { "angle": 2.4541, "radius": 214.0, "speed": 0.01086 },
-          "LocalTransform": {
-            "position": [135.8, 70.4, 165.4],
-            "rotation": [0.0, -0.94149, 0.0, 0.33703],
-            "scale": [130.6, 65.3, 1]
-          },
+          "Cloud": { "angle": 1.9025, "radius": 204.7, "speed": 0.0098 },
+          "LocalTransform": { "position": [193.6, 66.6, 66.7], "rotation": [0.0, -0.81415, 0.0, 0.58065], "scale": [97.1, 48.6, 1] },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_3.mat.json",
@@ -8008,8 +8005,12 @@
         {
           "name": "Cloud",
           "id": "cloud9",
-          "Cloud": { "angle": 2.7845, "radius": 238.0, "speed": 0.00852 },
-          "LocalTransform": { "position": [83.2, 119.9, 223.0], "rotation": [0.0, -0.9841, 0.0, 0.1776], "scale": [93.0, 46.5, 1] },
+          "Cloud": { "angle": 2.102, "radius": 205.3, "speed": 0.00854 },
+          "LocalTransform": {
+            "position": [177.0, 65.6, 104.0],
+            "rotation": [0.0, -0.86792, 0.0, 0.49671],
+            "scale": [159.9, 80.0, 1]
+          },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_0.mat.json",
@@ -8021,11 +8022,11 @@
         {
           "name": "Cloud",
           "id": "cloud10",
-          "Cloud": { "angle": 3.2588, "radius": 232.7, "speed": 0.00918 },
+          "Cloud": { "angle": 2.2805, "radius": 246.8, "speed": 0.01086 },
           "LocalTransform": {
-            "position": [-27.2, 93.8, 231.1],
-            "rotation": [-0.0, -0.99828, 0.0, -0.05858],
-            "scale": [162.4, 81.2, 1]
+            "position": [187.2, 41.5, 160.8],
+            "rotation": [0.0, -0.90874, 0.0, 0.41737],
+            "scale": [165.9, 82.9, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8038,11 +8039,11 @@
         {
           "name": "Cloud",
           "id": "cloud11",
-          "Cloud": { "angle": 3.5945, "radius": 242.4, "speed": 0.00842 },
+          "Cloud": { "angle": 2.6682, "radius": 247.3, "speed": 0.0081 },
           "LocalTransform": {
-            "position": [-106.1, 116.7, 218.0],
-            "rotation": [-0.0, -0.97447, 0.0, -0.22453],
-            "scale": [127.4, 63.7, 1]
+            "position": [112.7, 70.9, 220.1],
+            "rotation": [0.0, -0.97212, 0.0, 0.23449],
+            "scale": [109.7, 54.9, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8055,12 +8056,8 @@
         {
           "name": "Cloud",
           "id": "cloud12",
-          "Cloud": { "angle": 3.7964, "radius": 242.7, "speed": 0.00737 },
-          "LocalTransform": {
-            "position": [-147.8, 80.2, 192.5],
-            "rotation": [-0.0, -0.94688, 0.0, -0.32158],
-            "scale": [169.1, 84.6, 1]
-          },
+          "Cloud": { "angle": 2.9274, "radius": 238.4, "speed": 0.00569 },
+          "LocalTransform": { "position": [50.7, 61.8, 233.0], "rotation": [0.0, -0.99427, 0.0, 0.10688], "scale": [175.3, 87.6, 1] },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_3.mat.json",
@@ -8072,12 +8069,8 @@
         {
           "name": "Cloud",
           "id": "cloud13",
-          "Cloud": { "angle": 4.1744, "radius": 230.4, "speed": 0.0058 },
-          "LocalTransform": {
-            "position": [-197.9, 94.9, 118.1],
-            "rotation": [-0.0, -0.86961, 0.0, -0.49374],
-            "scale": [138.6, 69.3, 1]
-          },
+          "Cloud": { "angle": 3.1408, "radius": 202.0, "speed": 0.00615 },
+          "LocalTransform": { "position": [0.2, 60.2, 202.0], "rotation": [0.0, -1.0, 0.0, 0.00042], "scale": [179.0, 89.5, 1] },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_0.mat.json",
@@ -8089,11 +8082,11 @@
         {
           "name": "Cloud",
           "id": "cloud14",
-          "Cloud": { "angle": 4.6266, "radius": 205.3, "speed": 0.00983 },
+          "Cloud": { "angle": 3.5005, "radius": 245.3, "speed": 0.00809 },
           "LocalTransform": {
-            "position": [-204.5, 139.9, 17.6],
-            "rotation": [-0.0, -0.73679, 0.0, -0.67612],
-            "scale": [158.7, 79.3, 1]
+            "position": [-86.2, 80.7, 229.6],
+            "rotation": [-0.0, -0.98394, 0.0, -0.1785],
+            "scale": [95.0, 47.5, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8106,11 +8099,11 @@
         {
           "name": "Cloud",
           "id": "cloud15",
-          "Cloud": { "angle": 4.947, "radius": 209.3, "speed": 0.0096 },
+          "Cloud": { "angle": 3.7036, "radius": 204.8, "speed": 0.01014 },
           "LocalTransform": {
-            "position": [-203.6, 115.4, -48.7],
-            "rotation": [-0.0, -0.61947, 0.0, -0.78502],
-            "scale": [94.9, 47.5, 1]
+            "position": [-109.1, 56.5, 173.3],
+            "rotation": [-0.0, -0.96078, 0.0, -0.27731],
+            "scale": [98.3, 49.1, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8123,11 +8116,11 @@
         {
           "name": "Cloud",
           "id": "cloud16",
-          "Cloud": { "angle": 5.3051, "radius": 210.5, "speed": 0.00917 },
+          "Cloud": { "angle": 4.01, "radius": 246.2, "speed": 0.00584 },
           "LocalTransform": {
-            "position": [-174.6, 105.4, -117.6],
-            "rotation": [-0.0, -0.46979, 0.0, -0.88278],
-            "scale": [97.3, 48.6, 1]
+            "position": [-187.9, 84.5, 159.0],
+            "rotation": [-0.0, -0.9072, 0.0, -0.42071],
+            "scale": [141.8, 70.9, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8140,11 +8133,11 @@
         {
           "name": "Cloud",
           "id": "cloud17",
-          "Cloud": { "angle": 5.6326, "radius": 203.0, "speed": 0.00648 },
+          "Cloud": { "angle": 4.1851, "radius": 238.0, "speed": 0.00555 },
           "LocalTransform": {
-            "position": [-122.9, 119.0, -161.5],
-            "rotation": [-0.0, -0.31959, 0.0, -0.94756],
-            "scale": [160.3, 80.1, 1]
+            "position": [-205.7, 84.9, 119.8],
+            "rotation": [-0.0, -0.86695, 0.0, -0.49839],
+            "scale": [92.4, 46.2, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
@@ -8157,15 +8150,117 @@
         {
           "name": "Cloud",
           "id": "cloud18",
-          "Cloud": { "angle": 6.032, "radius": 213.6, "speed": 0.00966 },
+          "Cloud": { "angle": 4.3682, "radius": 246.2, "speed": 0.00812 },
           "LocalTransform": {
-            "position": [-53.1, 71.3, -206.9],
-            "rotation": [-0.0, -0.12529, 0.0, -0.99212],
-            "scale": [96.7, 48.4, 1]
+            "position": [-231.8, 45.0, 83.1],
+            "rotation": [-0.0, -0.81774, 0.0, -0.57558],
+            "scale": [125.1, 62.6, 1]
           },
           "MeshRenderer": {
             "mesh": "models/cloud_card.glb",
             "material": "materials/cloud_1.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud19",
+          "Cloud": { "angle": 4.7891, "radius": 206.8, "speed": 0.00597 },
+          "LocalTransform": {
+            "position": [-206.2, 54.2, -15.9],
+            "rotation": [-0.0, -0.67946, 0.0, -0.73372],
+            "scale": [159.5, 79.7, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_2.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud20",
+          "Cloud": { "angle": 4.907, "radius": 201.3, "speed": 0.00826 },
+          "LocalTransform": {
+            "position": [-197.5, 97.4, -38.9],
+            "rotation": [-0.0, -0.63505, 0.0, -0.77247],
+            "scale": [111.0, 55.5, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_3.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud21",
+          "Cloud": { "angle": 5.2118, "radius": 249.1, "speed": 0.00819 },
+          "LocalTransform": {
+            "position": [-218.7, 82.1, -119.3],
+            "rotation": [-0.0, -0.51043, 0.0, -0.85992],
+            "scale": [144.1, 72.0, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_0.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud22",
+          "Cloud": { "angle": 5.4513, "radius": 242.0, "speed": 0.00712 },
+          "LocalTransform": {
+            "position": [-178.8, 44.4, -163.0],
+            "rotation": [-0.0, -0.40403, 0.0, -0.91475],
+            "scale": [146.0, 73.0, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_1.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud23",
+          "Cloud": { "angle": 5.7148, "radius": 222.7, "speed": 0.00589 },
+          "LocalTransform": {
+            "position": [-119.9, 49.7, -187.7],
+            "rotation": [-0.0, -0.28036, 0.0, -0.95989],
+            "scale": [143.3, 71.6, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_2.mat.json",
+            "castShadows": false,
+            "receiveShadows": false
+          },
+          "VisualOffset": {}
+        },
+        {
+          "name": "Cloud",
+          "id": "cloud24",
+          "Cloud": { "angle": 5.9251, "radius": 207.1, "speed": 0.00831 },
+          "LocalTransform": {
+            "position": [-72.6, 43.6, -193.9],
+            "rotation": [-0.0, -0.17806, 0.0, -0.98402],
+            "scale": [169.0, 84.5, 1]
+          },
+          "MeshRenderer": {
+            "mesh": "models/cloud_card.glb",
+            "material": "materials/cloud_3.mat.json",
             "castShadows": false,
             "receiveShadows": false
           },

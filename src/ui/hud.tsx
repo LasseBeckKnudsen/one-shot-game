@@ -3,13 +3,29 @@
  * from Match. UI only: it reads resources and never writes the world.
  */
 import { createEffect, createMemo, createSignal, defineUI, onCleanup, onUiFrame, untrack, useResource, views, type ViewHandle } from '@gameengine/ui';
-import { Flow, LocalHud, Match } from '../schema.gen.ts';
-import { HudView, type HudModel } from '../views/hud.view.tsx';
+import { boardOpen, setBoardOpen } from '../netstate.ts';
+import { Flow, LocalHud, Match, type LocalHudValue } from '../schema.gen.ts';
+import { HudView, type HudModel, type HudRow } from '../views/hud.view.tsx';
 
 /** Seconds of the double-jump launch cooldown (the sim's SUPER_COOLDOWN). */
 const SUPER_COOLDOWN = 40;
 
 const place = (n: number) => `${n}${n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'}`;
+
+/** The leaderboard rows of LocalHud, each packed as (kind * 100 + id) * 1000 + score (kind 0 a player seat, 1 a bot number). */
+const boardRows = (m: LocalHudValue): HudRow[] => {
+  const packed = [m.row0, m.row1, m.row2, m.row3, m.row4, m.row5, m.row6, m.row7].slice(0, m.rows);
+  const rows = packed.map((v) => {
+    const head = Math.floor(v / 1000);
+    const kind = Math.floor(head / 100);
+    const id = head % 100;
+    const name = kind === 1 ? `Bot ${id}` : id === m.seat ? 'You' : `Player ${id + 1}`;
+    return { rank: 0, name, score: v % 1000, me: kind === 0 && id === m.seat };
+  });
+  // best first: a tie shares the place of the first with that score
+  rows.forEach((r, i) => (r.rank = i > 0 && rows[i - 1]!.score === r.score ? rows[i - 1]!.rank : i + 1));
+  return rows;
+};
 
 const clock = (s: number) => {
   const t = Math.max(0, Math.ceil(s));
@@ -127,6 +143,10 @@ export const hud = defineUI({
         tone,
         bannerPop: bannerPop(),
         hint: false, // the controls live in the pause menu now
+        placeText: `${place(m.rank)} / ${m.players}`,
+        first: m.rank === 1,
+        board: boardOpen(),
+        rows: boardRows(m),
       };
     };
 
@@ -139,7 +159,12 @@ export const hud = defineUI({
       }
       // read the model inside the effect: every field it touches re-runs this (the launch cooldown, the clock, the banners)
       const m = model();
-      if (!handle) handle = views.push(HudView, m);
+      if (!handle) handle = views.push(HudView, m, {
+        onIntent: (name) => {
+          // the leaderboard under the clock: presentation only, closed again for every new HUD
+          if (name === 'toggleBoard') setBoardOpen(!boardOpen());
+        },
+      });
       else handle.update(m);
     });
     return null;

@@ -4,7 +4,7 @@
  *
  * Stick = move (x strafe, y forward, keys/pad through the project's `multiplayer.stick` map).
  * Buttons: bit 0 jump, 1 crouch, 2 fire, 3 aim (the project's `multiplayer.buttons` map covers the keys), bit 4 menu
- * (Escape; read by presentation only), then the look direction as absolute angles: 12 bits of yaw and 12 of pitch, and bit 29
+ * (Escape) and bit 5 board (Tab), both read by presentation only, then the look direction as absolute angles: 12 bits of yaw and 12 of pitch, and bit 30
  * to say it is set. Absolute angles mean the mouse needs no per-frame deltas (a repeated or dropped input frame never loses turn).
  */
 import { math } from '@gameengine/runtime';
@@ -14,10 +14,12 @@ export const BTN_CROUCH = 1 << 1;
 export const BTN_FIRE = 1 << 2;
 export const BTN_AIM = 1 << 3;
 export const BTN_MENU = 1 << 4;
+/** Tab: shows or hides the leaderboard (presentation only). */
+export const BTN_BOARD = 1 << 5;
 /** Set once the sender has a look direction, so an input word of zeros (a seat that has not sent anything yet) leaves the player's facing alone. */
-export const BTN_LOOK = 1 << 29;
-const YAW_SHIFT = 5;
-const PITCH_SHIFT = 17;
+export const BTN_LOOK = 1 << 30;
+const YAW_SHIFT = 6;
+const PITCH_SHIFT = 18;
 const STEPS = 4096;
 const TAU = 6.2831853;
 export const PITCH_LIMIT = 1.35;

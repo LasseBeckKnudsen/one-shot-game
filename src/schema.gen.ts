@@ -631,6 +631,12 @@ export const schemaIr = {
           "lanes": 1
         },
         {
+          "name": "boardHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
           "name": "seeded",
           "kind": "bool",
           "scalar": "u8",
@@ -1585,6 +1591,7 @@ export interface NetLookViews {
   pitch: Float32Array;
   aiming: Uint8Array;
   menuHeld: Uint8Array;
+  boardHeld: Uint8Array;
   /** yaw and pitch were taken from the seat once */
   seeded: Uint8Array;
 }
@@ -1593,11 +1600,12 @@ export interface NetLookValue {
   pitch: number;
   aiming: boolean;
   menuHeld: boolean;
+  boardHeld: boolean;
   /** yaw and pitch were taken from the seat once */
   seeded: boolean;
 }
 /** NetLook (resource, presentation-only) */
-export const NetLook = typeToken<NetLookViews, NetLookValue>('NetLook', 'resource', { sig: 'yaw:f32:1,pitch:f32:1,aiming:bool:1,menuHeld:bool:1,seeded:bool:1', read: (v: NetLookViews, i: number, o: Record<string, unknown>) => { o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.aiming = v.aiming[i] !== 0; o.menuHeld = v.menuHeld[i] !== 0; o.seeded = v.seeded[i] !== 0; return o; } });
+export const NetLook = typeToken<NetLookViews, NetLookValue>('NetLook', 'resource', { sig: 'yaw:f32:1,pitch:f32:1,aiming:bool:1,menuHeld:bool:1,boardHeld:bool:1,seeded:bool:1', read: (v: NetLookViews, i: number, o: Record<string, unknown>) => { o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.aiming = v.aiming[i] !== 0; o.menuHeld = v.menuHeld[i] !== 0; o.boardHeld = v.boardHeld[i] !== 0; o.seeded = v.seeded[i] !== 0; return o; } });
 
 export interface PlatformViews {
   halfX: Float32Array;

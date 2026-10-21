@@ -63,7 +63,8 @@ VM_C = (0.05, -0.13, -0.6)
 VM_T = [round(VM_C[i] * (1 - VM_S), 4) + (-0.07 if i == 1 else 0) for i in range(3)]
 # ---- camera, seats and their first-person rigs ----------------------------------------------
 # One camera (presentation) shows the seat this device plays through the VirtualCamera under that seat's Player; each seat has its own
-# first-person rig (only this device's is visible) and its own body (what the others see). The sim removes the seats a match does not use.
+# first-person rig (only this device's is visible) and its own body (what the others see; it sits on its own render layer, 2 << seat, which
+# the camera leaves out for this device's seat). The sim removes the seats a match does not use.
 SEAT_TINTS = ['#ff7a6e', '#6eb4ff', '#ffd95c', '#7ae89a']
 SLING_POS = [0.0, 0.04, 0.0]
 SLING_ROT = [-0.7071, 0.0, 0.0, 0.7071]
@@ -78,9 +79,9 @@ for k in range(4):
                          'MeshRenderer': {'mesh': 'models/stone.glb', 'color': '#ffb25c', 'castShadows': False, 'receiveShadows': False}})
 root.append({
     'name': 'PlayerCam', 'id': 'playercam',
-    'Camera': {'projection': 'Perspective', 'fovY': 1.0, 'near': 0.04, 'far': 600, 'clearColor': '#a8d4ffff', 'postProfile': 'post/day.post.json'},
+    'Camera': {'projection': 'Perspective', 'fovY': 1.0, 'near': 0.04, 'far': 600, 'clearColor': '#a8d4ffff', 'postProfile': 'post/day.post.json', 'layerMask': 0xFFFFFFFF & ~2},
     'LocalTransform': {}, 'AudioListener': {}, 'VisualOffset': {}, 'CameraShake': {'maxOffset': [0.06, 0.06, 0.0], 'maxAngle': 0.02, 'decay': 2.5},
-    'Fog': {'mode': 'Linear', 'color': '#c4d9ecff', 'start': 45, 'end': 280},
+    'Fog': {'mode': 'Linear', 'color': '#b4d2f0ff', 'start': 60, 'end': 340},
     'children': cam_children,
 })
 SEAT_R = 15.7
@@ -99,12 +100,12 @@ bodies = []
 for k in range(4):
     bodies.append({'name': f'Body{k}', 'id': f'body{k}',
                    'LocalTransform': {'position': [round(math.sin(PI + k * PI / 2) * SEAT_R, 3), 0, round(-math.cos(PI + k * PI / 2) * SEAT_R, 3)]},
-                   'SeatBody': {'index': k}, 'VisualOffset': {'scale': [0, 0, 0] if k == 0 else [1, 1, 1]},
-                   'MeshRenderer': {'mesh': 'models/guy_rig.glb', 'color': SEAT_TINTS[k]},
+                   'SeatBody': {'index': k},
+                   'MeshRenderer': {'mesh': 'models/guy_rig.glb', 'color': SEAT_TINTS[k], 'layers': 2 << k},
                    'Animator': {'controller': 'anim/guy.animctrl.json'},
                    'children': [{'name': 'Sling', 'id': f'body{k}sling', 'BoneAttach': {'rig': f'@body{k}', 'joint': 'Hand.L', 'space': 'Joint'},
                                  'LocalTransform': {'position': SLING_POS, 'rotation': SLING_ROT, 'scale': [1.8, 1.8, 1.8]},
-                                 'MeshRenderer': {'mesh': 'models/bot_sling.glb', 'castShadows': False}}]})
+                                 'MeshRenderer': {'mesh': 'models/bot_sling.glb', 'castShadows': False, 'layers': 2 << k}}]})
 root.append(group('Bodies', bodies))
 
 # ---- light, sky, ground -------------------------------------------------------------
@@ -333,16 +334,19 @@ root.append(group('LightShafts', rays))
 
 
 # ---- slow clouds on a ring around the world ---------------------------------------------------------
+cloud_rnd = random.Random(77)  # its own stream, so the clouds never move the layout
+for _ in range(18 * 5):  # the 18 original clouds drew this many numbers from the layout stream; keeps every later position where it was
+    rnd.uniform(0, 1)
 clouds = []
-for k in range(18):
-    a = k / 18 * 2 * PI + rnd.uniform(-0.12, 0.12)
-    r = rnd.uniform(200, 250)
-    h = rnd.uniform(70, 150)
-    w = rnd.uniform(90, 170)
+for k in range(24):
+    a = k / 24 * 2 * PI + cloud_rnd.uniform(-0.1, 0.1)
+    r = cloud_rnd.uniform(200, 250)
+    h = cloud_rnd.uniform(38, 100)
+    w = cloud_rnd.uniform(90, 180)
     clouds.append({'name': 'Cloud', 'id': eid('cloud'),
                    'LocalTransform': {'position': [round(math.sin(a) * r, 1), round(h, 1), round(-math.cos(a) * r, 1)], 'rotation': yaw_q(-a), 'scale': [round(w, 1), round(w * 0.5, 1), 1]},
                    'MeshRenderer': {'mesh': 'models/cloud_card.glb', 'material': f'materials/cloud_{k % 4}.mat.json', 'castShadows': False, 'receiveShadows': False},
-                   'Cloud': {'angle': round(a, 4), 'radius': round(r, 1), 'speed': round(rnd.uniform(0.0055, 0.011), 5)}, 'VisualOffset': {}})
+                   'Cloud': {'angle': round(a, 4), 'radius': round(r, 1), 'speed': round(cloud_rnd.uniform(0.0055, 0.011), 5)}, 'VisualOffset': {}})
 root.append(group('Clouds', clouds))
 
 # ---- critters and spawns ---------------------------------------------------------------
