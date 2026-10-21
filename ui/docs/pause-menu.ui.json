@@ -1,0 +1,457 @@
+{
+  "$schemaVersion": 1,
+  "guid": "f9b485c7-3e10-4752-b973-cf3497d88ac8",
+  "name": "pause-menu",
+  "title": "Pause menu",
+  "kind": "view",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Pause menu",
+      "style": {
+        "w": "100%",
+        "h": "100%",
+        "pad": [
+          40,
+          60,
+          40,
+          60
+        ],
+        "dir": "column",
+        "align": "center",
+        "justify": "center"
+      },
+      "children": [
+        "p_panel"
+      ]
+    },
+    "p_panel": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "p_left",
+        "p_divider",
+        "p_controls",
+        "p_divider2",
+        "p_right"
+      ],
+      "style": {
+        "pad": [
+          44,
+          52,
+          56,
+          52
+        ],
+        "image": "ui/panel",
+        "dir": "row",
+        "gap": 40,
+        "w": 1740,
+        "align": "stretch"
+      }
+    },
+    "p_left": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "p_title2",
+        "p_title",
+        "p_sub",
+        "p_resume",
+        "p_quit",
+        "p_back"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "w": 400,
+        "gap": 22,
+        "align": "stretch",
+        "justify": "center"
+      }
+    },
+    "p_title": {
+      "type": "label",
+      "name": "Label",
+      "text": "PAUSED",
+      "style": {
+        "fontSize": 70,
+        "weight": 900,
+        "color": "#ffb52eff",
+        "textAlign": "center"
+      }
+    },
+    "p_sub": {
+      "type": "label",
+      "name": "Label",
+      "text": "The village waits for you.",
+      "style": {
+        "fontSize": 26,
+        "weight": 700,
+        "color": "#d9c7a0ff",
+        "textAlign": "center",
+        "margin": [
+          0,
+          0,
+          14,
+          0
+        ]
+      }
+    },
+    "p_resume": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "resume",
+      "props": {
+        "label": "RESUME",
+        "tone": "green"
+      }
+    },
+    "p_quit": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "quit",
+      "props": {
+        "label": "QUIT TO MENU",
+        "tone": "red"
+      }
+    },
+    "p_divider": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "w": 4,
+        "bg": "#fff3d633",
+        "radius": 2
+      }
+    },
+    "p_right": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "p_settings",
+        "p_sens",
+        "p_master",
+        "p_music",
+        "p_sfx"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "grow": 0,
+        "gap": 22,
+        "align": "stretch",
+        "w": 596
+      }
+    },
+    "p_settings": {
+      "type": "label",
+      "name": "Label",
+      "text": "SETTINGS",
+      "style": {
+        "fontSize": 36,
+        "weight": 900,
+        "color": "#fff3d6ff"
+      }
+    },
+    "p_sens": {
+      "type": "use",
+      "doc": "slider-row",
+      "key": "sens",
+      "props": {
+        "label": "Mouse sensitivity",
+        "amount": {
+          "property": "sensAmount"
+        },
+        "valueText": {
+          "property": "sensText"
+        }
+      }
+    },
+    "p_master": {
+      "type": "use",
+      "doc": "slider-row",
+      "key": "master",
+      "props": {
+        "label": "Master volume",
+        "amount": {
+          "property": "masterAmount"
+        },
+        "valueText": {
+          "property": "masterText"
+        }
+      }
+    },
+    "p_music": {
+      "type": "use",
+      "doc": "slider-row",
+      "key": "music",
+      "props": {
+        "label": "Music",
+        "amount": {
+          "property": "musicAmount"
+        },
+        "valueText": {
+          "property": "musicText"
+        }
+      }
+    },
+    "p_sfx": {
+      "type": "use",
+      "doc": "slider-row",
+      "key": "sfx",
+      "props": {
+        "label": "Sound effects",
+        "amount": {
+          "property": "sfxAmount"
+        },
+        "valueText": {
+          "property": "sfxText"
+        }
+      }
+    },
+    "p_controls": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "p_ctitle",
+        "p_k1",
+        "p_k2",
+        "p_k3",
+        "p_k4",
+        "p_k5",
+        "p_k6",
+        "p_k7",
+        "p_k8",
+        "p_k9"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "grow": 1,
+        "gap": 12,
+        "align": "stretch"
+      }
+    },
+    "p_divider2": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "w": 4,
+        "bg": "#fff3d633",
+        "radius": 2
+      }
+    },
+    "p_ctitle": {
+      "type": "label",
+      "name": "Label",
+      "text": "CONTROLS",
+      "style": {
+        "fontSize": 36,
+        "weight": 900,
+        "color": "#fff3d6ff"
+      }
+    },
+    "p_k1": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k1",
+      "props": {
+        "keycap": "W A S D",
+        "action": "Move"
+      }
+    },
+    "p_k2": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k2",
+      "props": {
+        "keycap": "Mouse",
+        "action": "Look around"
+      }
+    },
+    "p_k3": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k3",
+      "props": {
+        "keycap": "Left click",
+        "action": "Fire (one stone!)"
+      }
+    },
+    "p_k4": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k4",
+      "props": {
+        "keycap": "Right click",
+        "action": "Steady aim"
+      }
+    },
+    "p_k5": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k5",
+      "props": {
+        "keycap": "Shift (hold)",
+        "action": "Crouch-walk: slow, hard to spot"
+      }
+    },
+    "p_k6": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k6",
+      "props": {
+        "keycap": "Space",
+        "action": "Jump"
+      }
+    },
+    "p_k7": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k7",
+      "props": {
+        "keycap": "Space x2",
+        "action": "Launch high (40 s cooldown)"
+      }
+    },
+    "p_k8": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k8",
+      "props": {
+        "keycap": "Space",
+        "action": "At a ladder: grab, W / S climb"
+      }
+    },
+    "p_k9": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k9",
+      "props": {
+        "keycap": "Esc",
+        "action": "Pause and settings"
+      }
+    },
+    "p_back": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "back",
+      "show": "fromStart",
+      "props": {
+        "label": "BACK",
+        "tone": "amber"
+      }
+    },
+    "p_title2": {
+      "type": "label",
+      "name": "Label",
+      "text": "OPTIONS",
+      "show": "fromStart",
+      "style": {
+        "fontSize": 70,
+        "weight": 900,
+        "color": "#ffb52eff",
+        "textAlign": "center"
+      }
+    }
+  },
+  "view": {
+    "behaviour": "dialog",
+    "dims": true,
+    "tapOutside": "none",
+    "safe": true,
+    "enter": {
+      "set": {
+        "p_panel": {
+          "scale": 0.9,
+          "opacity": 0
+        }
+      }
+    },
+    "exit": {
+      "set": {
+        "p_panel": {
+          "scale": 0.95,
+          "opacity": 0
+        }
+      }
+    }
+  },
+  "properties": {
+    "sensAmount": {
+      "type": "number",
+      "default": 0.5,
+      "format": "value"
+    },
+    "sensText": {
+      "type": "text",
+      "default": "50%"
+    },
+    "masterAmount": {
+      "type": "number",
+      "default": 0.5,
+      "format": "value"
+    },
+    "masterText": {
+      "type": "text",
+      "default": "50%"
+    },
+    "musicAmount": {
+      "type": "number",
+      "default": 0.5,
+      "format": "value"
+    },
+    "musicText": {
+      "type": "text",
+      "default": "50%"
+    },
+    "sfxAmount": {
+      "type": "number",
+      "default": 0.5,
+      "format": "value"
+    },
+    "sfxText": {
+      "type": "text",
+      "default": "50%"
+    },
+    "fromStart": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "p_title": {
+              "hide": true
+            },
+            "p_sub": {
+              "hide": true
+            },
+            "p_resume": {
+              "hide": true
+            },
+            "p_quit": {
+              "hide": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "samples": {
+    "default": {
+      "sensAmount": 0.35,
+      "sensText": "1.0x",
+      "masterAmount": 0.8,
+      "masterText": "80%",
+      "musicAmount": 0.5,
+      "musicText": "50%",
+      "sfxAmount": 1,
+      "sfxText": "100%"
+    }
+  }
+}

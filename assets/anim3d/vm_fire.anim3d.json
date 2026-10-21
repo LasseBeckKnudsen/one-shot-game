@@ -1,0 +1,23 @@
+{
+  "$schemaVersion": 1,
+  "rig": "viewmodel.rig3d.json",
+  "fps": 30,
+  "length": 18,
+  "loop": false,
+  "tracks": {
+    "Hand.R": {
+      "my": [[1, -0.01, "outQuad"], [3, 0, "outBack"]],
+      "mz": [[0, 0], [1, 0.075, "outQuad"], [3, -0.03, "outBack"], [8, 0, "outQuad"], [18, 0, "inOutSine"]]
+    },
+    "Pouch": {
+      "mz": [[0, 0], [1, 0.075, "outQuad"], [3, -0.05, "outBack"], [8, 0, "outQuad"], [18, 0, "inOutSine"]]
+    },
+    "Root": {
+      "my": [[0, 0], [3, 0.015, "outBack"], [8, 0.004, "outQuad"], [18, 0, "inOutSine"]],
+      "mz": [[0, 0], [3, 0.03, "outBack"], [8, 0.008, "outQuad"], [18, 0, "inOutSine"]]
+    },
+    "Sling": {
+      "rx": [[0, 0], [3, -7, "outBack"], [8, 2, "outQuad"], [18, 0, "inOutSine"]]
+    }
+  }
+}

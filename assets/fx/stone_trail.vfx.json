@@ -1,0 +1,8 @@
+{
+  "$schemaVersion": 1,
+  "name": "stone_trail",
+  "emitters": [
+    {"name": "body", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.3, 0.42], "speed": [0, 0], "size": [0.765, 0.9], "texture": "textures/fx/glow", "color": [1.0, 0.2542, 0.0116, 1], "colorOverLife": [[0, 1, 1, 1, 0.95], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 1], [1, 0.2]], "blend": "alpha"},
+    {"name": "core", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.2, 0.3], "speed": [0, 0], "size": [0.36000000000000004, 0.45], "texture": "textures/fx/glow", "color": [2.2, 2.1223, 1.7753, 1], "colorOverLife": [[0, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 1], [1, 0.1]], "blend": "additive"}
+  ]
+}

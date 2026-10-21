@@ -1,0 +1,8 @@
+{
+  "$schemaVersion": 1,
+  "name": "jump_dust",
+  "emitters": [
+    {"name": "ring", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.35, 0.35], "speed": [0, 0], "size": [4.0, 4.0], "texture": "textures/fx/ring", "color": [0.8228, 0.6514, 0.3763, 1.0], "colorOverLife": [[0, 1, 1, 1, 0.55], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.2], [0.3, 0.7], [1, 1]], "blend": "alpha", "orient": "horizontal"},
+    {"name": "puffs", "capacity": 8, "bursts": [{"at": 0, "count": 6}], "loop": false, "shape": {"kind": "cone", "angle": 1.42, "radius": 0.06}, "lifetime": [0.35, 0.55], "speed": [1.2, 2.8], "drag": 3, "gravity": [0, 0.3, 0], "size": [0.35, 0.6], "rotation": [0, 6.28], "spin": [-1.5, 1.5], "texture": "textures/fx/puff", "color": [0.8963, 0.7682, 0.5395, 1.0], "colorOverLife": [[0, 1, 1, 1, 0.6], [0.4, 1, 1, 1, 0.48], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.45], [0.4, 1], [1, 2.0]], "blend": "alpha"}
+  ]
+}

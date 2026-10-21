@@ -1,0 +1,12 @@
+{
+  "$schemaVersion": 1,
+  "name": "poof",
+  "emitters": [
+    { "name": "dust", "capacity": 40, "bursts": [{ "at": 0, "count": 22 }], "loop": false, "shape": { "kind": "sphere", "radius": 0.15 },
+      "lifetime": [0.5, 0.9], "speed": [1.2, 2.6], "gravity": [0, 0.8, 0], "drag": 2.2, "size": [0.35, 0.6], "rotation": [0, 6.28], "spin": [-1.5, 1.5],
+      "color": [0.93, 0.82, 0.6, 1], "colorOverLife": [[0, 1, 1, 1, 0.8], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.5], [1, 1.5]], "blend": "alpha" },
+    { "name": "bits", "capacity": 24, "bursts": [{ "at": 0, "count": 12 }], "loop": false, "shape": { "kind": "cone", "angle": 0.9, "radius": 0.05 },
+      "lifetime": [0.4, 0.7], "speed": [3, 6], "gravity": [0, -9, 0], "size": [0.06, 0.1],
+      "color": [0.45, 0.32, 0.18, 1], "colorOverLife": [[0, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "blend": "alpha" }
+  ]
+}

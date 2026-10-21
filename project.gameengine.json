@@ -1,0 +1,164 @@
+{
+  "$schemaVersion": 2,
+  "name": "OneShot",
+  "bundleId": {
+    "ios": "com.example.oneshot",
+    "android": "com.example.oneshot"
+  },
+  "version": "0.1.0",
+  "sim": {
+    "dt": 0.016666667,
+    "maxStepsPerFrame": 5,
+    "physicsThreads": 1,
+    "hashInDev": true,
+    "seed": 1
+  },
+  "js": {
+    "entry": "src/main.ts",
+    "target": "es2020"
+  },
+  "render": {
+    "defaultTier": "auto",
+    "clearColor": [
+      0.66,
+      0.83,
+      1,
+      1
+    ],
+    "sortingLayers": [
+      "Default"
+    ],
+    "pixelsPerUnit": 100,
+    "tiers": {
+      "desktop": {
+        "msaa": 4,
+        "features": {
+          "bloom": true,
+          "ssao": true
+        }
+      }
+    }
+  },
+  "ui": {
+    "referenceResolution": [
+      1920,
+      1080
+    ],
+    "orientation": "landscape"
+  },
+  "text": {
+    "defaultFont": "fonts/Fredoka-Bold"
+  },
+  "bundles": [
+    {
+      "name": "base",
+      "include": [
+        "**"
+      ],
+      "delivery": "in-app"
+    }
+  ],
+  "targets": [
+    "macos",
+    "windows"
+  ],
+  "platforms": [
+    "desktop",
+    "web"
+  ],
+  "startScene": "scenes/main.scene.json",
+  "quality": {
+    "playerChoice": {
+      "desktop": true
+    },
+    "levels": {
+      "desktop": {
+        "features": {
+          "bloom": true,
+          "ssao": true,
+          "softShadows": true
+        },
+        "sceneDepth": true
+      },
+      "web": {
+        "features": {
+          "bloom": true,
+          "ssao": true,
+          "softShadows": true
+        },
+        "sceneDepth": true
+      }
+    }
+  },
+  "plugins": [
+    "system"
+  ],
+  "multiplayer": {
+    "mode": "realtime",
+    "players": 2,
+    "authority": "relay",
+    "port": 7600,
+    "window": 12,
+    "buttons": {
+      "jump": [
+        {
+          "key": "Space"
+        }
+      ],
+      "crouch": [
+        {
+          "key": "ShiftLeft"
+        },
+        {
+          "key": "ShiftRight"
+        }
+      ],
+      "fire": [
+        {
+          "key": "Enter"
+        },
+        {
+          "key": "KeyF"
+        }
+      ],
+      "aim": [
+        {
+          "key": "KeyX"
+        }
+      ],
+      "menu": [
+        {
+          "key": "Escape"
+        }
+      ]
+    },
+    "stick": {
+      "x": [
+        {
+          "negative": "KeyA",
+          "positive": "KeyD"
+        },
+        {
+          "negative": "ArrowLeft",
+          "positive": "ArrowRight"
+        },
+        {
+          "axis": 0
+        }
+      ],
+      "y": [
+        {
+          "negative": "KeyS",
+          "positive": "KeyW"
+        },
+        {
+          "negative": "ArrowDown",
+          "positive": "ArrowUp"
+        },
+        {
+          "axis": 1
+        }
+      ]
+    }
+  }
+}

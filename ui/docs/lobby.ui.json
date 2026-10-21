@@ -1,0 +1,492 @@
+{
+  "$schemaVersion": 1,
+  "guid": "12d087f8-2900-43de-87f9-0845147af9ba",
+  "name": "lobby",
+  "title": "Lobby",
+  "kind": "view",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Lobby",
+      "style": {
+        "w": "100%",
+        "h": "100%",
+        "pad": [
+          40,
+          60,
+          40,
+          60
+        ],
+        "dir": "column",
+        "align": "center",
+        "justify": "center"
+      },
+      "children": [
+        "l_panel"
+      ]
+    },
+    "l_panel": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_title",
+        "l_cols",
+        "l_foot"
+      ],
+      "style": {
+        "pad": [
+          44,
+          52,
+          48,
+          52
+        ],
+        "image": "ui/panel",
+        "dir": "column",
+        "gap": 28,
+        "w": 1500,
+        "align": "stretch"
+      }
+    },
+    "l_title": {
+      "type": "label",
+      "name": "Label",
+      "text": "PLAY ONLINE",
+      "style": {
+        "fontSize": 70,
+        "weight": 900,
+        "color": "#ffb52eff",
+        "textAlign": "center"
+      }
+    },
+    "l_cols": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_host",
+        "l_div",
+        "l_find"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "row",
+        "gap": 40,
+        "align": "stretch",
+        "h": 600
+      }
+    },
+    "l_host": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_htitle",
+        "l_hidle",
+        "l_hwait",
+        "l_hjoin"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "w": 0,
+        "grow": 1,
+        "gap": 20,
+        "align": "stretch"
+      }
+    },
+    "l_htitle": {
+      "type": "label",
+      "name": "Label",
+      "text": "HOST A MATCH",
+      "style": {
+        "fontSize": 36,
+        "weight": 900,
+        "color": "#fff3d6ff"
+      }
+    },
+    "l_hidle": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_hsub",
+        "l_chips",
+        "l_hostbtn"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "gap": 20,
+        "align": "stretch"
+      }
+    },
+    "l_hsub": {
+      "type": "label",
+      "name": "Label",
+      "text": "Players in the match",
+      "style": {
+        "fontSize": 28,
+        "weight": 700,
+        "color": "#d9c7a0ff"
+      }
+    },
+    "l_chips": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_p2",
+        "l_p3",
+        "l_p4"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "row",
+        "gap": 16
+      }
+    },
+    "l_p2": {
+      "type": "use",
+      "doc": "choice-chip",
+      "key": "p2",
+      "props": {
+        "label": 2,
+        "on": {
+          "property": "pick2"
+        }
+      }
+    },
+    "l_p3": {
+      "type": "use",
+      "doc": "choice-chip",
+      "key": "p3",
+      "props": {
+        "label": 3,
+        "on": {
+          "property": "pick3"
+        }
+      }
+    },
+    "l_p4": {
+      "type": "use",
+      "doc": "choice-chip",
+      "key": "p4",
+      "props": {
+        "label": 4,
+        "on": {
+          "property": "pick4"
+        }
+      }
+    },
+    "l_hostbtn": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "host",
+      "props": {
+        "label": "HOST",
+        "tone": "green"
+      },
+      "style": {
+        "margin": [
+          12,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "l_hwait": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_wait",
+        "l_acap",
+        "l_addr",
+        "l_cancel"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "gap": 12,
+        "align": "stretch",
+        "hide": true
+      }
+    },
+    "l_wait": {
+      "type": "label",
+      "name": "Label",
+      "text": "Waiting for players  {waitText}",
+      "style": {
+        "fontSize": 36,
+        "weight": 800,
+        "color": "#fff3d6ff"
+      }
+    },
+    "l_acap": {
+      "type": "label",
+      "name": "Label",
+      "text": "Others can also join at",
+      "style": {
+        "fontSize": 26,
+        "weight": 700,
+        "color": "#d9c7a0ff",
+        "margin": [
+          8,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "l_addr": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "address",
+      "style": {
+        "fontSize": 36,
+        "weight": 900,
+        "color": "#ffb52eff",
+        "fitMin": 22
+      }
+    },
+    "l_cancel": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "cancel",
+      "props": {
+        "label": "CANCEL",
+        "tone": "red"
+      },
+      "style": {
+        "margin": [
+          20,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "l_hjoin": {
+      "type": "label",
+      "name": "Label",
+      "text": "You joined a match. BACK leaves it.",
+      "style": {
+        "fontSize": 28,
+        "weight": 700,
+        "color": "#d9c7a0ff",
+        "hide": true
+      }
+    },
+    "l_div": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "w": 4,
+        "bg": "#fff3d633",
+        "radius": 2
+      }
+    },
+    "l_find": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_ftitle",
+        "l_note",
+        "l_rows"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "w": 0,
+        "grow": 1,
+        "gap": 12,
+        "align": "stretch"
+      }
+    },
+    "l_ftitle": {
+      "type": "label",
+      "name": "Label",
+      "text": "FIND A MATCH",
+      "style": {
+        "fontSize": 36,
+        "weight": 900,
+        "color": "#fff3d6ff",
+        "margin": [
+          0,
+          0,
+          8,
+          0
+        ]
+      }
+    },
+    "l_note": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "findNote",
+      "style": {
+        "fontSize": 28,
+        "weight": 700,
+        "color": "#d9c7a0ff"
+      }
+    },
+    "l_rows": {
+      "type": "repeat",
+      "doc": "host-row",
+      "property": "hosts"
+    },
+    "l_foot": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_status",
+        "l_back"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "row",
+        "align": "center",
+        "gap": 32
+      }
+    },
+    "l_status": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "status",
+      "style": {
+        "fontSize": 28,
+        "weight": 700,
+        "color": "#d9c7a0ff",
+        "fitMin": 20,
+        "w": 0,
+        "grow": 1
+      }
+    },
+    "l_back": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "back",
+      "props": {
+        "label": "BACK",
+        "tone": "amber"
+      },
+      "style": {
+        "w": 360
+      }
+    }
+  },
+  "view": {
+    "behaviour": "dialog",
+    "dims": true,
+    "tapOutside": "none",
+    "enter": {
+      "set": {
+        "l_panel": {
+          "scale": 0.9,
+          "opacity": 0
+        }
+      }
+    },
+    "exit": {
+      "set": {
+        "l_panel": {
+          "scale": 0.95,
+          "opacity": 0
+        }
+      }
+    }
+  },
+  "properties": {
+    "pick2": {
+      "type": "yesno",
+      "default": true
+    },
+    "pick3": {
+      "type": "yesno",
+      "default": false
+    },
+    "pick4": {
+      "type": "yesno",
+      "default": false
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "idle",
+        "hosting",
+        "joining"
+      ],
+      "default": "idle",
+      "poses": {
+        "hosting": {
+          "set": {
+            "l_hidle": {
+              "hide": true
+            },
+            "l_hwait": {
+              "hide": false
+            }
+          }
+        },
+        "joining": {
+          "set": {
+            "l_hidle": {
+              "hide": true
+            },
+            "l_hjoin": {
+              "hide": false
+            }
+          }
+        }
+      }
+    },
+    "waitText": {
+      "type": "text",
+      "default": "1 / 2"
+    },
+    "address": {
+      "type": "text",
+      "default": "ws://192.168.1.20:7600"
+    },
+    "hosts": {
+      "type": "list",
+      "of": "host-row",
+      "default": []
+    },
+    "listing": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "l_note": {
+              "hide": true
+            }
+          }
+        }
+      }
+    },
+    "findNote": {
+      "type": "text",
+      "default": "Searching the local network..."
+    },
+    "status": {
+      "type": "text",
+      "default": "Pick a size and host, or join a match on your network."
+    },
+    "error": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "l_status": {
+              "color": "#ff9a90ff"
+            }
+          }
+        }
+      }
+    }
+  }
+}

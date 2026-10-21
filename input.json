@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "moveX": [
+      {
+        "negative": "KeyA",
+        "positive": "KeyD"
+      },
+      {
+        "negative": "ArrowLeft",
+        "positive": "ArrowRight"
+      }
+    ],
+    "moveY": [
+      {
+        "negative": "KeyS",
+        "positive": "KeyW"
+      },
+      {
+        "negative": "ArrowDown",
+        "positive": "ArrowUp"
+      }
+    ],
+    "turnX": [
+      {
+        "negative": "KeyQ",
+        "positive": "KeyE"
+      }
+    ],
+    "jump": [
+      {
+        "key": "Space"
+      }
+    ],
+    "fire": [
+      {
+        "key": "Enter"
+      },
+      {
+        "key": "KeyF"
+      }
+    ],
+    "crouch": [
+      {
+        "key": "ShiftLeft"
+      },
+      {
+        "key": "ShiftRight"
+      }
+    ]
+  }
+}

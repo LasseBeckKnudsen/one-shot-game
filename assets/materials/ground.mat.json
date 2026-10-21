@@ -1,0 +1,1 @@
+{ "material": "materials/ground.material.ts", "params": { "grassMap": "textures/grass.png", "lightMap": "textures/ground_light.png" } }

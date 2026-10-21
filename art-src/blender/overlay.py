@@ -1,0 +1,6 @@
+exec(open('/Users/lasse/Desktop/Games/oneshot/art-src/blender/lib.py').read())
+reset()
+m = card_mat('ground_light', 'ground_light.png')
+o = quad('ground_overlay', (0, 0, 0), (0, 0, 1), 1.0, 1.0, 0.0, m, '#ffffff', up=(0, 1, 0))
+print('overlay', export('ground_overlay', [o]))
+set_cutout('ground_overlay', ['ground_light'])

@@ -1,0 +1,28 @@
+{
+  "$schemaVersion": 1,
+  "rig": "guy.rig3d.json",
+  "fps": 30,
+  "length": 60,
+  "loop": true,
+  "tracks": {
+    "hips": {
+      "my": [[0, 0], [30, -0.015, "inOutSine"], [60, 0, "inOutSine"]]
+    },
+    "spine": {
+      "pitch": [[0, 0], [30, 2, "inOutSine"], [60, 0, "inOutSine"]]
+    },
+    "chest": {
+      "pitch": [[0, 0], [30, 3, "inOutSine"], [60, 0, "inOutSine"]]
+    },
+    "head": {
+      "pitch": [[0, 0], [30, -3, "inOutSine"], [60, 0, "inOutSine"]],
+      "yaw": [[0, 0], [30, 10, "inOutSine"], [60, 0, "inOutSine"]]
+    },
+    "upperArm.L": {
+      "roll": [[0, 8], [30, 10, "inOutSine"], [60, 8, "inOutSine"]]
+    },
+    "upperArm.R": {
+      "roll": [[0, 8], [30, 10, "inOutSine"], [60, 8, "inOutSine"]]
+    }
+  }
+}

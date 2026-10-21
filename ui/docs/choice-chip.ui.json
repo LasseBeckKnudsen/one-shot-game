@@ -1,0 +1,110 @@
+{
+  "$schemaVersion": 1,
+  "guid": "8c34184a-5a2a-4c28-bb51-c853043345ac",
+  "name": "choice-chip",
+  "title": "Choice chip",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Choice chip",
+      "style": {
+        "dir": "row",
+        "pad": [
+          0,
+          0,
+          12,
+          0
+        ],
+        "align": "center",
+        "radius": 0,
+        "image": "ui/btn_wood",
+        "imageSwap": "cut",
+        "w": 128,
+        "h": 100,
+        "justify": "center",
+        "sliceScale": 0.85
+      },
+      "children": [
+        "cc_label"
+      ]
+    },
+    "cc_label": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "label",
+      "style": {
+        "fontSize": 44,
+        "weight": 900,
+        "color": "#2a1708ff",
+        "textAlign": "center"
+      }
+    }
+  },
+  "behaviour": "button",
+  "transition": {
+    "type": "back",
+    "ms": 220
+  },
+  "properties": {
+    "label": {
+      "type": "text",
+      "default": "2"
+    },
+    "on": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "root": {
+              "image": "ui/btn_amber"
+            }
+          }
+        },
+        "no": {
+          "set": {
+            "root": {
+              "opacity": 0.75
+            }
+          }
+        }
+      }
+    }
+  },
+  "states": {
+    "pressed": {
+      "set": {
+        "root": {
+          "scale": 0.95,
+          "ty": 4,
+          "brightness": 0.88
+        }
+      },
+      "transition": {
+        "type": "easeOut",
+        "ms": 110
+      }
+    },
+    "disabled": {
+      "set": {
+        "root": {
+          "saturation": 0,
+          "opacity": 0.6
+        }
+      }
+    }
+  },
+  "samples": {
+    "off": {
+      "label": "2",
+      "on": false
+    },
+    "on": {
+      "label": "3",
+      "on": true
+    }
+  }
+}

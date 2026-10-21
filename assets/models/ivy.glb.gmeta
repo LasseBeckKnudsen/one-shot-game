@@ -1,0 +1,8 @@
+guid = "ad6e2628-b7d7-4300-a8d4-860f0d9a7fd9"
+importer = "mesh"
+[settings]
+
+[settings.materials.ivy]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true

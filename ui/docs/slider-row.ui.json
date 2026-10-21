@@ -1,0 +1,208 @@
+{
+  "$schemaVersion": 1,
+  "guid": "788f3d49-53cb-4f35-9af2-370a0e3a9bb7",
+  "name": "slider-row",
+  "title": "Slider row",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Slider row",
+      "style": {
+        "dir": "column",
+        "pad": 0,
+        "align": "stretch",
+        "radius": 0,
+        "gap": 10,
+        "w": "100%"
+      },
+      "children": [
+        "sl_top",
+        "sl_track"
+      ]
+    },
+    "sl_top": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "sl_label",
+        "sl_value"
+      ],
+      "style": {
+        "pad": [
+          0,
+          6,
+          0,
+          6
+        ],
+        "dir": "row",
+        "align": "center",
+        "w": "100%"
+      }
+    },
+    "sl_label": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "label",
+      "style": {
+        "fontSize": 32,
+        "weight": 800,
+        "color": "#fff3d6ff",
+        "grow": 1
+      }
+    },
+    "sl_value": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "valueText",
+      "style": {
+        "fontSize": 32,
+        "weight": 900,
+        "color": "#ffb52eff"
+      }
+    },
+    "sl_track": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "sl_fill",
+        "sl_knob",
+        "sli_codearea"
+      ],
+      "style": {
+        "pad": 6,
+        "image": "ui/slider_track",
+        "w": "100%",
+        "h": 48,
+        "dir": "row"
+      }
+    },
+    "sl_fill": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/slider_fill",
+        "w": "100%",
+        "h": "100%",
+        "fill": "horizontal",
+        "fillAmount": 0.5,
+        "keepCaps": true,
+        "sliceScale": 0.7,
+        "attach": true
+      }
+    },
+    "sl_knob": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/knob",
+        "w": 62,
+        "h": 62,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0.5
+        ],
+        "pivot": [
+          0,
+          0.5
+        ],
+        "attach": true
+      }
+    },
+    "sli_codearea": {
+      "type": "codeArea",
+      "name": "Code area",
+      "key": "hit",
+      "style": {
+        "w": "100%",
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "h": "100%",
+        "pad": 0,
+        "attach": true
+      }
+    }
+  },
+  "properties": {
+    "label": {
+      "type": "text",
+      "default": "Master volume"
+    },
+    "valueText": {
+      "type": "text",
+      "default": "100%"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0.5,
+      "format": "value",
+      "drivers": [
+        {
+          "type": "range",
+          "min": 0,
+          "max": 1,
+          "empty": {
+            "set": {
+              "sl_fill": {
+                "fillAmount": 0
+              },
+              "sl_knob": {
+                "anchor": [
+                  0,
+                  0.5
+                ],
+                "tx": 0
+              }
+            }
+          },
+          "full": {
+            "set": {
+              "sl_fill": {
+                "fillAmount": 1
+              },
+              "sl_knob": {
+                "anchor": [
+                  0,
+                  0.5
+                ],
+                "tx": 506
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "samples": {
+    "mid": {
+      "amount": 0.5,
+      "label": "Music",
+      "valueText": "50%"
+    },
+    "full": {
+      "amount": 1,
+      "label": "Master volume",
+      "valueText": "100%"
+    },
+    "low": {
+      "amount": 0.07,
+      "label": "Mouse sensitivity",
+      "valueText": "0.4x"
+    }
+  }
+}

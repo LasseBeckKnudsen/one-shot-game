@@ -1,0 +1,6 @@
+exec(open('/Users/lasse/Desktop/Games/oneshot/art-src/blender/lib.py').read())
+reset()
+m = card_mat('cloud', 'clouds/cloud_0.png')
+o = quad('cloud_card', (0, 0, 0.5), (0, -1, 0), 1.0, 1.0, 0.0, m, '#ffffff')
+print('cloud_card', export('cloud_card', [o]))
+set_cutout('cloud_card', ['cloud'])

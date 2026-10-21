@@ -1,0 +1,359 @@
+{
+  "$schemaVersion": 1,
+  "guid": "cf234089-4df0-45ae-99f0-cd97d342dedd",
+  "name": "start-menu",
+  "title": "Start menu",
+  "kind": "view",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Start menu",
+      "style": {
+        "w": "100%",
+        "h": "100%",
+        "pad": [
+          56,
+          80,
+          48,
+          80
+        ],
+        "dir": "row",
+        "align": "center",
+        "justify": "space-between"
+      },
+      "children": [
+        "s_bg",
+        "s_shade",
+        "s_vig",
+        "s_left",
+        "s_rules",
+        "s_footer"
+      ]
+    },
+    "s_bg": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/bg_start",
+        "fit": "cover",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "s_shade": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/shade_left",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "s_vig": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/vignette",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "s_left": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "s_logo",
+        "s_btns"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "align": "center",
+        "gap": 34,
+        "w": 640
+      }
+    },
+    "s_logo": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/logo",
+        "w": 640,
+        "h": 400
+      }
+    },
+    "s_btns": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "s_join",
+        "s_solo",
+        "s_opts"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "gap": 22,
+        "w": "100%"
+      }
+    },
+    "s_join": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "join",
+      "props": {
+        "label": "JOIN GAME",
+        "tone": "green"
+      }
+    },
+    "s_solo": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "solo",
+      "props": {
+        "label": "PLAY SOLO vs BOTS",
+        "tone": "amber"
+      }
+    },
+    "s_rules": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "s_title",
+        "s_one",
+        "s_r1",
+        "s_r2",
+        "s_r3",
+        "s_r4"
+      ],
+      "style": {
+        "pad": [
+          34,
+          40,
+          44,
+          40
+        ],
+        "image": "ui/panel",
+        "dir": "column",
+        "w": 720,
+        "gap": 14,
+        "align": "center"
+      }
+    },
+    "s_title": {
+      "type": "label",
+      "name": "Label",
+      "text": "HOW TO WIN",
+      "style": {
+        "fontSize": 44,
+        "weight": 900,
+        "color": "#ffb52eff",
+        "textAlign": "center"
+      }
+    },
+    "s_one": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "s_stone",
+        "s_onetxt"
+      ],
+      "style": {
+        "pad": [
+          4,
+          0,
+          14,
+          0
+        ],
+        "dir": "row",
+        "align": "center",
+        "justify": "center",
+        "gap": 14
+      }
+    },
+    "s_stone": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/stone",
+        "w": 60,
+        "h": 60
+      }
+    },
+    "s_onetxt": {
+      "type": "label",
+      "name": "Label",
+      "text": "You only have ONE shot.",
+      "style": {
+        "fontSize": 38,
+        "weight": 800,
+        "color": "#fff3d6ff"
+      }
+    },
+    "s_r1": {
+      "type": "use",
+      "doc": "rule-row",
+      "key": "r1",
+      "props": {
+        "tone": "green",
+        "badge": " ",
+        "label": "Hit an opponent",
+        "value": "+1 point"
+      }
+    },
+    "s_r2": {
+      "type": "use",
+      "doc": "rule-row",
+      "key": "r2",
+      "props": {
+        "tone": "orange",
+        "badge": "−1",
+        "label": "Miss",
+        "value": "lose 1 point"
+      }
+    },
+    "s_r3": {
+      "type": "use",
+      "doc": "rule-row",
+      "key": "r3",
+      "props": {
+        "tone": "red",
+        "badge": "1/2",
+        "label": "Get hit",
+        "value": "lose HALF"
+      }
+    },
+    "s_r4": {
+      "type": "use",
+      "doc": "rule-row",
+      "key": "r4",
+      "props": {
+        "tone": "gold",
+        "label": "Highest score wins!",
+        "value": " "
+      }
+    },
+    "s_footer": {
+      "type": "label",
+      "name": "Label",
+      "text": "v0.1.0  ·  Treehouse Village",
+      "style": {
+        "fontSize": 22,
+        "weight": 700,
+        "color": "#fff3d6cc",
+        "outline": 0,
+        "outlineColor": "#2a1708ff",
+        "position": "anchored",
+        "anchor": [
+          1,
+          1
+        ],
+        "pivot": [
+          1,
+          1
+        ],
+        "offset": [
+          -40,
+          -26
+        ],
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowColor": "#2a1708ff"
+      }
+    },
+    "s_opts": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "options",
+      "props": {
+        "label": "CONTROLS & SETTINGS",
+        "tone": "wood"
+      }
+    }
+  },
+  "view": {
+    "behaviour": "screen",
+    "safe": true,
+    "enter": {
+      "set": {
+        "s_left": {
+          "tx": -70,
+          "opacity": 0
+        },
+        "s_rules": {
+          "tx": 70,
+          "opacity": 0
+        },
+        "s_logo": {
+          "scale": 0.9
+        }
+      }
+    },
+    "exit": {
+      "set": {
+        "s_bg": {
+          "opacity": 0
+        },
+        "s_left": {
+          "opacity": 0
+        },
+        "s_rules": {
+          "opacity": 0
+        },
+        "s_shade": {
+          "opacity": 0
+        },
+        "s_vig": {
+          "opacity": 0
+        }
+      }
+    }
+  },
+  "samples": {
+    "default": {}
+  }
+}

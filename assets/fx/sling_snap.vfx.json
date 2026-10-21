@@ -1,0 +1,315 @@
+{
+  "$schemaVersion": 1,
+  "name": "sling_snap",
+  "emitters": [
+    {
+      "name": "flash",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.1,
+        0.1
+      ],
+      "speed": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        0.0608,
+        0.0608
+      ],
+      "texture": "textures/fx/glow",
+      "color": [
+        0.85,
+        0.85,
+        0.85,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.5
+        ],
+        [
+          1,
+          1.4
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "star",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.18,
+        0.18
+      ],
+      "speed": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        0.076,
+        0.076
+      ],
+      "rotation": [
+        0.2,
+        0.2
+      ],
+      "spin": [
+        2,
+        2
+      ],
+      "texture": "textures/fx/star4",
+      "color": [
+        0.85,
+        0.596,
+        0.011,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.3
+        ],
+        [
+          0.3,
+          1
+        ],
+        [
+          1,
+          0.2
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "ring",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.26,
+        0.26
+      ],
+      "speed": [
+        0.0,
+        0.0
+      ],
+      "size": [
+        0.1368,
+        0.1368
+      ],
+      "texture": "textures/fx/ring",
+      "color": [
+        0.85,
+        0.33,
+        0.007,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.15
+        ],
+        [
+          0.3,
+          0.7
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "sparks",
+      "capacity": 20,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 12
+        }
+      ],
+      "loop": false,
+      "shape": {
+        "kind": "sphere",
+        "radius": 0.02
+      },
+      "lifetime": [
+        0.12,
+        0.26
+      ],
+      "speed": [
+        0.75,
+        2.0
+      ],
+      "drag": 4,
+      "size": [
+        0.0684,
+        0.114
+      ],
+      "aspect": 0.2,
+      "orient": "velocity",
+      "stretch": 0.04,
+      "texture": "textures/fx/streak",
+      "color": [
+        0.85,
+        0.596,
+        0.011,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "motes",
+      "capacity": 14,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 8
+        }
+      ],
+      "loop": false,
+      "shape": {
+        "kind": "sphere",
+        "radius": 0.05
+      },
+      "lifetime": [
+        0.3,
+        0.6
+      ],
+      "speed": [
+        0.15,
+        0.6
+      ],
+      "drag": 2,
+      "gravity": [
+        0,
+        0.4,
+        0
+      ],
+      "size": [
+        0.0114,
+        0.0266
+      ],
+      "texture": "textures/fx/glow",
+      "color": [
+        0.85,
+        0.385,
+        0.008,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0.2
+        ]
+      ],
+      "blend": "additive"
+    }
+  ]
+}

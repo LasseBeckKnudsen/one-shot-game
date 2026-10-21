@@ -1,0 +1,12 @@
+{
+  "$schemaVersion": 1,
+  "model": "../models/viewmodel_rig.glb",
+  "joints": {
+    "lowerArm.L": { "joint": "LowerArm.L", "role": "lowerArm", "mirror": "lowerArm.R", "axes": { "bend": "-z" }, "limits": { "bend": [0, 150] } },
+    "hand.L": { "joint": "Hand.L", "role": "hand", "mirror": "hand.R", "axes": { "pitch": "y", "yaw": "y", "roll": "z" } },
+    "lowerArm.R": { "joint": "LowerArm.R", "role": "lowerArm", "mirror": "lowerArm.L", "axes": { "bend": "z" }, "limits": { "bend": [0, 150] } },
+    "hand.R": { "joint": "Hand.R", "role": "hand", "mirror": "hand.L", "axes": { "pitch": "-y", "yaw": "-z", "roll": "-x" } }
+  },
+  "controls": {},
+  "contacts": []
+}

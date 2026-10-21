@@ -1,0 +1,37 @@
+{
+  "$schemaVersion": 1,
+  "rig": "guy.rig3d.json",
+  "fps": 30,
+  "length": 24,
+  "loop": true,
+  "mirror": { "from": "L", "offset": 12 },
+  "tracks": {
+    "hips": {
+      "my": [[0, -0.05], [6, 0.03, "outSine"], [12, -0.05, "inOutSine"], [18, 0.03, "inOutSine"], [24, -0.05, "inOutSine"]]
+    },
+    "spine": {
+      "pitch": [[0, 0]]
+    },
+    "chest": {
+      "pitch": [[0, 0]]
+    },
+    "head": {
+      "pitch": [[0, 0]]
+    },
+    "upperArm.L": {
+      "pitch": [[0, -40], [6, 0, "outSine"], [12, 40, "inOutSine"], [18, 0, "inOutSine"], [24, -40, "inOutSine"]]
+    },
+    "lowerArm.L": {
+      "bend": [[0, 50], [6, 40, "outSine"], [12, 25, "inOutSine"], [18, 40, "inOutSine"], [24, 50, "inOutSine"]]
+    },
+    "upperLeg.L": {
+      "pitch": [[0, 55], [6, 0, "outSine"], [12, -55, "inOutSine"], [18, -5, "inOutSine"], [24, 55, "inOutSine"]]
+    },
+    "lowerLeg.L": {
+      "bend": [[0, 25], [6, 70, "outSine"], [12, 12, "inOutSine"], [18, 90, "inOutSine"], [24, 25, "inOutSine"]]
+    },
+    "foot.L": {
+      "pitch": [[0, -10], [6, 20, "outSine"], [12, 15, "inOutSine"], [18, -15, "inOutSine"], [24, -10, "inOutSine"]]
+    }
+  }
+}

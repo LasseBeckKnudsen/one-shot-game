@@ -1,0 +1,147 @@
+/**
+ * HUD controller: shows the HUD while Flow.screen is Playing (or Paused, dimmed by the pause menu's scrim) and fills it
+ * from Match. UI only: it reads resources and never writes the world.
+ */
+import { createEffect, createMemo, createSignal, defineUI, onCleanup, onUiFrame, untrack, useResource, views, type ViewHandle } from '@gameengine/ui';
+import { Flow, LocalHud, Match } from '../schema.gen.ts';
+import { HudView, type HudModel } from '../views/hud.view.tsx';
+
+/** Seconds of the double-jump launch cooldown (the sim's SUPER_COOLDOWN). */
+const SUPER_COOLDOWN = 40;
+
+const place = (n: number) => `${n}${n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'}`;
+
+const clock = (s: number) => {
+  const t = Math.max(0, Math.ceil(s));
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+};
+
+/** Seconds the controls hint stays up after a match starts. */
+const HINT_SECONDS = 20;
+/** Seconds the "+1 PLONK!" banner stays up. */
+const HIT_SECONDS = 1.1;
+
+export const hud = defineUI({
+  name: 'Hud',
+  root: () => {
+    const flow = useResource(Flow);
+    const match = useResource(Match);
+    const mine = useResource(LocalHud);
+    const showing = () => flow().screen === 'Playing' || flow().screen === 'Paused';
+
+    // presentation-only state: banner flash, hint timer, launch recharge ring, pop counters
+    const [hitFlash, setHitFlash] = createSignal(false);
+    const [hintOn, setHintOn] = createSignal(true);
+    const [readyPulse, setReadyPulse] = createSignal(0);
+    const [bannerPop, setBannerPop] = createSignal(0);
+    let hintDeadline = -1; // stamped on the next UI frame
+    let flashDeadline = 0;
+    let flashStamp = false;
+    let lastHits = untrack(() => mine().hits);
+    let lastCd = untrack(() => mine().superCd);
+    const [peakCd, setPeakCd] = createSignal(0);
+
+    createEffect(() => {
+      // a new match (Loading just ended): the hint comes back for 20 s
+      flow().matchSeed;
+      hintDeadline = -1;
+      setHintOn(true);
+      setHitFlash(false);
+    });
+    createEffect(() => {
+      const hits = mine().hits;
+      if (hits > lastHits) {
+        setHitFlash(true);
+        flashStamp = true;
+      }
+      lastHits = hits;
+    });
+    createEffect(() => {
+      const cd = mine().superCd;
+      if (lastCd > 0 && cd === 0) setReadyPulse((n) => n + 1);
+      lastCd = cd;
+      // the recharge ring fills against the longest cooldown seen since it was last ready
+      setPeakCd((p) => (cd === 0 ? 0 : Math.max(p, cd)));
+    });
+    // which banner is up (the respawn countdown only changes its second line): a new one pops
+    const bannerKind = createMemo(() => {
+      const m = mine();
+      if (match().phase === 'Over') return 'over';
+      if (m.playerDead) return m.deathBy > 0 ? 'hurt' : 'miss';
+      return hitFlash() ? 'hit' : '';
+    });
+    createEffect(() => {
+      if (bannerKind() !== '') setBannerPop((n) => n + 1);
+    });
+    // one tiny frame callback for the two timers; it only does work while a timer is running
+    const stop = onUiFrame((now) => {
+      if (hintDeadline < 0) hintDeadline = now + HINT_SECONDS;
+      else if (hintOn() && now > hintDeadline) setHintOn(false);
+      if (flashStamp) {
+        flashStamp = false;
+        flashDeadline = now + HIT_SECONDS;
+      } else if (flashDeadline > 0 && now > flashDeadline) {
+        flashDeadline = 0;
+        setHitFlash(false);
+      }
+    });
+    onCleanup(stop);
+
+    const model = (): HudModel => {
+      const m = mine();
+      const over = match().phase === 'Over';
+      let banner = '';
+      let bannerSub = '';
+      let tone: HudModel['tone'] = 'hit';
+      if (over) {
+        banner = "TIME'S UP!";
+        bannerSub = m.players > 1 ? `You scored ${m.score}  ·  ${place(m.rank)} of ${m.players}` : `You scored ${m.score}`;
+        tone = 'over';
+      } else if (m.playerDead && m.deathBy > 0) {
+        banner = 'You got plonked!';
+        bannerSub = `${m.deathBy >= 1000 ? `Hit by player ${m.deathBy - 1000 + 1}!` : 'Hit by a bot!'} Respawning in ${m.respawnIn}`;
+        tone = 'hurt';
+      } else if (m.playerDead) {
+        banner = 'MISSED!';
+        bannerSub = `respawning in ${m.respawnIn}`;
+        tone = 'miss';
+      } else if (hitFlash()) {
+        banner = '+1 PLONK!';
+        bannerSub = '';
+        tone = 'hit';
+      }
+      const cd = m.superCd;
+      const peak = peakCd();
+      return {
+        score: m.score,
+        penalty: Math.max(1, Math.ceil(m.score / 2)),
+        timeText: clock(match().timeLeft),
+        urgent: match().timeLeft < 60,
+        stone: over || m.playerDead ? 'gone' : m.stoneLoaded ? 'loaded' : 'flying',
+        cd,
+        ring: cd === 0 ? 1 : Math.min(1, Math.max(0, 1 - cd / SUPER_COOLDOWN)),
+        ready: cd === 0,
+        readyPulse: readyPulse(),
+        banner,
+        bannerSub,
+        tone,
+        bannerPop: bannerPop(),
+        hint: false, // the controls live in the pause menu now
+      };
+    };
+
+    let handle: ViewHandle<HudModel> | null = null;
+    createEffect(() => {
+      if (!showing()) {
+        if (handle) handle.close();
+        handle = null;
+        return;
+      }
+      // read the model inside the effect: every field it touches re-runs this (the launch cooldown, the clock, the banners)
+      const m = model();
+      if (!handle) handle = views.push(HudView, m);
+      else handle.update(m);
+    });
+    return null;
+  },
+});

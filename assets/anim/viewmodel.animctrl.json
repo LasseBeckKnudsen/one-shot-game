@@ -1,0 +1,40 @@
+{
+  "$schemaVersion": 1,
+  "parameters": [
+    { "name": "walking", "type": "bool" },
+    { "name": "fire", "type": "trigger" },
+    { "name": "reload", "type": "trigger" },
+    { "name": "jump", "type": "trigger" },
+    { "name": "super", "type": "trigger" },
+    { "name": "dead", "type": "bool" }
+  ],
+  "layers": [
+    {
+      "name": "Base",
+      "entry": "Idle",
+      "states": [
+        { "name": "Idle", "motion": { "clip": "anim3d/vm_idle.anim3d.json#vm_idle" } },
+        { "name": "Walk", "motion": { "clip": "anim3d/vm_walk.anim3d.json#vm_walk" } },
+        { "name": "Fire", "motion": { "clip": "anim3d/vm_fire.anim3d.json#vm_fire" }, "loop": false },
+        { "name": "Reload", "motion": { "clip": "anim3d/vm_reload.anim3d.json#vm_reload" }, "loop": false },
+        { "name": "Jump", "motion": { "clip": "anim3d/vm_jump.anim3d.json#vm_jump" }, "loop": false },
+        { "name": "Super", "motion": { "clip": "anim3d/vm_super.anim3d.json#vm_super" }, "loop": false },
+        { "name": "Dead", "motion": { "clip": "anim3d/vm_dead.anim3d.json#vm_dead" }, "loop": false }
+      ],
+      "transitions": [
+        { "from": "*", "to": "Dead", "conditions": [{ "parameter": "dead", "op": "true" }], "duration": 0.15 },
+        { "from": "Dead", "to": "Idle", "conditions": [{ "parameter": "dead", "op": "false" }], "duration": 0.2 },
+        { "from": "*", "to": "Fire", "conditions": [{ "parameter": "fire", "op": "trigger" }], "duration": 0.04 },
+        { "from": "*", "to": "Reload", "conditions": [{ "parameter": "reload", "op": "trigger" }], "duration": 0.08 },
+        { "from": "*", "to": "Super", "conditions": [{ "parameter": "super", "op": "trigger" }], "duration": 0.06 },
+        { "from": "*", "to": "Jump", "conditions": [{ "parameter": "jump", "op": "trigger" }], "duration": 0.06 },
+        { "from": "Fire", "to": "Idle", "exitTime": 0.55, "duration": 0.12 },
+        { "from": "Reload", "to": "Idle", "exitTime": 0.8, "duration": 0.12 },
+        { "from": "Jump", "to": "Idle", "exitTime": 0.7, "duration": 0.15 },
+        { "from": "Super", "to": "Idle", "exitTime": 1.1, "duration": 0.2 },
+        { "from": "Idle", "to": "Walk", "conditions": [{ "parameter": "walking", "op": "true" }], "duration": 0.15 },
+        { "from": "Walk", "to": "Idle", "conditions": [{ "parameter": "walking", "op": "false" }], "duration": 0.15 }
+      ]
+    }
+  ]
+}

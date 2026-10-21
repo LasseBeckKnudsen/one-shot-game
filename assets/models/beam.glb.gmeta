@@ -1,0 +1,9 @@
+guid = "33858dfc-da6d-4bfa-bef3-9af5b0feb120"
+importer = "mesh"
+
+[settings]
+
+[settings.materials.beam]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true

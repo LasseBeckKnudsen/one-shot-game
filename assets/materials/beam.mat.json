@@ -1,0 +1,1 @@
+{ "baseColorMap": "textures/beam.png", "baseColor": [1, 1, 1, 0.09], "shading": "unlit", "alphaMode": "blend", "doubleSided": true }

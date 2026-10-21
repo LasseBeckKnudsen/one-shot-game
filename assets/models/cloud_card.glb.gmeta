@@ -1,0 +1,9 @@
+guid = "c7dc3cae-d16f-417f-b2e2-7a7a7487e092"
+importer = "mesh"
+
+[settings]
+
+[settings.materials.cloud]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true

@@ -1,0 +1,1243 @@
+{
+  "version": 1,
+  "package": "OneShot",
+  "enums": [
+    {
+      "name": "FlowScreen",
+      "values": [
+        "Start",
+        "Loading",
+        "Playing",
+        "Paused"
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "FlowMode",
+      "values": [
+        "Solo",
+        "Online"
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "MatchPhase",
+      "values": [
+        "Playing",
+        "Over"
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "PlayerState",
+      "values": [
+        "Alive",
+        "Dead"
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "ViewPart",
+      "values": [
+        "Frame",
+        "Pouch",
+        "Stone"
+      ],
+      "package": "OneShot"
+    }
+  ],
+  "types": [
+    {
+      "name": "Cloud",
+      "kind": "component",
+      "sim": false,
+      "fields": [
+        {
+          "name": "angle",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Where on the ring it starts (rad)"
+        },
+        {
+          "name": "radius",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 220
+        },
+        {
+          "name": "speed",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 0.008,
+          "doc": "Rad per second around the ring"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Flow",
+      "kind": "resource",
+      "sim": true,
+      "fields": [
+        {
+          "name": "screen",
+          "kind": "enum",
+          "scalar": "u8",
+          "lanes": 1,
+          "enumName": "FlowScreen",
+          "default": "Start"
+        },
+        {
+          "name": "mode",
+          "kind": "enum",
+          "scalar": "u8",
+          "lanes": 1,
+          "enumName": "FlowMode",
+          "default": "Solo"
+        },
+        {
+          "name": "loadTime",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds spent on the loading screen (it never ends before 1.2 s, and only once GameReady arrived)"
+        },
+        {
+          "name": "ready",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "The presentation reported that the world is drawn and warm (GameReady)"
+        },
+        {
+          "name": "matchSeed",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Bumped whenever a match starts, so the UI can restart per-match effects"
+        },
+        {
+          "name": "trimmed",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "The seats and bots the match does not use were removed"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "GameReady",
+      "kind": "event",
+      "sim": true,
+      "fields": [],
+      "package": "OneShot"
+    },
+    {
+      "name": "Jumped",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "MouseState",
+      "kind": "resource",
+      "sim": false,
+      "fields": [
+        {
+          "name": "captured",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "QuitToMenu",
+      "kind": "event",
+      "sim": true,
+      "fields": [],
+      "package": "OneShot"
+    },
+    {
+      "name": "ResumeGame",
+      "kind": "event",
+      "sim": true,
+      "fields": [],
+      "package": "OneShot"
+    },
+    {
+      "name": "SetSensitivity",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "value",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Settings",
+      "kind": "resource",
+      "sim": true,
+      "fields": [
+        {
+          "name": "sensitivity",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1,
+          "min": 0.2,
+          "max": 3,
+          "doc": "Mouse-look multiplier"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "StartSolo",
+      "kind": "event",
+      "sim": true,
+      "fields": [],
+      "package": "OneShot"
+    },
+    {
+      "name": "SuperJumped",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "VmRig",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "index",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Seat it belongs to"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Blocker",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "radius",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Disc footprint radius (0: use the rectangle)"
+        },
+        {
+          "name": "halfX",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1
+        },
+        {
+          "name": "halfZ",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1
+        },
+        {
+          "name": "yaw",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Rotation of the rectangle about Y (rad)"
+        },
+        {
+          "name": "y0",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Underside height: a jump that reaches it stops here"
+        },
+        {
+          "name": "y1",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Top height (the floor when walk is on)"
+        },
+        {
+          "name": "walk",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "The top can be stood on (a bridge)"
+        }
+      ],
+      "package": "OneShot",
+      "doc": "A volume the player cannot jump up through (a canopy, a deck, a bridge); with walk it is also a floor."
+    },
+    {
+      "name": "Critter",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "heading",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "turn",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until the next change of heading"
+        },
+        {
+          "name": "speed",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 2.4
+        },
+        {
+          "name": "dead",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until it is back (0 = alive)"
+        },
+        {
+          "name": "home",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "id",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Bot number (1..N); stones carry it as their owner"
+        },
+        {
+          "name": "score",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "loaded",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true,
+          "doc": "The bot holds its stone"
+        },
+        {
+          "name": "aim",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 3,
+          "doc": "Seconds until it may shoot"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "CritterHit",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "position",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "The seat that scored the hit"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Ladder",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "top",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 5.3,
+          "doc": "Feet height of the platform at the top"
+        },
+        {
+          "name": "nx",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Outward direction (x) the climber hangs on"
+        },
+        {
+          "name": "nz",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Outward direction (z)"
+        },
+        {
+          "name": "reach",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1.5,
+          "doc": "How near a jumping player grabs it"
+        }
+      ],
+      "package": "OneShot",
+      "doc": "A climbable ladder: jump next to it to grab, W/S climb, Space lets go, the top steps onto the platform."
+    },
+    {
+      "name": "LocalHud",
+      "kind": "resource",
+      "sim": false,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "The seat this device plays"
+        },
+        {
+          "name": "score",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "hits",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "playerDead",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "respawnIn",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Whole seconds until respawn"
+        },
+        {
+          "name": "stoneLoaded",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true
+        },
+        {
+          "name": "superCd",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Whole seconds until the launch jump is ready"
+        },
+        {
+          "name": "deathBy",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "rank",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Place among everyone in the round, players and bots (1 = best)"
+        },
+        {
+          "name": "players",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "How many are in the round, players and bots"
+        },
+        {
+          "name": "rows",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Leaderboard rows filled (the best, at most 8)"
+        },
+        {
+          "name": "row0",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row1",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row2",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row3",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row4",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row5",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row6",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        },
+        {
+          "name": "row7",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Match",
+      "kind": "resource",
+      "sim": true,
+      "fields": [
+        {
+          "name": "timeLeft",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 360,
+          "doc": "Seconds left in the round"
+        },
+        {
+          "name": "phase",
+          "kind": "enum",
+          "scalar": "u8",
+          "lanes": 1,
+          "enumName": "MatchPhase",
+          "default": "Playing"
+        },
+        {
+          "name": "overTimer",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds the results stay up before the next round"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "NetLook",
+      "kind": "resource",
+      "sim": false,
+      "fields": [
+        {
+          "name": "yaw",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "pitch",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "aiming",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "menuHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "seeded",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "yaw and pitch were taken from the seat once"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Platform",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "halfX",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 3
+        },
+        {
+          "name": "halfZ",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 3
+        },
+        {
+          "name": "top",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 0.35
+        }
+      ],
+      "package": "OneShot",
+      "doc": "A walkable deck: the player stands on its top inside its footprint."
+    },
+    {
+      "name": "Player",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "index",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Seat 0..3: which PlayerInputs entry drives this player"
+        },
+        {
+          "name": "yaw",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "pitch",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "score",
+          "kind": "i32",
+          "scalar": "i32",
+          "lanes": 1,
+          "doc": "Points held"
+        },
+        {
+          "name": "hits",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "misses",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "deaths",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "deathBy",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Who ended the last life: 0 = the own miss, a bot id, or 1000 + the seat that hit"
+        },
+        {
+          "name": "vy",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Vertical speed (m/s)"
+        },
+        {
+          "name": "speed",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Horizontal speed, drives the weapon bob"
+        },
+        {
+          "name": "state",
+          "kind": "enum",
+          "scalar": "u8",
+          "lanes": 1,
+          "enumName": "PlayerState",
+          "default": "Alive"
+        },
+        {
+          "name": "respawn",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until the player is back"
+        },
+        {
+          "name": "protect",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Spawn protection seconds"
+        },
+        {
+          "name": "loaded",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true,
+          "doc": "The stone is in the sling"
+        },
+        {
+          "name": "aiming",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "fireHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "The fire button was down last step (edge detection)"
+        },
+        {
+          "name": "jumpHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Space was down last step (edge detection)"
+        },
+        {
+          "name": "sinceJump",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 9,
+          "doc": "Seconds since the last jump press (double-tap window)"
+        },
+        {
+          "name": "superCd",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until the double-jump launch is ready again"
+        },
+        {
+          "name": "climbing",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Holding a ladder (W/S climb, Space lets go)"
+        },
+        {
+          "name": "ladderX",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "ladderZ",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "ladderNx",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Outward direction of the ladder (the side the player hangs on)"
+        },
+        {
+          "name": "ladderNz",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "ladderTop",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Feet height at the top of the ladder"
+        },
+        {
+          "name": "ladderCool",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds before the player can grab a ladder again"
+        },
+        {
+          "name": "eye",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1.65,
+          "doc": "Eye height above the feet (lower while crouching)"
+        },
+        {
+          "name": "crouch",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Crouch-walking (Shift): slower, lower, harder to spot"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "PlayerHit",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "by",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "The seat that was hit"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "PlayerRespawned",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "SeatBody",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "index",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Seat it shows"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "SeatCam",
+      "kind": "component",
+      "sim": false,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "ShotFired",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "position",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "direction",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Solid",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "radius",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1
+        },
+        {
+          "name": "height",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 100,
+          "doc": "Top of the obstacle, metres"
+        }
+      ],
+      "package": "OneShot",
+      "doc": "A vertical cylinder players, critters and stones cannot pass."
+    },
+    {
+      "name": "SoloLook",
+      "kind": "resource",
+      "sim": true,
+      "fields": [
+        {
+          "name": "yaw",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "pitch",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "lookX",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "lookY",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "hasLook",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "aiming",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "fireHeld",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "The left button is down"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "SpawnPoint",
+      "kind": "component",
+      "sim": true,
+      "fields": [],
+      "package": "OneShot"
+    },
+    {
+      "name": "Stone",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "velocity",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "life",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds in flight"
+        },
+        {
+          "name": "travelled",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Metres flown"
+        },
+        {
+          "name": "owner",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Who shot it: a bot id, or 1000 + the seat of a player"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "StoneMissed",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "position",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3
+        },
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "The seat that missed (bots: 99)"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Temp",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "life",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "default": 1.5,
+          "doc": "Seconds until the entity is removed"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "Viewmodel",
+      "kind": "component",
+      "sim": false,
+      "fields": [
+        {
+          "name": "part",
+          "kind": "enum",
+          "scalar": "u8",
+          "lanes": 1,
+          "enumName": "ViewPart",
+          "default": "Frame"
+        },
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Seat whose rig this belongs to"
+        }
+      ],
+      "package": "OneShot",
+      "doc": "A first-person weapon part the presentation animates (recoil, bob, loaded stone)."
+    },
+    {
+      "name": "AirReady",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "FxHost",
+      "kind": "component",
+      "sim": true,
+      "fields": [
+        {
+          "name": "kind",
+          "kind": "string",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Which effect this host plays (see src/vfx.ts)"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "FxState",
+      "kind": "resource",
+      "sim": false,
+      "fields": [
+        {
+          "name": "step",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Last sim step looked at"
+        },
+        {
+          "name": "prevVy",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1
+        },
+        {
+          "name": "minVy",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Fastest fall since leaving the ground"
+        },
+        {
+          "name": "grounded",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true
+        },
+        {
+          "name": "stride",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Metres walked since the last footstep puff"
+        },
+        {
+          "name": "foot",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Which foot comes next"
+        },
+        {
+          "name": "trailUntil",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Step until which the double-jump trail is drawn"
+        },
+        {
+          "name": "tracerStep",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Last sim step the stone tracer was laid for"
+        },
+        {
+          "name": "lastStone",
+          "kind": "vec3",
+          "scalar": "f32",
+          "lanes": 3,
+          "doc": "Where the stone was last seen (the tracer runs on to the impact)"
+        },
+        {
+          "name": "hasStone",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    }
+  ],
+  "commands": [],
+  "protocol": [],
+  "services": []
+}

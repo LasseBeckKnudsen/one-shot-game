@@ -1,0 +1,354 @@
+{
+  "$schemaVersion": 1,
+  "guid": "516146e8-6393-4435-8dc3-77a4cefa4c1c",
+  "name": "loading-screen",
+  "title": "Loading screen",
+  "kind": "view",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Loading screen",
+      "style": {
+        "w": "100%",
+        "h": "100%",
+        "pad": 0,
+        "bg": "#1a0f07ff",
+        "dir": "column",
+        "align": "center",
+        "justify": "center"
+      },
+      "children": [
+        "l_bg",
+        "l_dim",
+        "l_vig",
+        "l_col",
+        "l_tipwrap"
+      ]
+    },
+    "l_bg": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/bg_loading",
+        "fit": "cover",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "l_dim": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/shade_flat",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "l_vig": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ],
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/vignette",
+        "safeArea": "full",
+        "attach": true
+      }
+    },
+    "l_col": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_logo",
+        "l_acorns",
+        "l_track"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "column",
+        "align": "center",
+        "gap": 26,
+        "grow": 1,
+        "w": "100%",
+        "justify": "center"
+      }
+    },
+    "l_logo": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/logo",
+        "w": 520,
+        "h": 325
+      }
+    },
+    "l_acorns": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_a1",
+        "l_a2",
+        "l_a3"
+      ],
+      "style": {
+        "pad": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "dir": "row",
+        "gap": 22,
+        "align": "end",
+        "h": 70
+      }
+    },
+    "l_a1": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/sprites/acorn",
+        "w": 56,
+        "h": 56
+      },
+      "point": "acorn1"
+    },
+    "l_a2": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/sprites/acorn",
+        "w": 56,
+        "h": 56
+      },
+      "point": "acorn2"
+    },
+    "l_a3": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/sprites/acorn",
+        "w": 56,
+        "h": 56
+      },
+      "point": "acorn3"
+    },
+    "l_track": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_fill"
+      ],
+      "style": {
+        "pad": 5,
+        "image": "ui/slider_track",
+        "w": 620,
+        "h": 48,
+        "dir": "row",
+        "sliceScale": 0.9
+      }
+    },
+    "l_fill": {
+      "type": "element",
+      "name": "Element",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "image": "ui/slider_fill",
+        "w": "100%",
+        "h": "100%",
+        "fill": "horizontal",
+        "fillAmount": 0,
+        "keepCaps": true,
+        "sliceScale": 0.7,
+        "attach": true
+      }
+    },
+    "l_tipwrap": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_tippill"
+      ],
+      "style": {
+        "pad": [
+          0,
+          0,
+          56,
+          0
+        ],
+        "w": "100%",
+        "dir": "row",
+        "justify": "center"
+      }
+    },
+    "l_tippill": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_tip"
+      ],
+      "style": {
+        "pad": [
+          6,
+          44,
+          14,
+          44
+        ],
+        "image": "ui/pill",
+        "sliceScale": 0.8,
+        "dir": "row",
+        "align": "center",
+        "h": 84
+      }
+    },
+    "l_tip": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "tip",
+      "style": {
+        "fontSize": 34,
+        "weight": 800,
+        "color": "#fff3d6ff",
+        "textAlign": "center"
+      }
+    }
+  },
+  "view": {
+    "behaviour": "none",
+    "safe": true,
+    "exit": {
+      "set": {
+        "root": {
+          "opacity": 0
+        }
+      }
+    }
+  },
+  "properties": {
+    "progress": {
+      "type": "number",
+      "default": 0,
+      "format": "value",
+      "drivers": [
+        {
+          "type": "range",
+          "min": 0,
+          "max": 1,
+          "empty": {
+            "set": {
+              "l_fill": {
+                "fillAmount": 0
+              }
+            }
+          },
+          "full": {
+            "set": {
+              "l_fill": {
+                "fillAmount": 1
+              }
+            }
+          }
+        },
+        {
+          "type": "smooth",
+          "min": 160,
+          "max": 420
+        }
+      ]
+    },
+    "tip": {
+      "type": "text",
+      "default": "Missing costs you a point."
+    },
+    "tipSwap": {
+      "type": "trigger"
+    }
+  },
+  "reactions": {
+    "tipSwap": {
+      "on": {
+        "property": "tipSwap",
+        "change": "trigger"
+      },
+      "set": {
+        "root": {
+          "scale": 1.1
+        },
+        "l_tippill": {
+          "scale": 0.94,
+          "opacity": 0.2
+        }
+      },
+      "in": {
+        "type": "easeOut",
+        "ms": 90
+      },
+      "hold": 10,
+      "back": {
+        "type": "easeOut",
+        "ms": 260
+      }
+    }
+  },
+  "transition": {
+    "type": "easeOut",
+    "ms": 350
+  },
+  "samples": {
+    "mid": {
+      "progress": 0.55,
+      "tip": "Leaders lose half their score when hit."
+    },
+    "start": {
+      "progress": 0.05
+    }
+  }
+}

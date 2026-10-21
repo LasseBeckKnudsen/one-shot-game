@@ -1,0 +1,13 @@
+{
+  "$schemaVersion": 1,
+  "rig": "viewmodel.rig3d.json",
+  "fps": 30,
+  "length": 20,
+  "loop": false,
+  "tracks": {
+    "Root": {
+      "rx": [[0, 0], [20, 25, "inQuad"]],
+      "my": [[0, 0], [20, -0.4, "inQuad"]]
+    }
+  }
+}

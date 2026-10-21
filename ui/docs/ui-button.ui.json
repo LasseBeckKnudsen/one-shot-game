@@ -1,0 +1,131 @@
+{
+  "$schemaVersion": 1,
+  "guid": "1f3b1c52-dbf2-4060-8ddd-bcbc4198f81a",
+  "name": "ui-button",
+  "title": "Button",
+  "kind": "widget",
+  "root": "root",
+  "nodes": {
+    "root": {
+      "type": "element",
+      "name": "Ui button",
+      "style": {
+        "dir": "row",
+        "pad": [
+          0,
+          48,
+          14,
+          48
+        ],
+        "align": "center",
+        "radius": 0,
+        "image": "ui/btn_green",
+        "h": 112,
+        "w": "100%",
+        "justify": "center",
+        "imageSwap": "cut"
+      },
+      "children": [
+        "b_label"
+      ]
+    },
+    "b_label": {
+      "type": "label",
+      "name": "Label",
+      "text": "Label",
+      "property": "label",
+      "style": {
+        "fontSize": 40,
+        "weight": 900,
+        "color": "#2a1708ff",
+        "outline": 0,
+        "outlineColor": "#2a1708ff",
+        "fitMin": 22,
+        "textAlign": "center",
+        "ty": 0
+      }
+    }
+  },
+  "behaviour": "button",
+  "properties": {
+    "label": {
+      "type": "text",
+      "default": "BUTTON"
+    },
+    "tone": {
+      "type": "enum",
+      "values": [
+        "green",
+        "amber",
+        "red",
+        "wood"
+      ],
+      "default": "green",
+      "poses": {
+        "amber": {
+          "set": {
+            "root": {
+              "image": "ui/btn_amber"
+            }
+          }
+        },
+        "red": {
+          "set": {
+            "root": {
+              "image": "ui/btn_red"
+            }
+          }
+        },
+        "wood": {
+          "set": {
+            "root": {
+              "image": "ui/btn_wood"
+            }
+          }
+        }
+      }
+    }
+  },
+  "states": {
+    "pressed": {
+      "set": {
+        "root": {
+          "scale": 0.95,
+          "ty": 4,
+          "brightness": 0.88
+        }
+      },
+      "transition": {
+        "type": "easeOut",
+        "ms": 110
+      }
+    },
+    "disabled": {
+      "set": {
+        "root": {
+          "saturation": 0,
+          "opacity": 0.6
+        }
+      }
+    }
+  },
+  "transition": {
+    "type": "back",
+    "ms": 220,
+    "overshoot": 1.3
+  },
+  "samples": {
+    "green": {
+      "label": "JOIN GAME",
+      "tone": "green"
+    },
+    "amber": {
+      "label": "PLAY SOLO vs BOTS",
+      "tone": "amber"
+    },
+    "red": {
+      "label": "QUIT TO MENU",
+      "tone": "red"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schemaVersion": 1,
+  "rig": "viewmodel.rig3d.json",
+  "fps": 30,
+  "length": 32,
+  "loop": true,
+  "tracks": {
+    "Root": {
+      "rz": [[0, -1.2], [8, 0, "outSine"], [16, 1.2, "inSine"], [24, 0, "outSine"], [32, -1.2, "inSine"]],
+      "mx": [[0, -0.012], [8, 0, "outSine"], [16, 0.012, "inSine"], [24, 0, "outSine"], [32, -0.012, "inSine"]],
+      "my": [[0, 0], [8, 0.016, "outSine"], [16, 0, "inSine"], [24, 0.016, "outSine"], [32, 0, "inSine"]],
+      "mz": [[0, 0], [8, 0.004, "outSine"], [16, 0, "inSine"], [24, 0.004, "outSine"], [32, 0, "inSine"]]
+    }
+  }
+}

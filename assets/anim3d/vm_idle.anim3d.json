@@ -1,0 +1,17 @@
+{
+  "$schemaVersion": 1,
+  "rig": "viewmodel.rig3d.json",
+  "fps": 30,
+  "length": 90,
+  "loop": true,
+  "tracks": {
+    "Hand.R": {
+      "rz": [[0, 0], [45, 1.5, "inOutSine"], [90, 0, "inOutSine"]]
+    },
+    "Root": {
+      "rz": [[0, 0], [45, 0.4, "inOutSine"], [90, 0, "inOutSine"]],
+      "mx": [[0, 0], [45, 0.003, "inOutSine"], [90, 0, "inOutSine"]],
+      "my": [[0, 0], [45, 0.006, "inOutSine"], [90, 0, "inOutSine"]]
+    }
+  }
+}

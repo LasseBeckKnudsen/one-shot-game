@@ -1,0 +1,10 @@
+{
+  "$schemaVersion": 1,
+  "name": "superjump_trail",
+  "emitters": [
+    {"name": "orb", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.45, 0.45], "speed": [0, 0], "size": [0.9, 0.9], "texture": "textures/fx/glow", "color": [1.8, 1.1851, 0.2015, 1], "colorOverLife": [[0, 1, 1, 1, 0.9], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 1], [1, 0.1]], "blend": "additive"},
+    {"name": "stars", "capacity": 3, "bursts": [{"at": 0, "count": 2}], "loop": false, "shape": {"kind": "sphere", "radius": 0.35}, "lifetime": [0.4, 0.8], "speed": [0.1, 0.6], "size": [0.18, 0.4], "spin": [-5, 5], "texture": "textures/fx/star4", "color": [1.7, 1.1192, 0.1903, 1], "color2": [1.6, 0.2543, 0.5319, 1], "colorOverLife": [[0, 1, 1, 1, 0], [0.18, 1, 1, 1, 1], [0.7, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.3], [0.25, 1], [1, 0.1]], "blend": "additive"},
+    {"name": "specks", "capacity": 10, "bursts": [{"at": 0, "count": 6}], "loop": false, "shape": {"kind": "box", "size": [7, 3.5, 7]}, "lifetime": [0.5, 0.9], "speed": [0, 0.2], "size": [0.12, 0.3], "spin": [-3, 3], "texture": "textures/fx/star4", "color": [1.8, 1.7364, 1.4525, 1], "color2": [1.8, 1.1851, 0.2015, 1], "colorOverLife": [[0, 1, 1, 1, 0], [0.2, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.3], [0.2, 1], [1, 0.3]], "blend": "additive"},
+    {"name": "puff", "capacity": 3, "bursts": [{"at": 0, "count": 1}], "loop": false, "shape": {"kind": "cone", "angle": 0.8, "radius": 0.06}, "lifetime": [0.45, 0.7], "speed": [0.1, 0.4], "drag": 3, "gravity": [0, 0.4, 0], "size": [0.3, 0.45], "rotation": [0, 6.28], "spin": [-1.5, 1.5], "texture": "textures/fx/puff", "color": [1.0, 0.9131, 0.7157, 1.0], "colorOverLife": [[0, 1, 1, 1, 0.5], [0.4, 1, 1, 1, 0.4], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.45], [0.4, 1], [1, 2.4]], "blend": "alpha"}
+  ]
+}

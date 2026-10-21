@@ -1,0 +1,30 @@
+{
+  "exposure": 0.84,
+  "tonemap": "aces",
+  "bloom": {
+    "threshold": 1.35,
+    "knee": 0.5,
+    "intensity": 0.2,
+    "radius": 1.0
+  },
+  "grading": {
+    "saturation": 1.1,
+    "contrast": 1.06
+  },
+  "vignette": {
+    "intensity": 0.2,
+    "smoothness": 0.7
+  },
+  "grain": {
+    "intensity": 0.008,
+    "size": 1.2
+  },
+  "overrides": {
+    "phone-low": {
+      "bloom": {
+        "enabled": false
+      },
+      "grain": null
+    }
+  }
+}

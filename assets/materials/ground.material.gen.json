@@ -1,0 +1,96 @@
+{
+  "format": 1,
+  "name": "Ground",
+  "model": "pbr",
+  "blend": "opaque",
+  "alphaCutoff": 0.5,
+  "doubleSided": false,
+  "uniformSize": 48,
+  "params": [
+    {
+      "name": "tint",
+      "type": "vec4f",
+      "offset": 0,
+      "default": [
+        0.39157247774972326,
+        0.4620769996544071,
+        0.20863687014525575,
+        1
+      ],
+      "ui": {
+        "color": true
+      }
+    },
+    {
+      "name": "tiles",
+      "type": "f32",
+      "offset": 16,
+      "default": [
+        110
+      ],
+      "ui": {
+        "min": 1,
+        "max": 400
+      }
+    },
+    {
+      "name": "extent",
+      "type": "f32",
+      "offset": 20,
+      "default": [
+        110
+      ],
+      "doc": "World metres the light map covers"
+    },
+    {
+      "name": "shadeStrength",
+      "type": "f32",
+      "offset": 24,
+      "default": [
+        0.42
+      ],
+      "ui": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    {
+      "name": "glowStrength",
+      "type": "f32",
+      "offset": 28,
+      "default": [
+        0.32
+      ],
+      "ui": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    {
+      "name": "alphaCutoff",
+      "type": "f32",
+      "offset": 32,
+      "default": [
+        0.5
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "name": "grassMap",
+      "binding": 1,
+      "default": "white",
+      "srgb": true
+    },
+    {
+      "name": "lightMap",
+      "binding": 2,
+      "default": "white",
+      "srgb": true
+    }
+  ],
+  "samplerBinding": 3,
+  "wgsl": "// Material Ground (@gameengine/materials, compiled; do not edit).\nstruct MaterialParams {\n  p_tint: vec4f,\n  p_tiles: f32,\n  p_extent: f32,\n  p_shadeStrength: f32,\n  p_glowStrength: f32,\n  p_alphaCutoff: f32,\n};\n@group(2) @binding(0) var<uniform> material: MaterialParams;\n@group(2) @binding(1) var tex_grassMap: texture_2d<f32>;\n@group(2) @binding(2) var tex_lightMap: texture_2d<f32>;\n@group(2) @binding(3) var material_sampler: sampler;\nconst MATERIAL_MODEL: u32 = 0u;\nfn material_surface(in: SurfaceInput) -> SurfaceOutput {\n  var out = surface_defaults();\n  let v0: vec2f = (in.uv * material.p_tiles);\n  let v1: vec4f = textureSample(tex_grassMap, material_sampler, v0);\n  let v2: vec3f = v1.xyz;\n  let v3: vec3f = material.p_tint.xyz;\n  let v4: vec3f = (v2 * v3);\n  let v5: vec3f = vec3f(1.0, 1.0, 1.0);\n  let v6: vec3f = vec3f(0.5, 0.66, 0.86);\n  let v7: vec2f = in.world_pos.xz;\n  let v8: vec2f = (v7 / material.p_extent);\n  let v9: vec2f = (v8 + 0.5);\n  let v10: vec2f = vec2f(0.0);\n  let v11: vec2f = vec2f(1.0);\n  let v12: vec2f = clamp(v9, v10, v11);\n  let v13: vec4f = textureSample(tex_lightMap, material_sampler, v12);\n  let v14: f32 = v13.x;\n  let v15: f32 = (v14 * material.p_shadeStrength);\n  let v16: f32 = (v15 * 2.2);\n  let v17: vec3f = vec3f(v16);\n  let v18: vec3f = mix(v5, v6, v17);\n  let v19: vec3f = (v4 * v18);\n  let v20: vec3f = vec3f(1.0, 0.82, 0.45);\n  let v21: vec3f = (v20 * v4);\n  let v22: f32 = v13.y;\n  let v23: f32 = (v22 * material.p_glowStrength);\n  let v24: f32 = (v23 * 2.4);\n  let v25: vec3f = (v21 * v24);\n  let v26: vec3f = (v19 + v25);\n  out.base_color = v26;\n  out.roughness = 0.95;\n  return out;\n}\n",
+  "hash": "441eb50b5b955f9d",
+  "sourceHash": "6ee80016daec575e"
+}

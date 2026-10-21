@@ -1,0 +1,8 @@
+guid = "3b97a5da-4b2f-45b9-a965-e9c519217ae5"
+importer = "mesh"
+[settings]
+
+[settings.materials.tuft]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true

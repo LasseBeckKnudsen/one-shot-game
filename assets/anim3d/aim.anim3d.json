@@ -1,0 +1,29 @@
+{
+  "$schemaVersion": 1,
+  "rig": "critter.rig3d.json",
+  "fps": 30,
+  "length": 40,
+  "loop": true,
+  "mirror": { "from": "L", "offset": 0 },
+  "tracks": {
+    "spine": {
+      "pitch": [[0, -4], [20, -3, "inOutSine"], [40, -4, "inOutSine"]]
+    },
+    "head": {
+      "pitch": [[0, -8], [20, -6, "inOutSine"], [40, -8, "inOutSine"]]
+    },
+    "upperArm.L": {
+      "pitch": [[0, -85], [20, -88, "inOutSine"], [40, -85, "inOutSine"]],
+      "yaw": [[0, -10], [20, -8, "inOutSine"], [40, -10, "inOutSine"]]
+    },
+    "lowerArm.L": {
+      "bend": [[0, 30], [20, 34, "inOutSine"], [40, 30, "inOutSine"]]
+    },
+    "Tail_02": {
+      "rz": [[0, 0], [20, 8, "inOutSine"], [40, 0, "inOutSine"]]
+    },
+    "Tail_03": {
+      "rz": [[0, 0], [20, 12, "inOutSine"], [40, 0, "inOutSine"]]
+    }
+  }
+}

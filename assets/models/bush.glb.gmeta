@@ -1,0 +1,14 @@
+guid = "7089d129-eb66-4db1-837f-68def8dd3ea7"
+importer = "mesh"
+
+[settings]
+
+[settings.materials.foliage_a]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true
+
+[settings.materials.foliage_b]
+alpha_mode = "mask"
+alpha_cutoff = 0.45
+double_sided = true

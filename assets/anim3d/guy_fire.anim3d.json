@@ -1,0 +1,31 @@
+{
+  "$schemaVersion": 1,
+  "rig": "guy.rig3d.json",
+  "fps": 30,
+  "length": 18,
+  "loop": false,
+  "tracks": {
+    "hips": {
+      "my": [[3, -0.03, "outBack"], [18, 0, "outQuad"]]
+    },
+    "spine": {
+      "pitch": [[0, -2], [3, 8, "outBack"], [18, -2, "outQuad"]]
+    },
+    "head": {
+      "pitch": [[0, -4], [3, 6, "outBack"], [18, -4, "outQuad"]]
+    },
+    "upperArm.L": {
+      "pitch": [[0, 82], [3, 70, "outBack"], [18, 82, "outQuad"]]
+    },
+    "lowerArm.L": {
+      "bend": [[0, 8], [3, 4, "outBack"], [18, 8, "outQuad"]]
+    },
+    "upperArm.R": {
+      "pitch": [[0, 72], [3, 60, "outBack"], [18, 72, "outQuad"]],
+      "yaw": [[0, -12], [3, -14, "outBack"], [18, -12, "outQuad"]]
+    },
+    "lowerArm.R": {
+      "bend": [[0, 62], [3, 30, "outBack"], [18, 62, "outQuad"]]
+    }
+  }
+}

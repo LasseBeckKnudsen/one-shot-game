@@ -1,0 +1,14 @@
+/**
+ * Presentation state of an online match that the sim never sees: the local pause menu (the match keeps running for
+ * everyone else, so Escape cannot pause the sim) and the lobby. Shared by the UI controllers and the LateUpdate systems.
+ */
+import { createSignal } from '@gameengine/ui';
+
+/** The pause/options menu is open over a running online match: the mouse is released and this device sends no input. */
+export const [onlinePaused, setOnlinePaused] = createSignal(false);
+
+/** The multiplayer lobby (host or join a match) is open over the start screen. */
+export const [lobbyOpen, setLobbyOpen] = createSignal(false);
+
+/** Mouse sensitivity of an online match (the sim's Settings resource only reaches a solo match: UI events never reach an online sim). */
+export const [onlineSens, setOnlineSens] = createSignal(1);

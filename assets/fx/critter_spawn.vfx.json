@@ -1,0 +1,10 @@
+{
+  "$schemaVersion": 1,
+  "name": "critter_spawn",
+  "emitters": [
+    {"name": "flash", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.3, 0.3], "speed": [0, 0], "size": [2.0, 2.0], "texture": "textures/fx/glow", "color": [1.5, 1.357, 0.9359, 1], "colorOverLife": [[0, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.4], [1, 1.2]], "blend": "additive"},
+    {"name": "ring", "capacity": 2, "bursts": [{"at": 0, "count": 1}], "loop": false, "lifetime": [0.5, 0.5], "speed": [0, 0], "size": [2.8, 2.8], "texture": "textures/fx/ring", "color": [0.2495, 1.2786, 0.5625, 1], "colorOverLife": [[0, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.1], [0.3, 0.7], [1, 1]], "blend": "additive", "orient": "horizontal"},
+    {"name": "motes", "capacity": 16, "bursts": [{"at": 0, "count": 5}, {"at": 0.12, "count": 5}], "loop": false, "shape": {"kind": "box", "size": [0.9, 0.01, 0.9]}, "lifetime": [0.6, 1.0], "speed": [1.0, 2.4], "drag": 0.4, "size": [0.3, 0.55], "spin": [-4, 4], "texture": "textures/fx/star4", "color": [1.6, 1.0534, 0.1791, 1], "color2": [0.2339, 1.1987, 0.5273, 1], "colorOverLife": [[0, 1, 1, 1, 0], [0.18, 1, 1, 1, 1], [0.7, 1, 1, 1, 1], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.3], [0.25, 1], [1, 0.2]], "blend": "additive"},
+    {"name": "puffs", "capacity": 6, "bursts": [{"at": 0, "count": 4}], "loop": false, "shape": {"kind": "cone", "angle": 1.4, "radius": 0.06}, "lifetime": [0.4, 0.7], "speed": [0.8, 1.6], "drag": 3, "gravity": [0, 0.3, 0], "size": [0.5, 0.8], "rotation": [0, 6.28], "spin": [-1.5, 1.5], "texture": "textures/fx/puff", "color": [1.0, 0.9387, 0.7913, 1.0], "colorOverLife": [[0, 1, 1, 1, 0.7], [0.4, 1, 1, 1, 0.5599999999999999], [1, 1, 1, 1, 0]], "sizeOverLife": [[0, 0.45], [0.4, 1], [1, 1.8]], "blend": "alpha"}
+  ]
+}

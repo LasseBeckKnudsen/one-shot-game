@@ -1,0 +1,33 @@
+{
+  "$schemaVersion": 1,
+  "parameters": [
+    { "name": "walking", "type": "bool" },
+    { "name": "aiming", "type": "bool" },
+    { "name": "fire", "type": "trigger" },
+    { "name": "dead", "type": "bool" }
+  ],
+  "layers": [
+    {
+      "name": "Base",
+      "entry": "Idle",
+      "states": [
+        { "name": "Idle", "motion": { "clip": "anim3d/idle.anim3d.json#idle" } },
+        { "name": "Run", "motion": { "clip": "anim3d/run.anim3d.json#run" }, "speed": 1.25 },
+        { "name": "Aim", "motion": { "clip": "anim3d/aim.anim3d.json#aim" } },
+        { "name": "Fire", "motion": { "clip": "anim3d/fire.anim3d.json#fire" }, "loop": false },
+        { "name": "Death", "motion": { "clip": "anim3d/death.anim3d.json#death" }, "loop": false }
+      ],
+      "transitions": [
+        { "from": "*", "to": "Death", "conditions": [{ "parameter": "dead", "op": "true" }], "duration": 0.08 },
+        { "from": "Death", "to": "Idle", "conditions": [{ "parameter": "dead", "op": "false" }], "duration": 0.05 },
+        { "from": "*", "to": "Fire", "conditions": [{ "parameter": "fire", "op": "trigger" }], "duration": 0.04 },
+        { "from": "Fire", "to": "Idle", "exitTime": 0.45, "duration": 0.15 },
+        { "from": "Idle", "to": "Aim", "conditions": [{ "parameter": "aiming", "op": "true" }], "duration": 0.15 },
+        { "from": "Run", "to": "Aim", "conditions": [{ "parameter": "aiming", "op": "true" }], "duration": 0.15 },
+        { "from": "Aim", "to": "Idle", "conditions": [{ "parameter": "aiming", "op": "false" }], "duration": 0.2 },
+        { "from": "Idle", "to": "Run", "conditions": [{ "parameter": "walking", "op": "true" }], "duration": 0.15 },
+        { "from": "Run", "to": "Idle", "conditions": [{ "parameter": "walking", "op": "false" }], "duration": 0.15 }
+      ]
+    }
+  ]
+}
