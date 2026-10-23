@@ -61,3 +61,6 @@ export const [seatNames, setSeatNames] = createSignal<Readonly<Record<number, st
  * (net.ts `sampleLook`), which has no `ctx`, so it lives here. A match start resets it, and `NetInput` seeds it from the seat's spawn.
  */
 export const netLook = { yaw: 0, pitch: 0, aiming: false, seeded: false };
+
+/** Escape and Tab as last seen held: kept out of the world, because an online rollback restores world state from frames ago and a held key would toggle again. */
+export const keyHeld = { menu: false, board: false };

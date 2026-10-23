@@ -774,7 +774,16 @@
         "w": "100%",
         "h": "100%",
         "image": "ui/frost_edge",
-        "opacity": 0
+        "opacity": 0,
+        "position": "anchored",
+        "anchor": [
+          0,
+          0
+        ],
+        "pivot": [
+          0,
+          0
+        ]
       }
     }
   },

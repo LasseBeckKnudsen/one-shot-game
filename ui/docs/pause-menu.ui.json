@@ -376,7 +376,7 @@
       "key": "k11",
       "props": {
         "keycap": "A miss",
-        "action": "Freezes you 5 s (can still be hit)"
+        "action": "Freezes you 3 s (can still be hit)"
       }
     }
   },

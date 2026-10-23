@@ -52,7 +52,7 @@ worldTest('a stone aimed at a critter scores and returns to the sling', async ({
   expect(world.entities(Stone).length).toBe(0);
 });
 
-worldTest('a missed stone freezes the shooter for five seconds: alive, still, nothing lost, then the stone is back', async ({ world, step, input }) => {
+worldTest('a missed stone freezes the shooter for three seconds: alive, still, nothing lost, then the stone is back', async ({ world, step, input }) => {
   await startMatch(input, step, world);
   const [player] = world.entities(Player);
   click(input); // level, at the horizon: nothing but trees ahead
@@ -63,7 +63,7 @@ worldTest('a missed stone freezes the shooter for five seconds: alive, still, no
     expect(m.state).toBe('Alive');
     expect(m.deaths).toBe(0);
     expect(m.score).toBe(0);
-    expect(m.freeze).toBeGreaterThan(4);
+    expect(m.freeze).toBeGreaterThan(2);
     expect(m.loaded).toBe(false);
     // frozen: walking forward goes nowhere
     const before = world.get(player!, LocalTransform).position.slice();
@@ -72,9 +72,9 @@ worldTest('a missed stone freezes the shooter for five seconds: alive, still, no
     input.key('KeyW', false);
     const after = world.get(player!, LocalTransform).position;
     expect(Math.abs(after[0]! - before[0]!) + Math.abs(after[2]! - before[2]!)).toBeLessThan(0.05);
-    // thawed after five seconds, with the stone back in the sling (a bot may hit the frozen player first: that is the rule too)
+    // thawed after three seconds, with the stone back in the sling (a bot may hit the frozen player first: that is the rule too)
     let t = world.get(player!, Player);
-    for (let k = 0; k < 340 && t.freeze > 0 && t.state === 'Alive'; k++) {
+    for (let k = 0; k < 240 && t.freeze > 0 && t.state === 'Alive'; k++) {
       await step(1);
       t = world.get(player!, Player);
     }

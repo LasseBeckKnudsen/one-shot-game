@@ -30,6 +30,9 @@ export const ViewmodelMotion = defineSystem({
   },
 });
 
+/** The eased zoom lives outside the world: an online rollback restores VirtualCamera.fovY from frames ago, so easing the world's own value would jump back. */
+let zoomFov = 1.0;
+
 /** The aim zoom and the shake of shots, hits and misses of this device's seat. */
 export const CameraFeel = defineSystem({
   name: 'CameraFeel',
@@ -48,12 +51,13 @@ export const CameraFeel = defineSystem({
     for (const e of ctx.events.read(CritterHit)) if (e.seat === me) hits++;
     for (const e of ctx.events.read(StoneMissed)) if (e.seat === me) misses++;
     // the zoom is the fieldOfView of this seat's virtual camera (it is what the camera shows)
+    const goal = aiming ? 0.62 : 1.0;
+    zoomFov += (goal - zoomFov) * 0.18;
+    if (math.abs(goal - zoomFov) < 1e-4) zoomFov = goal;
     for (const c of views.chunks()) {
       for (let i = 0; i < c.length; i++) {
         if (c.get(SeatCam, i).seat !== me) continue;
-        const cur = c.get(VirtualCamera, i).fovY;
-        const fov = cur + ((aiming ? 0.62 : 1.0) - cur) * 0.18;
-        if (math.abs(fov - cur) > 1e-4) c.set(VirtualCamera, i, { fovY: fov });
+        if (c.get(VirtualCamera, i).fovY !== zoomFov) c.set(VirtualCamera, i, { fovY: zoomFov });
       }
     }
     for (const c of cams.chunks()) {

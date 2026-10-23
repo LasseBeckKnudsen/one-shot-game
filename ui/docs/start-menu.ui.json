@@ -251,9 +251,9 @@
       "key": "r2",
       "props": {
         "tone": "orange",
-        "badge": "5s",
+        "badge": "3s",
         "label": "Miss",
-        "value": "frozen 5 s"
+        "value": "frozen 3 s"
       }
     },
     "s_r3": {

@@ -36,7 +36,7 @@ const CRITTER_TOP = 1.75;
 const ROUND_SECONDS = 360;
 const RESPAWN = 3;
 /** Seconds a missed shot freezes its shooter: no moving, jumping or firing, still hittable, nothing lost. */
-const FREEZE = 5;
+const FREEZE = 3;
 /** Seconds nobody can hit a player who just respawned (firing ends it early). */
 const RESPAWN_PROTECT = 8;
 

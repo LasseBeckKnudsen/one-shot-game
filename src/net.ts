@@ -4,10 +4,10 @@
  */
 import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, LocalTransform, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
 import { BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down, predictInput } from './input.ts';
-import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
+import { Announce, Critter, Flow, LocalHud, Match, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
 import { yawPitchQuat } from './sim.ts';
-import { announcement } from './announce.ts';
-import { boardOpen, cleanName, feed, nameEditing, netLook, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
+import { announcement, presenceLine } from './announce.ts';
+import { boardOpen, cleanName, feed, keyHeld, nameEditing, netLook, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
 
 const SENS = 0.0022;
 
@@ -53,7 +53,7 @@ export const NetInput = defineSystem({
   name: 'NetInput',
   stage: 'LateUpdate',
   queries: { seats: query(read(Player)) },
-  resources: [write(NetLook), read(PlayerInputs), read(Flow)],
+  resources: [read(PlayerInputs), read(Flow)],
   run(ctx, { seats }) {
     const st = multiplayer.status();
     // the host left or the link dropped during a match: leave, and the engine puts a fresh start screen back
@@ -74,8 +74,8 @@ export const NetInput = defineSystem({
     }
     // Escape comes through the key map as the menu bit of this seat's own input: a press toggles the local pause menu
     const menu = down(playerInput(ctx.get(PlayerInputs), me).buttons, BTN_MENU);
-    if (menu && !ctx.get(NetLook).menuHeld) setOnlinePaused(!onlinePaused());
-    if (menu !== ctx.get(NetLook).menuHeld) ctx.setField(NetLook, 'menuHeld', menu);
+    if (menu && !keyHeld.menu) setOnlinePaused(!onlinePaused());
+    keyHeld.menu = menu;
   },
 });
 
@@ -83,11 +83,11 @@ export const NetInput = defineSystem({
 export const BoardToggle = defineSystem({
   name: 'BoardToggle',
   stage: 'LateUpdate',
-  resources: [write(NetLook), read(PlayerInputs)],
+  resources: [read(PlayerInputs)],
   run(ctx) {
     const held = down(playerInput(ctx.get(PlayerInputs), localSeat()).buttons, BTN_BOARD);
-    if (held !== ctx.get(NetLook).boardHeld) {
-      ctx.setField(NetLook, 'boardHeld', held);
+    if (held !== keyHeld.board) {
+      keyHeld.board = held;
       if (held) setBoardOpen(!boardOpen());
     }
   },
@@ -226,6 +226,16 @@ const NAME_EVERY = 3;
  * seconds, and files the ones the other seats say under their seat for the announcements and the leaderboard.
  */
 let nextSay = 0;
+/** Seats that joined and whose name has not come yet (seat -> the step it joined at): announced with the name, or without it after a moment. */
+const pendingJoin = new Map<number, number>();
+/** How long a join waits for the newcomer's name (steps). */
+const NAME_WAIT = 90;
+
+const shownName = (seat: number, names: Readonly<Record<number, string>>): string => names[seat] || `Player ${seat + 1}`;
+const announcePresence = (joined: boolean, name: string): void => {
+  const { head, taunt } = presenceLine(joined, name);
+  setFeed([...feed(), { id: ++feedId, head, taunt, mine: false }].slice(-6));
+};
 
 export const NameSync = defineSystem({
   name: 'NameSync',
@@ -233,6 +243,7 @@ export const NameSync = defineSystem({
   run(ctx) {
     if (!inOnlineMatch()) {
       nextSay = 0;
+      pendingJoin.clear();
       if (Object.keys(seatNames()).length > 0) setSeatNames({});
       return;
     }
@@ -241,10 +252,24 @@ export const NameSync = defineSystem({
     let heard = false;
     let names = seatNames();
     for (const ev of multiplayer.events()) {
-      if (ev.type === 'joined') heard = true;
-      else if (ev.type === 'notice' && ev.topic === 'name' && ev.from !== null && ev.from !== me) {
+      if (ev.type === 'joined') {
+        heard = true;
+        if (ev.player !== null && ev.player !== me) pendingJoin.set(ev.player, ctx.step);
+      } else if (ev.type === 'left' && ev.player !== null && ev.player !== me) {
+        pendingJoin.delete(ev.player);
+        announcePresence(false, shownName(ev.player, names));
+        const { [ev.player]: _gone, ...rest } = names;
+        names = rest; // the next player in that seat starts without a name
+      } else if (ev.type === 'notice' && ev.topic === 'name' && ev.from !== null && ev.from !== me) {
         const n = cleanName(String((ev.data as { n?: unknown } | null)?.n ?? '')).trim();
         if (names[ev.from] !== n) names = { ...names, [ev.from]: n };
+        if (pendingJoin.delete(ev.from)) announcePresence(true, shownName(ev.from, names));
+      }
+    }
+    for (const [seat, since] of pendingJoin) {
+      if (ctx.step - since >= NAME_WAIT) {
+        pendingJoin.delete(seat);
+        announcePresence(true, shownName(seat, names));
       }
     }
     if (names !== seatNames()) setSeatNames(names);

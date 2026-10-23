@@ -27,3 +27,8 @@ export function announcement(kind: number, a: number, b: number, me: number, pic
   const fill = (t: string) => t.replace(/\{A\}/g, actorName(a, me, false, names)).replace(/\{B\}/g, actorName(b, me, true, names));
   return { head: fill(head), taunt: fill(taunt) };
 }
+
+/** The line shown when a player joins or leaves the match. */
+export function presenceLine(joined: boolean, name: string): { head: string; taunt: string } {
+  return joined ? { head: `${name} joined`, taunt: 'Welcome to the village.' } : { head: `${name} left`, taunt: 'The village is a little quieter.' };
+}

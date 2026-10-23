@@ -4,6 +4,7 @@ import { LocalTransform, PlayerInputs } from '@gameengine/runtime';
 import { BTN_FIRE, packLook, unpackLook, BTN_LOOK, predictInput } from '../src/input.ts';
 import { Player, SeatBody } from '../src/schema.gen.ts';
 import { FUN_NAMES, randomName } from '../src/names.ts';
+import { actorName, presenceLine } from '../src/announce.ts';
 import { cleanName } from '../src/netstate.ts';
 
 const seatRows = (world: any) => world.entities(Player).map((e: any) => ({ e, p: world.get(e, Player), t: world.get(e, LocalTransform).position }));
@@ -63,7 +64,7 @@ worldTest('a stone from one seat scores for that seat and ends the other seat\'s
       expect(rows[0]!.p.deathBy).toBe(1001);
       expect(rows[1]!.p.loaded).toBe(true);
     } else {
-      await step(320); // a miss: wait out the freeze and try the next spot
+      await step(200); // a miss: wait out the freeze and try the next spot
     }
   }
   expect(done).toBe(true);
@@ -117,7 +118,7 @@ worldTest('a frozen player (a miss) can still be hit, and a hit ends the freeze 
   let rows = seatRows(world);
   if (rows[0]!.p.misses === 0) return; // the stone found a critter-free hit: nothing to prove here
   expect(rows[0]!.p.state).toBe('Alive');
-  expect(rows[0]!.p.freeze).toBeGreaterThan(3);
+  expect(rows[0]!.p.freeze).toBeGreaterThan(1);
   expect(rows[0]!.p.score).toBe(6);
   let hit = false;
   for (let k = 0; k < 8 && !hit; k++) {
@@ -133,7 +134,7 @@ worldTest('a frozen player (a miss) can still be hit, and a hit ends the freeze 
     await step(20);
     rows = seatRows(world);
     if (rows[1]!.p.hits > 0) hit = true;
-    else await step(320);
+    else await step(200);
   }
   if (!hit) return; // cover in the way every time: the rule is proven by the first half
   expect(rows[0]!.p.state).toBe('Dead');
@@ -154,4 +155,11 @@ worldTest('a seat body faces where its player looks', async ({ world, step, chea
     const fz = 1 - 2 * (x! * x! + y! * y!);
     expect(fx * -Math.sin(yaw) + fz * -Math.cos(yaw)).toBeGreaterThan(0.99);
   }
+});
+
+worldTest('join and leave lines carry the name, and a seat without a name is "Player N"', async () => {
+  expect(presenceLine(true, 'Otter').head).toBe('Otter joined');
+  expect(presenceLine(false, 'Otter').head).toBe('Otter left');
+  expect(actorName(2, 0, false, { 2: 'Mango' })).toBe('Mango');
+  expect(actorName(2, 0, false, {})).toBe('Player 3');
 });
