@@ -633,6 +633,7 @@ export const CritterAI = defineSystem({
     player: query(read(Player), read(LocalTransform)),
   },
   run(ctx, { critters, solids, player }) {
+    if (critters.count === 0) return; // an online match has no bots: nothing to build, and a rollback re-runs this every step
     const circles: Circle[] = [];
     for (const c of solids.chunks()) {
       for (let i = 0; i < c.length; i++) {

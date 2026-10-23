@@ -98,7 +98,7 @@
     "players": 2,
     "authority": "server",
     "port": 7600,
-    "window": 12,
+    "window": 24,
     "buttons": {
       "jump": [
         {

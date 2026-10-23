@@ -2,9 +2,10 @@
  * Presentation side of play, solo or online (all LateUpdate: it reads the sim and never changes a hash):
  * which seat this device plays, its input in an online match, the camera and first-person rig of that seat, and its HUD data.
  */
-import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
+import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, LocalTransform, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
 import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
-import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatCam, VmRig } from './schema.gen.ts';
+import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
+import { yawPitchQuat } from './sim.ts';
 import { announcement } from './announce.ts';
 import { boardOpen, cleanName, feed, nameEditing, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
 
@@ -245,6 +246,132 @@ export const NameSync = defineSystem({
         multiplayer.say('name', { n: own });
       } catch {
         // the server's rate limit or a closing match: the next repeat tells it
+      }
+    }
+  },
+});
+
+type Quat = [number, number, number, number];
+const quatConj = (q: Quat): Quat => [-q[0], -q[1], -q[2], q[3]];
+const quatMul = (a: Quat, b: Quat): Quat => [
+  a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1],
+  a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
+  a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3],
+  a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2],
+];
+
+/** Most a body moves in one step without it being a correction (a sprint is 0.09 m, a launch is vertical): beyond it the excess is smoothed away. */
+const STEP_MOVE = 0.12;
+/** A jump this far in one step is a respawn or a teleport: shown at once. */
+const SNAP_DIST = 3;
+/** What is left of a smoothed correction each frame (about 90 ms to fade at 60 Hz). */
+const FADE = 0.88;
+
+interface Glide {
+  x: number;
+  z: number;
+  ox: number;
+  oz: number;
+  step: number;
+}
+const glides = new Map<number, Glide>();
+
+/**
+ * How far to show a body from where the sim has it. A rollback that corrects a body moves it in one step; the shown position stays where it was
+ * and glides over (the offset is the correction, fading out), while ordinary movement passes straight through.
+ */
+function glideOffset(key: number, x: number, z: number, step: number): [number, number] {
+  let g = glides.get(key);
+  if (!g) {
+    g = { x, z, ox: 0, oz: 0, step };
+    glides.set(key, g);
+    return [0, 0];
+  }
+  if (step !== g.step) {
+    const dx = x - g.x;
+    const dz = z - g.z;
+    const d = math.sqrt(dx * dx + dz * dz);
+    const allowed = STEP_MOVE * math.max(1, math.abs(step - g.step));
+    if (d > SNAP_DIST) {
+      g.ox = 0;
+      g.oz = 0;
+    } else if (d > allowed) {
+      const excess = (d - allowed) / d;
+      g.ox -= dx * excess;
+      g.oz -= dz * excess;
+    }
+    g.x = x;
+    g.z = z;
+    g.step = step;
+  }
+  g.ox *= FADE;
+  g.oz *= FADE;
+  if (math.abs(g.ox) < 1e-4) g.ox = 0;
+  if (math.abs(g.oz) < 1e-4) g.oz = 0;
+  return [g.ox, g.oz];
+}
+
+/**
+ * Online, this device's own view does not wait for the network: the camera turns with the mouse in the same frame (the sim only learns the look a
+ * few frames later, and a rollback re-derives it), and a correction of the seat's own position glides instead of snapping. Presentation only: the sim's
+ * yaw and pitch still aim the stone, and the offset below is the difference between the two.
+ */
+export const LocalView = defineSystem({
+  name: 'LocalView',
+  stage: 'LateUpdate',
+  queries: { players: query(read(Player), read(LocalTransform)), eyes: query(read(SeatCam), write(VisualOffset)) },
+  resources: [read(NetLook)],
+  run(ctx, { players, eyes }) {
+    const online = inOnlineMatch();
+    if (!online) glides.clear();
+    const me = localSeat();
+    const look = ctx.get(NetLook);
+    let rotation: Quat = [0, 0, 0, 1];
+    let position: [number, number, number] = [0, 0, 0];
+    if (online) {
+      for (const c of players.chunks()) {
+        for (let i = 0; i < c.length; i++) {
+          const p = c.get(Player, i);
+          if (p.index !== me) continue;
+          const t = c.get(LocalTransform, i).position;
+          const [ox, oz] = glideOffset(-1 - p.index, t[0], t[2], ctx.step);
+          position = [ox, 0, oz];
+          if (look.seeded && p.state === 'Alive' && !onlinePaused()) rotation = quatMul(quatConj(yawPitchQuat(p.yaw, p.pitch)), yawPitchQuat(look.yaw, look.pitch));
+        }
+      }
+    }
+    for (const c of eyes.chunks()) {
+      for (let i = 0; i < c.length; i++) {
+        if (c.get(SeatCam, i).seat !== me) continue;
+        const cur = c.get(VisualOffset, i);
+        if (cur.rotation[0] !== rotation[0] || cur.rotation[1] !== rotation[1] || cur.rotation[2] !== rotation[2] || cur.rotation[3] !== rotation[3] || cur.position[0] !== position[0] || cur.position[2] !== position[2]) {
+          c.set(VisualOffset, i, { rotation, position });
+        }
+      }
+    }
+  },
+});
+
+/** The other seats' bodies glide over rollback corrections instead of snapping (a remote player's input is a guess until it arrives). */
+export const SmoothBodies = defineSystem({
+  name: 'SmoothBodies',
+  stage: 'LateUpdate',
+  queries: { bodies: query(read(SeatBody), read(LocalTransform), write(VisualOffset)) },
+  run(ctx, { bodies }) {
+    const online = inOnlineMatch();
+    const me = localSeat();
+    for (const c of bodies.chunks()) {
+      for (let i = 0; i < c.length; i++) {
+        const seat = c.get(SeatBody, i).index;
+        if (seat === me) continue;
+        let ox = 0;
+        let oz = 0;
+        if (online) {
+          const t = c.get(LocalTransform, i).position;
+          [ox, oz] = glideOffset(seat, t[0], t[2], ctx.step);
+        }
+        const cur = c.get(VisualOffset, i).position;
+        if (cur[0] !== ox || cur[2] !== oz) c.set(VisualOffset, i, { position: [ox, 0, oz] });
       }
     }
   },

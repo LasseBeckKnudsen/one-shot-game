@@ -92,6 +92,7 @@ for k in range(4):
         'name': f'Player{k}', 'id': f'player{k}',
         'LocalTransform': {'position': [round(math.sin(a) * SEAT_R, 3), 2.0, round(-math.cos(a) * SEAT_R, 3)]},
         'Player': {'index': k, 'protect': 3.0, 'yaw': round(PI - a, 4) % (2 * PI)},
+        'VisualOffset': {},  # the local seat's own view follows the mouse at once and smooths corrections (net.ts LocalView)
         'children': [{'name': 'Eye', 'id': f'seatcam{k}', 'LocalTransform': {}, 'SeatCam': {'seat': k},
                       'VirtualCamera': {'camera': '@playercam', 'priority': 100 if k == 0 else 0, 'blend': 0, 'fovY': 1.0}}],
     })
@@ -101,6 +102,7 @@ for k in range(4):
     bodies.append({'name': f'Body{k}', 'id': f'body{k}',
                    'LocalTransform': {'position': [round(math.sin(PI + k * PI / 2) * SEAT_R, 3), 0, round(-math.cos(PI + k * PI / 2) * SEAT_R, 3)]},
                    'SeatBody': {'index': k},
+                   'VisualOffset': {},  # other seats' bodies glide over rollback corrections (net.ts SmoothBodies)
                    'MeshRenderer': {'mesh': 'models/guy_rig.glb', 'color': SEAT_TINTS[k], 'layers': 2 << k},
                    'Animator': {'controller': 'anim/guy.animctrl.json'},
                    'children': [{'name': 'Sling', 'id': f'body{k}sling', 'BoneAttach': {'rig': f'@body{k}', 'joint': 'Hand.L', 'space': 'Joint'},

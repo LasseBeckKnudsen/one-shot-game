@@ -113,6 +113,7 @@
               "name": "Eye",
               "id": "seatcam0",
               "LocalTransform": {},
+              "VisualOffset": {},
               "SeatCam": {},
               "VirtualCamera": { "camera": "@playercam", "priority": 100, "blend": 0, "fovY": 1.0 }
             }
@@ -128,6 +129,7 @@
               "name": "Eye",
               "id": "seatcam1",
               "LocalTransform": {},
+              "VisualOffset": {},
               "SeatCam": { "seat": 1 },
               "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
             }
@@ -143,6 +145,7 @@
               "name": "Eye",
               "id": "seatcam2",
               "LocalTransform": {},
+              "VisualOffset": {},
               "SeatCam": { "seat": 2 },
               "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
             }
@@ -158,6 +161,7 @@
               "name": "Eye",
               "id": "seatcam3",
               "LocalTransform": {},
+              "VisualOffset": {},
               "SeatCam": { "seat": 3 },
               "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
             }
@@ -177,6 +181,7 @@
           "LocalTransform": { "position": [0.0, 0, 15.7] },
           "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ff7a6e", "layers": 2 },
           "SeatBody": {},
+          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
@@ -194,6 +199,7 @@
           "LocalTransform": { "position": [-15.7, 0, 0.0] },
           "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#6eb4ff", "layers": 4 },
           "SeatBody": { "index": 1 },
+          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
@@ -211,6 +217,7 @@
           "LocalTransform": { "position": [-0.0, 0, -15.7] },
           "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#ffd95c", "layers": 8 },
           "SeatBody": { "index": 2 },
+          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
@@ -228,6 +235,7 @@
           "LocalTransform": { "position": [15.7, 0, -0.0] },
           "MeshRenderer": { "mesh": "models/guy_rig.glb", "color": "#7ae89a", "layers": 16 },
           "SeatBody": { "index": 3 },
+          "VisualOffset": {},
           "children": [
             {
               "name": "Sling",
