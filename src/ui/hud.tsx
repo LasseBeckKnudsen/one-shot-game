@@ -202,7 +202,8 @@ export const hud = defineUI({
         hint: false, // the controls live in the pause menu now
         placeText: `${place(m.rank)} / ${m.players}`,
         first: m.rank === 1,
-        board: boardOpen(),
+        // the scores show by themselves while I am frozen or waiting to respawn, and roll away when I play again (Tab still opens them any time)
+        board: boardOpen() || (!over && (m.playerDead || m.freezeIn > 0)),
         rows: boardRows(m),
         toasts: [...toasts()],
       };

@@ -710,7 +710,7 @@
         "dir": "column",
         "gap": 2,
         "w": 360,
-        "opacity": 0.95,
+        "opacity": 0,
         "position": "anchored",
         "anchor": [
           1,
@@ -724,9 +724,9 @@
           0,
           12
         ],
-        "attach": true
-      },
-      "show": "board"
+        "attach": true,
+        "ty": -24
+      }
     },
     "h_rows": {
       "type": "repeat",
@@ -1004,7 +1004,21 @@
     },
     "board": {
       "type": "yesno",
-      "default": false
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "h_board": {
+              "opacity": 0.95,
+              "ty": 0
+            }
+          },
+          "transition": {
+            "type": "easeOut",
+            "ms": 220
+          }
+        }
+      }
     },
     "rows": {
       "type": "list",
