@@ -2,7 +2,7 @@
 import { worldTest, expect } from '@gameengine/test';
 import { LocalTransform, PlayerInputs } from '@gameengine/runtime';
 import { BTN_FIRE, packLook, unpackLook, BTN_LOOK, predictInput } from '../src/input.ts';
-import { Player } from '../src/schema.gen.ts';
+import { Player, SeatBody } from '../src/schema.gen.ts';
 import { FUN_NAMES, randomName } from '../src/names.ts';
 import { cleanName } from '../src/netstate.ts';
 
@@ -139,4 +139,19 @@ worldTest('a frozen player (a miss) can still be hit, and a hit ends the freeze 
   expect(rows[0]!.p.state).toBe('Dead');
   expect(rows[0]!.p.freeze).toBe(0);
   expect(rows[0]!.p.score).toBe(3); // half of six
+});
+
+worldTest('a seat body faces where its player looks', async ({ world, step, cheat }) => {
+  await cheat('flow.play', { seats: 2 });
+  await step(260);
+  for (const yaw of [0, 1.6, 3.2, 4.8]) {
+    world.setResource(PlayerInputs, { players: 2, buttons1: packLook(yaw, 0) });
+    await step(10);
+    const e = world.entities(SeatBody).find((b: any) => world.get(b, SeatBody).index === 1)!;
+    const [x, y, z, w] = world.get(e, LocalTransform).rotation as number[];
+    // the model faces +Z; its forward after the rotation, against the player's look direction (-sin yaw, -cos yaw)
+    const fx = 2 * (x! * z! + w! * y!);
+    const fz = 1 - 2 * (x! * x! + y! * y!);
+    expect(fx * -Math.sin(yaw) + fz * -Math.cos(yaw)).toBeGreaterThan(0.99);
+  }
 });

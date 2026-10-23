@@ -951,7 +951,8 @@ export const SeatBodies = defineSystem({
         if (!b) continue;
         // a dead player leaves a corpse behind; the body itself is hidden until the respawn
         const k = b.dead ? 0 : 1;
-        c.set(LocalTransform, i, { position: [b.x, b.y, b.z], rotation: yawPitchQuat(b.yaw, 0), scale: [k, k, k] });
+        // the model faces +Z and a player's look faces -Z: turn the body round to face where its player looks
+        c.set(LocalTransform, i, { position: [b.x, b.y, b.z], rotation: yawPitchQuat(b.yaw + 3.14159265, 0), scale: [k, k, k] });
         setAnimParam(c, i, 'walking', b.walking);
         setAnimParam(c, i, 'airborne', b.airborne);
         setAnimParam(c, i, 'frozen', b.frozen);
