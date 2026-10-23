@@ -1,6 +1,6 @@
 export { ApplySettings, FlowControl, SoloInput, Look, Move, CameraRig, Fire, StoneFlight, Respawn, CritterAI, MatchClock, SeatBodies, TempLife, StartMusic, ViewmodelAnim } from './sim.ts';
 export { ViewmodelMotion, CameraFeel, CloudDrift } from './present.ts';
-export { AnnounceFeed, BoardToggle, NetInput, SeatCamera, SeatVisibility, HudMirror } from './net.ts';
+export { NameEntry, NameSync, AnnounceFeed, BoardToggle, NetInput, SeatCamera, SeatVisibility, HudMirror } from './net.ts';
 export { hud } from './ui/hud.tsx';
 export { FxHosts, FxMovement, FxTracer } from './vfx.ts';
 export { MouseCapture } from './mouse.ts';

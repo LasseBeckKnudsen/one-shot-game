@@ -96,7 +96,7 @@
   "multiplayer": {
     "mode": "realtime",
     "players": 2,
-    "authority": "relay",
+    "authority": "server",
     "port": 7600,
     "window": 12,
     "buttons": {
@@ -164,7 +164,8 @@
           "axis": 1
         }
       ]
-    }
+    },
+    "server": "wss://webgames.tactilews.com/one-shot-online/socket"
   },
   "build": {
     "web": {

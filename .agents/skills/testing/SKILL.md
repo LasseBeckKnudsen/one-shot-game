@@ -1,6 +1,6 @@
 ---
 name: testing
-version: 1.15.0
+version: 1.16.0
 tier: required
 description: Writing Game Engine tests — worldTest for logic (tap, swipe, step, world reads), replays for recorded play, goldens for rendering, pipelines.json, cheats and service mocks, cooked content, and content updates applied to a running game (tests/releases). Use when adding behaviour, fixing a bug (test first) or when a test fails.
 ---
@@ -21,7 +21,7 @@ worldTest('tapping a bubble pops it', async ({ world, step, input, tap }) => {
 });
 ```
 
-- Drive input the way a player would (`tap`, `swipe`, `input.*`), then `step`. Assert on world state.
+- Drive input the way a player would (`tap`, `swipe`, `input.*`), then `step`. Assert on world state. Keys go by name, as `input.json` names them: `input.key('ArrowRight', true)`, then `input.key('ArrowRight', false)`.
 - Fix a bug by first writing the test that fails.
 - **Aiming taps**: `tap(p)`, `swipe` and `input.worldToScreen(p)` aim at where the renderer draws a world point this frame, so a camera shake (`VisualOffset` on the primary 2D camera) moves the tap with the picture. The sim maps the pointer back through `WorldView` alone, so a tap during a shake reaches the sim off by the shake, as a player's does.
 - **World reads**: `world.entities(T)` lists `Disabled` entities too (parked pool instances); `.filter((e) => !world.has(e, Disabled))` keeps what systems see. `world.events(Ev)` gives entity fields as `EntityId` (`NO_ENTITY` for none), so `ev.entity === e` works; `world.get`/`all`/`resource` give them as `"index:gen"` strings: compare with `entityString(e)`, and pass `entityString(e)` to `insert`/`spawn`.

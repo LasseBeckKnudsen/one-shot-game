@@ -1,6 +1,6 @@
 ---
 name: multiplayer
-version: 1.11.0
+version: 1.13.0
 tier: optional
 description: Online multiplayer — fixed matches and always-open worlds, authoritative or relay server exports, web/native clients, rollback, turn and snapshot sync, matchmaking and LAN. Use for online play, persistent shared worlds, joining or deploying servers, or late-join and reconnect behavior.
 ---
@@ -79,8 +79,12 @@ match seed on every device, so all peers and the server start from the same stat
 match the sim sees the project's reference resolution as `ViewInfo` (not the device's screen),
 and device events (taps, keys, UI events) never reach the sim: only `PlayerInputs` (real-time)
 or the turn events do. Layout and touch targets read the real screen in presentation as usual.
+A mouse-look game reads the mouse with `multiplayer.pointer()` (`x`, `y`, `dx`/`dy` since the last
+call, `buttons` bit 0 left, 1 middle, 2 right) in a LateUpdate system and sends the look through
+`setInput`. `leave()` from a started match rebuilds the world on the next frame, so the game is
+back in a fresh offline world, not the match's last state.
 
-`join`, `leave`, `status`, `events`, `setInput` and `submitTurn` throw inside a sim system.
+`join`, `leave`, `status`, `events`, `setInput`, `pointer` and `submitTurn` throw inside a sim system.
 
 ### Browser builds
 
@@ -115,7 +119,7 @@ Declare `WorldInput` as an empty `sim: true` event and `SharedState` with `defin
 
 In presentation, `await multiplayer.world.connect({server: 'wss://host/game/socket', name})` returns a connection. `send(data)` sends intent. `subscribe(handler)` delivers `{kind:'welcome',player,version}`, `{kind:'snapshot',tick,document}`, `{kind:'error',error}`, and `{kind:'closed',reason}`. Validate the document and feed it to a local sim consumer using `emitInputData` on a separate empty marker. `poll()` is an alternative to subscription. Close the connection on view/session disposal. Implement reconnect and alias UI in the game; the connection supplies heartbeat replies. Rejoining obtains an available identity, so reset connection-local input and presentation state.
 
-Build web and `build server --target linux-x64 --authority server` from matching source/engine/config. The engine enforces game/build identity. Use the public WSS URL; no game-owned wire protocol or Node gameplay server is needed. The Linux export must be built on Linux and include its cooked `game/` and shared libraries. `--dry-run` is not runnable.
+Build web and `build server --target linux-x64 --authority server` from matching source/engine/config. The engine enforces game/build identity. Use the public WSS URL; no game-owned wire protocol or Node gameplay server is needed. The Linux export includes its cooked `game/` and the WebGPU wrapper; from macOS or Windows it packages the release's published Linux server. `--dry-run` is not runnable.
 
 A world starts immediately, accepts late joins, reuses disconnected identities and waits while empty without resetting. It ignores fixed-match `players`; actual capacity remains bounded by resources and operator connection guards. A process restart resets it. One changed full document is sent at most every `sendEvery` fixed steps, with fresh state for new joins and pacing for slow sockets. Input is limited to 4 KiB and full state to 256 KiB. Oversize state or sim failure stops the server explicitly for supervisor restart. This mode has no interest filtering, client prediction, accounts, database or multiple-world sharding. Fixed matches continue to use `multiplayer.join` and `PlayerInputs` below.
 
@@ -404,7 +408,8 @@ with `server: 'ws://<this machine>:7600'`.
 ```bash
 gameengine build server                                # this machine's OS, authority from the project
 gameengine build server --target linux-x64 --authority server --port 7600
-gameengine build server --target windows-x64 --dry-run # the folder without the binary (finish it on Windows or CI)
+gameengine build server --target windows-x64 --authority relay
+gameengine build server --target macos-arm64 --dry-run # the folder without the binary (finish it on a Mac or CI)
 ```
 
 Or **Build → Build Multiplayer Server…** in the editor. The folder (default
@@ -415,8 +420,10 @@ host, which runs the cooked game), `run.sh` / `run.cmd`,
 cooked game in `game/`, plus `run-balancer.sh` / `.cmd`. Copy it to the machine and run the script
 (`PORT`, `STORE`, `TLS_CERT`/`TLS_KEY`, `BALANCER`/`PUBLIC_URL`, `GAMEENGINE_MP_KEY` from the
 environment), or `docker build -t my-game-server . && docker run -p 7600:7600 my-game-server`. A
-binary is built for the OS it is built on (`E_CROSS` otherwise): build Linux servers on Linux or
-in CI. `--out` must be empty or an earlier server build.
+Linux x64 server (relay or authoritative) or a Windows x64 relay builds on any OS: from another
+OS, or in an installed editor, the build downloads the release's published binary once and packages
+it. A checkout between releases names that release with `--player X.Y.Z` (the game cooked by a newer
+engine may not run on it). Other targets build on their own OS (`E_CROSS` otherwise). `--out` must be empty or an earlier server build.
 
 Rebuild and redeploy an authoritative server with every game release: it accepts only its own
 build.

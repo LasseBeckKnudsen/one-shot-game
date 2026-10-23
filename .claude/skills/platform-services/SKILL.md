@@ -1,6 +1,6 @@
 ---
 name: platform-services
-version: 1.12.0
+version: 1.13.0
 tier: optional
 description: Third-party SDKs and backends as project services (in-app purchases, analytics, consent, ad networks, login) — services/*.schema.ts, mocks, plugin manifests, Kotlin and Swift sources, replay-safe rules. Use when adding, changing or testing any SDK, store, ad network or server call from native code.
 ---
@@ -246,7 +246,9 @@ params take the report, field by field.
 
 The engine captures no native crashes itself: turn the SDK's own native capture on (its NDK or
 signal handler). Check it on a device build with cheats through the engine cheat `engine.crash`
-(`kind=segfault|abort`, skill `cheats`).
+(`kind=segfault|abort|panic`, skill `cheats`). On Android an engine panic that ends the process is
+the abort message (the tombstone's `Abort message:` line); a handler of your own can read it from
+the `[anon:abort message]` mapping.
 
 ## Analytics
 

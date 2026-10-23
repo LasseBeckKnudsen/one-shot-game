@@ -172,14 +172,17 @@ declare module '@gameengine/ui' {
      *   - `findNote`: text, default "Searching the local network..."
      *   - `status`: text, default "Pick a size and host, or join a match on your network."
      *   - `error`: yesno, default false
-     * Events: `p2`, `p3`, `p4`, `host`, `cancel`, `join (<item>)`, `back`
+     *   - `nameText`: text, default "Tap to type"
+     *   - `hostLabel`: text, default "HOST"
+     *   - `hostTone`: enum green | wood, default "green"
+     * Events: `name`, `p2`, `p3`, `p4`, `host`, `cancel`, `join (<item>)`, `server`, `back`
      * Code areas: none
-     * Refs: `p2`, `p3`, `p4`, `host`, `cancel`, `back`
+     * Refs: `name`, `p2`, `p3`, `p4`, `host`, `cancel`, `server`, `back`
      */
     'lobby': {
-      props: { pick2: boolean; pick3: boolean; pick4: boolean; mode: 'idle' | 'hosting' | 'joining'; waitText: string | { loc: string } | LocText; address: string | { loc: string } | LocText; hosts: readonly { key: string; name?: string | { loc: string } | LocText; count?: string | { loc: string } | LocText }[]; listing: boolean; findNote: string | { loc: string } | LocText; status: string | { loc: string } | LocText; error: boolean };
+      props: { pick2: boolean; pick3: boolean; pick4: boolean; mode: 'idle' | 'hosting' | 'joining'; waitText: string | { loc: string } | LocText; address: string | { loc: string } | LocText; hosts: readonly { key: string; name?: string | { loc: string } | LocText; count?: string | { loc: string } | LocText }[]; listing: boolean; findNote: string | { loc: string } | LocText; status: string | { loc: string } | LocText; error: boolean; nameText: string | { loc: string } | LocText; hostLabel: string | { loc: string } | LocText; hostTone: 'green' | 'wood' };
       areas: never;
-      refs: 'p2' | 'p3' | 'p4' | 'host' | 'cancel' | 'back';
+      refs: 'name' | 'p2' | 'p3' | 'p4' | 'host' | 'cancel' | 'server' | 'back';
     };
     /**
      * Pause menu: a view, dialog (ui/docs/pause-menu.ui.json)

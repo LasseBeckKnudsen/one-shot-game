@@ -256,7 +256,7 @@
     {
       "name": "Sky",
       "id": "sky",
-      "Environment": { "map": "env/sky.jpg", "intensity": 1.15, "tint": "#c4dcff", "ambient": "#7b9bc0" },
+      "Environment": { "map": "env/sky.jpg", "intensity": 1.15, "tint": "#dce9ff", "ambient": "#a39d94" },
       "LocalTransform": {}
     },
     {
@@ -865,49 +865,361 @@
           "name": "Hut",
           "id": "hut1",
           "LocalTransform": { "position": [-14, 0, -9], "rotation": [0.0, 0.70711, -0.0, 0.70711] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.46, "halfZ": 3.15, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol1",
+          "LocalTransform": { "position": [-15.81, 0, -10.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol2",
+          "LocalTransform": { "position": [-15.81, 0, -9.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol3",
+          "LocalTransform": { "position": [-15.81, 0, -7.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol4",
+          "LocalTransform": { "position": [-14.0, 0, -10.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol5",
+          "LocalTransform": { "position": [-14.0, 0, -9.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol6",
+          "LocalTransform": { "position": [-14.0, 0, -7.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol7",
+          "LocalTransform": { "position": [-12.19, 0, -10.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol8",
+          "LocalTransform": { "position": [-12.19, 0, -9.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol9",
+          "LocalTransform": { "position": [-12.19, 0, -7.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Hut",
           "id": "hut2",
           "LocalTransform": { "position": [14, 0, -11], "rotation": [0.0, -0.70711, 0.0, 0.70711] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.46, "halfZ": 3.15, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol10",
+          "LocalTransform": { "position": [12.19, 0, -12.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol11",
+          "LocalTransform": { "position": [12.19, 0, -11.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol12",
+          "LocalTransform": { "position": [12.19, 0, -9.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol13",
+          "LocalTransform": { "position": [14.0, 0, -12.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol14",
+          "LocalTransform": { "position": [14.0, 0, -11.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol15",
+          "LocalTransform": { "position": [14.0, 0, -9.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol16",
+          "LocalTransform": { "position": [15.81, 0, -12.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol17",
+          "LocalTransform": { "position": [15.81, 0, -11.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol18",
+          "LocalTransform": { "position": [15.81, 0, -9.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Hut",
           "id": "hut3",
           "LocalTransform": { "position": [-21, 0, 5], "rotation": [0.0, 0.70711, -0.0, 0.70711] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.46, "halfZ": 3.15, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol19",
+          "LocalTransform": { "position": [-22.81, 0, 3.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol20",
+          "LocalTransform": { "position": [-22.81, 0, 5.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol21",
+          "LocalTransform": { "position": [-22.81, 0, 6.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol22",
+          "LocalTransform": { "position": [-21.0, 0, 3.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol23",
+          "LocalTransform": { "position": [-21.0, 0, 5.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol24",
+          "LocalTransform": { "position": [-21.0, 0, 6.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol25",
+          "LocalTransform": { "position": [-19.19, 0, 3.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol26",
+          "LocalTransform": { "position": [-19.19, 0, 5.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol27",
+          "LocalTransform": { "position": [-19.19, 0, 6.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Hut",
           "id": "hut4",
           "LocalTransform": { "position": [22, 0, 4], "rotation": [0.0, -0.70711, 0.0, 0.70711] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.46, "halfZ": 3.15, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol28",
+          "LocalTransform": { "position": [20.19, 0, 2.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol29",
+          "LocalTransform": { "position": [20.19, 0, 4.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol30",
+          "LocalTransform": { "position": [20.19, 0, 5.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol31",
+          "LocalTransform": { "position": [22.0, 0, 2.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol32",
+          "LocalTransform": { "position": [22.0, 0, 4.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol33",
+          "LocalTransform": { "position": [22.0, 0, 5.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol34",
+          "LocalTransform": { "position": [23.81, 0, 2.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol35",
+          "LocalTransform": { "position": [23.81, 0, 4.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol36",
+          "LocalTransform": { "position": [23.81, 0, 5.5] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Hut",
           "id": "hut5",
           "LocalTransform": { "position": [-7, 0, -23], "rotation": [0.0, 0.0, -0.0, 1.0] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.15, "halfZ": 3.46, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol37",
+          "LocalTransform": { "position": [-8.5, 0, -24.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol38",
+          "LocalTransform": { "position": [-8.5, 0, -23.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol39",
+          "LocalTransform": { "position": [-8.5, 0, -21.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol40",
+          "LocalTransform": { "position": [-7.0, 0, -24.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol41",
+          "LocalTransform": { "position": [-7.0, 0, -23.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol42",
+          "LocalTransform": { "position": [-7.0, 0, -21.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol43",
+          "LocalTransform": { "position": [-5.5, 0, -24.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol44",
+          "LocalTransform": { "position": [-5.5, 0, -23.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol45",
+          "LocalTransform": { "position": [-5.5, 0, -21.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Hut",
           "id": "hut6",
           "LocalTransform": { "position": [9, 0, -24], "rotation": [0.0, 0.0, -0.0, 1.0] },
-          "MeshRenderer": { "mesh": "models/hut_meshy.glb" },
-          "Platform": { "halfX": 3.15, "halfZ": 3.46, "top": 0.67 },
-          "Solid": { "radius": 2.4, "height": 30 }
+          "MeshRenderer": { "mesh": "models/hut_meshy.glb" }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol46",
+          "LocalTransform": { "position": [7.5, 0, -25.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol47",
+          "LocalTransform": { "position": [7.5, 0, -24.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol48",
+          "LocalTransform": { "position": [7.5, 0, -22.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol49",
+          "LocalTransform": { "position": [9.0, 0, -25.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol50",
+          "LocalTransform": { "position": [9.0, 0, -24.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol51",
+          "LocalTransform": { "position": [9.0, 0, -22.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol52",
+          "LocalTransform": { "position": [10.5, 0, -25.81] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol53",
+          "LocalTransform": { "position": [10.5, 0, -24.0] },
+          "Solid": { "radius": 1.65, "height": 30 }
+        },
+        {
+          "name": "HutCollider",
+          "id": "hutcol54",
+          "LocalTransform": { "position": [10.5, 0, -22.19] },
+          "Solid": { "radius": 1.65, "height": 30 }
         },
         {
           "name": "Tower",
@@ -1040,277 +1352,520 @@
       ]
     },
     {
-      "name": "Treehouses",
-      "id": "treehouses",
+      "name": "TreePlatforms",
+      "id": "treeplatforms",
       "LocalTransform": {},
       "children": [
         {
-          "name": "Treehouse",
-          "id": "treehouse1",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": 1.0924, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [-27, 0, -14], "rotation": [0.0, 0.51946, -0.0, 0.85449] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck1",
+          "LocalTransform": { "position": [-27, 4.897, -14], "rotation": [0.0, 0.51946, -0.0, 0.85449], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor1",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": 1.0924, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [-26.481, 0, -13.731] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree1",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [-27, 0.0, -14], "rotation": [0.0, 0.51946, -0.0, 0.85449] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar1",
+          "LocalTransform": { "position": [-32.524, 0, -12.471], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar2",
+          "LocalTransform": { "position": [-28.933, 0, -19.396], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar3",
+          "LocalTransform": { "position": [-24.356, 0, -8.236], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar4",
+          "LocalTransform": { "position": [-20.766, 0, -15.161], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder2",
-          "Ladder": { "nx": 0.8878, "nz": 0.4603, "reach": 1.6 },
-          "LocalTransform": { "position": [-23.38, 0, -13.813] }
+          "Ladder": { "nx": 0.8878, "nz": 0.4603, "reach": 1.8 },
+          "LocalTransform": { "position": [-20.24, 0, -13.198] }
         },
         {
-          "name": "Treehouse",
-          "id": "treehouse2",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": -1.1526, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [27, 0, -12], "rotation": [0.0, -0.54491, 0.0, 0.83849] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck2",
+          "LocalTransform": { "position": [27, 4.897, -12], "rotation": [0.0, -0.54491, 0.0, 0.83849], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor2",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": -1.1526, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [26.465, 0, -11.762] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree2",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [27, 0.0, -12], "rotation": [0.0, -0.54491, 0.0, 0.83849] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar5",
+          "LocalTransform": { "position": [29.254, 0, -17.27], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar6",
+          "LocalTransform": { "position": [32.422, 0, -10.142], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar7",
+          "LocalTransform": { "position": [20.847, 0, -13.533], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar8",
+          "LocalTransform": { "position": [24.015, 0, -6.405], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder3",
-          "Ladder": { "nx": -0.9138, "nz": 0.4061, "reach": 1.6 },
-          "LocalTransform": { "position": [24.594, 0, -9.289] }
+          "Ladder": { "nx": -0.9138, "nz": 0.4061, "reach": 1.8 },
+          "LocalTransform": { "position": [22.154, 0, -7.22] }
         },
         {
-          "name": "Treehouse",
-          "id": "treehouse3",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": 2.0074, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [-30, 0, 14], "rotation": [0.0, 0.84347, -0.0, 0.53718] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck3",
+          "LocalTransform": { "position": [-30, 4.897, 14], "rotation": [0.0, 0.84347, -0.0, 0.53718], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor3",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": 2.0074, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [-29.47, 0, 13.753] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree3",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [-30, 0.0, 14], "rotation": [0.0, 0.84347, -0.0, 0.53718] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar9",
+          "LocalTransform": { "position": [-32.157, 0, 19.31], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar10",
+          "LocalTransform": { "position": [-35.455, 0, 12.242], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar11",
+          "LocalTransform": { "position": [-23.82, 0, 15.42], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar12",
+          "LocalTransform": { "position": [-27.118, 0, 8.351], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder4",
-          "Ladder": { "nx": 0.9062, "nz": -0.4229, "reach": 1.6 },
-          "LocalTransform": { "position": [-27.644, 0, 11.245] }
+          "Ladder": { "nx": 0.9062, "nz": -0.4229, "reach": 1.8 },
+          "LocalTransform": { "position": [-25.243, 0, 9.131] }
         },
         {
-          "name": "Treehouse",
-          "id": "treehouse4",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": -1.9513, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [30, 0, 12], "rotation": [0.0, -0.82807, 0.0, 0.56063] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck4",
+          "LocalTransform": { "position": [30, 4.897, 12], "rotation": [0.0, -0.82807, 0.0, 0.56063], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor4",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": -1.9513, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [29.457, 0, 11.783] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree4",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [30, 0.0, 12], "rotation": [0.0, -0.82807, 0.0, 0.56063] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar13",
+          "LocalTransform": { "position": [35.348, 0, 9.939], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar14",
+          "LocalTransform": { "position": [32.451, 0, 17.181], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar15",
+          "LocalTransform": { "position": [26.806, 0, 6.522], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar16",
+          "LocalTransform": { "position": [23.909, 0, 13.764], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder5",
-          "Ladder": { "nx": -0.9285, "nz": -0.3714, "reach": 1.6 },
-          "LocalTransform": { "position": [26.379, 0, 12.167] }
+          "Ladder": { "nx": -0.9285, "nz": -0.3714, "reach": 1.8 },
+          "LocalTransform": { "position": [23.194, 0, 11.863] }
         },
         {
-          "name": "Treehouse",
-          "id": "treehouse5",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": 2.7611, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [-12, 0, 30], "rotation": [0.0, 0.98196, -0.0, 0.18911] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck5",
+          "LocalTransform": { "position": [-12, 4.897, 30], "rotation": [0.0, 0.98196, -0.0, 0.18911], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor5",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": 2.7611, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [-11.783, 0, 29.457] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree5",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [-12, 0.0, 30], "rotation": [0.0, 0.98196, -0.0, 0.18911] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar17",
+          "LocalTransform": { "position": [-9.939, 0, 35.348], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar18",
+          "LocalTransform": { "position": [-17.181, 0, 32.451], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar19",
+          "LocalTransform": { "position": [-6.522, 0, 26.806], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar20",
+          "LocalTransform": { "position": [-13.764, 0, 23.909], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder6",
-          "Ladder": { "nx": 0.3714, "nz": -0.9285, "reach": 1.6 },
-          "LocalTransform": { "position": [-12.167, 0, 26.379] }
+          "Ladder": { "nx": 0.3714, "nz": -0.9285, "reach": 1.8 },
+          "LocalTransform": { "position": [-11.863, 0, 23.194] }
         },
         {
-          "name": "Treehouse",
-          "id": "treehouse6",
-          "Blocker": { "halfX": 3.2, "halfZ": 3.2, "yaw": -2.705, "y0": 4.3, "y1": 5.3 },
-          "LocalTransform": { "position": [14, 0, 30], "rotation": [0.0, -0.97626, 0.0, 0.21658] },
-          "MeshRenderer": { "mesh": "models/treehouse.glb" },
-          "Platform": { "halfX": 3.2, "halfZ": 3.2, "top": 5.3 },
-          "Solid": { "radius": 2.3, "height": 30 }
+          "name": "PlatformDeck",
+          "id": "platdeck6",
+          "LocalTransform": { "position": [14, 4.897, 30], "rotation": [0.0, -0.97626, 0.0, 0.21658], "scale": [1.5, 1.15, 1.5] },
+          "MeshRenderer": { "mesh": "models/deck.glb" }
+        },
+        {
+          "name": "PlatformFloor",
+          "id": "platfloor6",
+          "Blocker": { "halfX": 4.575, "halfZ": 5.385, "yaw": -2.705, "y0": 4.8, "y1": 5.3, "walk": true },
+          "LocalTransform": { "position": [13.753, 0, 29.47] }
+        },
+        {
+          "name": "PlatformTree",
+          "id": "platformtree6",
+          "Blocker": { "radius": 5.72, "y0": 9.9, "y1": 22.0 },
+          "LocalTransform": { "position": [14, 0.0, 30], "rotation": [0.0, -0.97626, 0.0, 0.21658] },
+          "MeshRenderer": { "mesh": "models/tree_b.glb" },
+          "Solid": { "radius": 1.76 }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar21",
+          "LocalTransform": { "position": [19.31, 0, 32.157], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar22",
+          "LocalTransform": { "position": [12.242, 0, 35.455], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar23",
+          "LocalTransform": { "position": [15.42, 0, 23.82], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
+        },
+        {
+          "name": "Pillar",
+          "id": "pillar24",
+          "LocalTransform": { "position": [8.351, 0, 27.118], "scale": [2.0, 3.706, 2.0] },
+          "MeshRenderer": { "mesh": "models/log_pillar.glb" }
         },
         {
           "name": "Ladder",
           "id": "ladder7",
-          "Ladder": { "nx": -0.4229, "nz": -0.9062, "reach": 1.6 },
-          "LocalTransform": { "position": [11.245, 0, 27.644] }
+          "Ladder": { "nx": -0.4229, "nz": -0.9062, "reach": 1.8 },
+          "LocalTransform": { "position": [9.131, 0, 25.243] }
         },
         {
           "name": "Bridge",
           "id": "bridge1",
-          "Blocker": { "halfX": 10.88, "halfZ": 0.85, "yaw": -1.6775, "y0": 4.85, "y1": 5.35, "walk": true },
-          "LocalTransform": { "position": [-28.5, 5.35, 0.0], "rotation": [0.0, -0.74382, 0.0, 0.66838], "scale": [2.176, 1, 1] },
+          "LocalTransform": {
+            "position": [-27.572, 5.35, -8.665],
+            "rotation": [0.0, -0.74382, 0.0, 0.66838],
+            "scale": [1.825, 1, 1]
+          },
           "MeshRenderer": { "mesh": "models/bridge.glb" }
+        },
+        {
+          "name": "BridgeFloor",
+          "id": "bridgefloor1",
+          "Blocker": { "halfX": 9.28, "halfZ": 0.85, "yaw": -1.6775, "y0": 4.85, "y1": 5.35, "walk": true },
+          "LocalTransform": { "position": [-28.5, 0, 0.0] }
         },
         {
           "name": "Bridge",
           "id": "bridge2",
-          "Blocker": { "halfX": 8.893, "halfZ": 0.85, "yaw": -1.4464, "y0": 4.85, "y1": 5.35, "walk": true },
-          "LocalTransform": { "position": [28.5, 5.35, 0.0], "rotation": [0.0, -0.6618, 0.0, 0.74968], "scale": [1.779, 1, 1] },
+          "LocalTransform": { "position": [27.651, 5.35, -6.796], "rotation": [0.0, -0.6618, 0.0, 0.74968], "scale": [1.434, 1, 1] },
           "MeshRenderer": { "mesh": "models/bridge.glb" }
+        },
+        {
+          "name": "BridgeFloor",
+          "id": "bridgefloor2",
+          "Blocker": { "halfX": 7.293, "halfZ": 0.85, "yaw": -1.4464, "y0": 4.85, "y1": 5.35, "walk": true },
+          "LocalTransform": { "position": [28.5, 0, 0.0] }
         },
         {
           "name": "Bridge",
           "id": "bridge3",
-          "Blocker": { "halfX": 8.842, "halfZ": 0.85, "yaw": -0.7266, "y0": 4.85, "y1": 5.35, "walk": true },
-          "LocalTransform": { "position": [-21.0, 5.35, 22.0], "rotation": [0.0, -0.35538, 0.0, 0.93472], "scale": [1.768, 1, 1] },
+          "LocalTransform": {
+            "position": [-26.082, 5.35, 17.482],
+            "rotation": [0.0, -0.35538, 0.0, 0.93472],
+            "scale": [1.424, 1, 1]
+          },
           "MeshRenderer": { "mesh": "models/bridge.glb" }
+        },
+        {
+          "name": "BridgeFloor",
+          "id": "bridgefloor3",
+          "Blocker": { "halfX": 7.242, "halfZ": 0.85, "yaw": -0.7266, "y0": 4.85, "y1": 5.35, "walk": true },
+          "LocalTransform": { "position": [-21.0, 0, 22.0] }
         },
         {
           "name": "Bridge",
           "id": "bridge4",
-          "Blocker": { "halfX": 8.842, "halfZ": 0.85, "yaw": -2.2974, "y0": 4.85, "y1": 5.35, "walk": true },
-          "LocalTransform": { "position": [22.0, 5.35, 21.0], "rotation": [0.0, -0.91224, 0.0, 0.40966], "scale": [1.768, 1, 1] },
+          "LocalTransform": { "position": [26.518, 5.35, 15.918], "rotation": [0.0, -0.91224, 0.0, 0.40966], "scale": [1.424, 1, 1] },
           "MeshRenderer": { "mesh": "models/bridge.glb" }
+        },
+        {
+          "name": "BridgeFloor",
+          "id": "bridgefloor4",
+          "Blocker": { "halfX": 7.242, "halfZ": 0.85, "yaw": -2.2974, "y0": 4.85, "y1": 5.35, "walk": true },
+          "LocalTransform": { "position": [22.0, 0, 21.0] }
         },
         {
           "name": "Bridge",
           "id": "bridge5",
-          "Blocker": { "halfX": 9.8, "halfZ": 0.85, "y0": 4.85, "y1": 5.35, "walk": true },
-          "LocalTransform": { "position": [1.0, 5.35, 30.0], "rotation": [0.0, 0.0, -0.0, 1.0], "scale": [1.96, 1, 1] },
+          "LocalTransform": { "position": [-6.7, 5.35, 30.0], "rotation": [0.0, 0.0, -0.0, 1.0], "scale": [1.613, 1, 1] },
           "MeshRenderer": { "mesh": "models/bridge.glb" }
+        },
+        {
+          "name": "BridgeFloor",
+          "id": "bridgefloor5",
+          "Blocker": { "halfX": 8.2, "halfZ": 0.85, "y0": 4.85, "y1": 5.35, "walk": true },
+          "LocalTransform": { "position": [1.0, 0, 30.0] }
         },
         {
           "name": "Basket",
           "id": "basket1",
-          "LocalTransform": { "position": [-23.664, 4.0, -15.058], "rotation": [0.0, 0.80692, -0.0, 0.59066] },
+          "LocalTransform": { "position": [-21.662, 4.0, -15.693], "rotation": [0.0, 0.80692, -0.0, 0.59066] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket2",
-          "LocalTransform": { "position": [-28.058, 4.0, -17.336], "rotation": [-0.0, 0.98824, -0.0, -0.15292] },
+          "LocalTransform": { "position": [-28.693, 4.0, -19.338], "rotation": [-0.0, 0.98824, -0.0, -0.15292] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket3",
-          "LocalTransform": { "position": [-30.336, 4.0, -12.942], "rotation": [-0.0, 0.59066, -0.0, -0.80692] },
+          "LocalTransform": { "position": [-32.338, 4.0, -12.307], "rotation": [-0.0, 0.59066, -0.0, -0.80692] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket4",
-          "LocalTransform": { "position": [-25.942, 4.0, -10.664], "rotation": [-0.0, -0.15292, 0.0, -0.98824] },
+          "LocalTransform": { "position": [-25.307, 4.0, -8.662], "rotation": [-0.0, -0.15292, 0.0, -0.98824] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket5",
-          "LocalTransform": { "position": [25.744, 4.0, -8.733], "rotation": [0.0, -0.18256, 0.0, 0.9832] },
+          "LocalTransform": { "position": [24.99, 4.0, -6.773], "rotation": [0.0, -0.18256, 0.0, 0.9832] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket6",
-          "LocalTransform": { "position": [30.267, 4.0, -10.744], "rotation": [0.0, 0.56614, -0.0, 0.82431] },
+          "LocalTransform": { "position": [32.227, 4.0, -9.99], "rotation": [0.0, 0.56614, -0.0, 0.82431] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket7",
-          "LocalTransform": { "position": [28.256, 4.0, -15.267], "rotation": [0.0, 0.9832, -0.0, 0.18256] },
+          "LocalTransform": { "position": [29.01, 4.0, -17.227], "rotation": [0.0, 0.9832, -0.0, 0.18256] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket8",
-          "LocalTransform": { "position": [23.733, 4.0, -13.256], "rotation": [-0.0, 0.82431, -0.0, -0.56614] },
+          "LocalTransform": { "position": [21.773, 4.0, -14.01], "rotation": [-0.0, 0.82431, -0.0, -0.56614] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket9",
-          "LocalTransform": { "position": [-28.804, 4.0, 10.711], "rotation": [0.0, 0.98483, -0.0, 0.1735] },
+          "LocalTransform": { "position": [-28.086, 4.0, 8.737], "rotation": [0.0, 0.98483, -0.0, 0.1735] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket10",
-          "LocalTransform": { "position": [-33.289, 4.0, 12.804], "rotation": [-0.0, 0.81907, -0.0, -0.5737] },
+          "LocalTransform": { "position": [-35.263, 4.0, 12.086], "rotation": [-0.0, 0.81907, -0.0, -0.5737] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket11",
-          "LocalTransform": { "position": [-31.196, 4.0, 17.289], "rotation": [-0.0, 0.1735, -0.0, -0.98483] },
+          "LocalTransform": { "position": [-31.914, 4.0, 19.263], "rotation": [-0.0, 0.1735, -0.0, -0.98483] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket12",
-          "LocalTransform": { "position": [-26.711, 4.0, 15.196], "rotation": [-0.0, -0.5737, 0.0, -0.81907] },
+          "LocalTransform": { "position": [-24.737, 4.0, 15.914], "rotation": [-0.0, -0.5737, 0.0, -0.81907] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket13",
-          "LocalTransform": { "position": [26.783, 4.0, 13.379], "rotation": [0.0, -0.55049, 0.0, 0.83484] },
+          "LocalTransform": { "position": [24.853, 4.0, 14.206], "rotation": [0.0, -0.55049, 0.0, 0.83484] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket14",
-          "LocalTransform": { "position": [31.379, 4.0, 15.217], "rotation": [0.0, 0.20107, -0.0, 0.97958] },
+          "LocalTransform": { "position": [32.206, 4.0, 17.147], "rotation": [0.0, 0.20107, -0.0, 0.97958] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket15",
-          "LocalTransform": { "position": [33.217, 4.0, 10.621], "rotation": [0.0, 0.83484, -0.0, 0.55049] },
+          "LocalTransform": { "position": [35.147, 4.0, 9.794], "rotation": [0.0, 0.83484, -0.0, 0.55049] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket16",
-          "LocalTransform": { "position": [28.621, 4.0, 8.783], "rotation": [-0.0, 0.97958, -0.0, -0.20107] },
+          "LocalTransform": { "position": [27.794, 4.0, 6.853], "rotation": [-0.0, 0.97958, -0.0, -0.20107] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket17",
-          "LocalTransform": { "position": [-13.379, 4.0, 26.783], "rotation": [-0.0, 0.97958, -0.0, -0.20107] },
+          "LocalTransform": { "position": [-14.206, 4.0, 24.853], "rotation": [-0.0, 0.97958, -0.0, -0.20107] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket18",
-          "LocalTransform": { "position": [-15.217, 4.0, 31.379], "rotation": [-0.0, 0.55049, -0.0, -0.83484] },
+          "LocalTransform": { "position": [-17.147, 4.0, 32.206], "rotation": [-0.0, 0.55049, -0.0, -0.83484] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket19",
-          "LocalTransform": { "position": [-10.621, 4.0, 33.217], "rotation": [-0.0, -0.20107, 0.0, -0.97958] },
+          "LocalTransform": { "position": [-9.794, 4.0, 35.147], "rotation": [-0.0, -0.20107, 0.0, -0.97958] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket20",
-          "LocalTransform": { "position": [-8.783, 4.0, 28.621], "rotation": [-0.0, -0.83484, 0.0, -0.55049] },
+          "LocalTransform": { "position": [-6.853, 4.0, 27.794], "rotation": [-0.0, -0.83484, 0.0, -0.55049] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket21",
-          "LocalTransform": { "position": [10.711, 4.0, 28.804], "rotation": [0.0, -0.81907, 0.0, 0.5737] },
+          "LocalTransform": { "position": [8.737, 4.0, 28.086], "rotation": [0.0, -0.81907, 0.0, 0.5737] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket22",
-          "LocalTransform": { "position": [12.804, 4.0, 33.289], "rotation": [0.0, -0.1735, 0.0, 0.98483] },
+          "LocalTransform": { "position": [12.086, 4.0, 35.263], "rotation": [0.0, -0.1735, 0.0, 0.98483] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket23",
-          "LocalTransform": { "position": [17.289, 4.0, 31.196], "rotation": [0.0, 0.5737, -0.0, 0.81907] },
+          "LocalTransform": { "position": [19.263, 4.0, 31.914], "rotation": [0.0, 0.5737, -0.0, 0.81907] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         },
         {
           "name": "Basket",
           "id": "basket24",
-          "LocalTransform": { "position": [15.196, 4.0, 26.711], "rotation": [0.0, 0.98483, -0.0, 0.1735] },
+          "LocalTransform": { "position": [15.914, 4.0, 24.737], "rotation": [0.0, 0.98483, -0.0, 0.1735] },
           "MeshRenderer": { "mesh": "models/planter_hanging.glb", "castShadows": false }
         }
       ]
@@ -7807,9 +8362,9 @@
           "name": "Ray",
           "id": "ray9",
           "LocalTransform": {
-            "position": [5.54, 11.22, -47.68],
+            "position": [19.84, 11.27, -5.29],
             "rotation": [0.59522, 0, 0.60266, 0.53152],
-            "scale": [3.168, 25.8, 3.168]
+            "scale": [3.184, 25.9, 3.184]
           },
           "MeshRenderer": {
             "mesh": "models/beam.glb",
@@ -7822,7 +8377,7 @@
           "name": "Ray",
           "id": "ray10",
           "LocalTransform": {
-            "position": [-1.98, 11.22, 14.55],
+            "position": [5.54, 11.22, -47.68],
             "rotation": [0.59522, 0, 0.60266, 0.53152],
             "scale": [3.168, 25.8, 3.168]
           },
@@ -7837,9 +8392,9 @@
           "name": "Ray",
           "id": "ray11",
           "LocalTransform": {
-            "position": [27.71, 11.14, 15.75],
+            "position": [-1.98, 11.22, 14.55],
             "rotation": [0.59522, 0, 0.60266, 0.53152],
-            "scale": [3.136, 25.6, 3.136]
+            "scale": [3.168, 25.8, 3.168]
           },
           "MeshRenderer": {
             "mesh": "models/beam.glb",
@@ -7852,9 +8407,9 @@
           "name": "Ray",
           "id": "ray12",
           "LocalTransform": {
-            "position": [36.66, 11.05, -19.16],
+            "position": [27.71, 11.14, 15.75],
             "rotation": [0.59522, 0, 0.60266, 0.53152],
-            "scale": [3.104, 25.4, 3.104]
+            "scale": [3.136, 25.6, 3.136]
           },
           "MeshRenderer": {
             "mesh": "models/beam.glb",

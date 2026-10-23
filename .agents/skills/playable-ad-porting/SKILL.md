@@ -1,6 +1,6 @@
 ---
 name: playable-ad-porting
-version: 1.9.2
+version: 1.10.0
 tier: required
 description: Porting a playable-ad slice onto @gameengine/playable so the web ad runs the game's own systems — the web entry, supported features, input, sprites, HUD and sound, `gameengine playable verify`. Use when an ad's web build should run the game's code, or when verify reports a divergence.
 ---
@@ -89,11 +89,11 @@ playable-ads/<ad>/
 | Components, resources, tags, events; queries with read/write/with/without/changed/added; `runIf`, `runOn`, `after`/`before`; the same declaration checks the engine makes at boot | Host ops other than schema, strings, assets, input, log, `data.read` (`loadData` of the records `playable.json` `data` lists), the skeleton track ops and (with the physics module) `physics3d.query`/`teleport`: 2D physics, nav, `pool`, `prefab.spawn`, `transform.snap` (`teleport`), saves, services, `net`, video, `anim.defineCurve`; skeleton queries and overrides (`skeleton2DBone(s)`, `skeleton2DSlots`, `skeleton2DBounds`/`Hit`/`Boxes`, `setSkeleton2DBone`, IK/mix/attachment/colour/skins overrides, `setSkeleton2DPhysics`/`resetSkeleton2DPhysics`); camera rigs (`CameraFollow`, `CameraShake`, `VirtualCamera`), and the engine's `WorldViewFollow` system does not run in an ad (a slice moves `WorldView.center` itself, skill `camera`) |
 | Documents (ADR 0100 amendment: documents and the wall clock): `defineDoc`, metas (`metaInWorld`) and tunables (with their record in `playable.json` `data`), hashed as the engine hashes them. A **persisted** meta (`persist`) runs in memory in a slice, in the engine's run of it too: `loaded()` is true at once, it starts from its initial state and is never saved, so a board whose rules keep their state in a persisted meta ports unchanged | Saves (`defineSave`, `storage`), `MetaLoaded` (an ad never reads a save) |
 | `wallClock.feed` and `WallClock`: ticks from the page's clock as recorded `WallClockTick` input (`verify` runs a clock that moves with the steps); `ctx.signal` and meta signals, delivered to `onSignal` listeners in `web/` once per `p.render` (sounds, HUD and analytics from the game's own signals) | Other UI `emit` events; transient recorded JSON (`emitInputData` / `ctx.inputData`) |
-| 3D physics (ADR 0100 amendment 2): `RigidBody3D` and `Collider3D` (Box, Sphere, Capsule, ConvexHull), contact and sensor events, `Impulse3D`, `query3d`/`raycast3d`/`overlapSphere3d`/`overlapCapsule3d`, `teleportKinematic3d`: the engine's own bridge and Jolt through `physics3dWasm` (§ 3D physics) | `Cylinder` and `Mesh` colliders, compound bodies (a `Collider3D` under a `RigidBody3D`), `Joint3D`, `CharacterController3D` |
+| 3D physics (ADR 0100 amendment 2): `RigidBody3D` and `Collider3D` (Box, Sphere, Capsule, ConvexHull), `Physics3DSolver` and `RigidBody3DSolver` tuning, contact and sensor events (`CollisionDetails3D` too), `Impulse3D`, `query3d`/`raycast3d`/`overlapSphere3d`/`overlapCapsule3d`, `teleportKinematic3d`: the engine's own bridge and Jolt through `physics3dWasm` (§ 3D physics) | `Cylinder` and `Mesh` colliders, compound bodies (a `Collider3D` under a `RigidBody3D`), `Joint3D`, `CharacterController3D` |
 | `Skeleton2D` (ADR 0100 amendment): its tracks, queues and `Skeleton2DEvent`s run the engine's own code through `@gameengine/skel2d-wasm`; `playSkeleton2D`, `queueSkeleton2D`, `clearSkeleton2DQueue`, `skeleton2DTrack`, `setSkeleton2DSkin`, `setSkeleton2DTrack`, `skeleton2DInfo`; `drawSkeletons` draws them (alpha and blend modes; physics constraints swing with presentation time, as in the engine) | `Skeleton2DFollower`, an Animator driving a skeleton |
 | `ctx.commands` (spawn, despawn, insert, remove, set), `ctx.rng`, `math.*`, `ctx.step`/`dt`, `onWarm` hooks | Keyboard, gamepad, text and action input; an `input.json` with actions (build and verify refuse the slice); UI `emit` events other than the wall clock feed's |
 | Sim `tween()` (every ease but `curve:`) and `VisualTween`s; `TweenCompleted` | Components whose engine systems it does not have, when spawned, inserted or in the scene: `Animator`, `IkTarget`, `BoneAttach`, `SharedSkeleton`, `JointOffset`, `BlendShapes`, `MaterialOverrides`, `TimelinePlayer`, 2D rigid bodies, colliders and joints, `Joint3D`, `CharacterController3D`, `VideoPlayer`, `StreamCell`/`StreamFocus`, `Tilemap` |
-| Pointer input and its gestures with several fingers: `Tap`, `Swipe`, `Drag`, `LongPress`, `Pinch`, `Rotate`; `ViewInfo`, `WorldView` | UI views (`*.view.tsx`), `@gameengine/ui`, `@gameengine/vfx`, materials |
+| Pointer input and its gestures with several fingers: `Tap`, `Swipe`, `Drag`, `LongPress`, `Pinch`, `Rotate` (velocity included, default thresholds); `ViewInfo`, `WorldView` | UI views (`*.view.tsx`), `@gameengine/ui`, `@gameengine/vfx`, materials, `input.json` `gestures` (the build refuses them) |
 | `Clip2D` flipbooks (`*.clip2d.json`): the engine's clip stepping, `Clip2DEvent`, `Clip2DFinished`, `playClip2D`/`setClip2D`/`clip2DInfo`/`clip2DFrame`; `SpriteAnimation` and `SpriteFrameEvent`. `drawSprites` draws the clip's frame (offset, scale, alpha, flip) when given `clips: p.clipFrames` | |
 | `ParticleSystem` (`*.vfx.json`, compiled `*.vfx.ts`): the engine's `ParticleClock` and `vfx.burstAt`, simulated by `@gameengine/vfx`'s twin of the engine's CPU simulator; `drawSprites` draws them among the sprites by `sortingLayer`/`order` when given `particles: p.particles` (soft dots, textures and sheets, additive or alpha) | Not drawn: depth collision, `maskInteraction`, per-device `overrides` (the ad plays the base effect), 3D orientations (`horizontal`, `vertical`) |
 | `LocalTransform`/`WorldTransform` with `Parent`; `drawSprites`: position, size and scale, 9-slices, alpha, `flipX`; `MeshRenderer` (presentation only), drawn by `createRenderer3D` (§ 3D meshes) | Not drawn (the sim is unaffected): sprite rotation, `flipY` and negative scale, tint, fills, masks, blend modes, `Text2D`, `Shape`, `Light2D`; in 3D: point and spot lights, shadows, `Fog`, skyboxes and environment maps, `ReflectionProbe`, `Outline`, post, skinned meshes |
@@ -152,7 +152,9 @@ import * as game from '../src/main.ts';
 import { createStage, loadImages, showEndCard, Sounds, storeUrlFor, whenReady } from '../../_shared/runtime/index.ts';
 
 function start(img: Record<string, HTMLImageElement>) {
-  const stage = createStage(); // 1080×1920 design units; pass 1920, 1080 for landscape
+  // 1080×1920 design units (1920, 1080 for landscape). It renders at most 2x density and 60 fps; on a
+  // slow phone pass { renderScale: 0.75 } or { maxFps: 30 } as the 4th argument rather than drawing less.
+  const stage = createStage();
   const audio = new Sounds(sounds);
   const p = createPlayable({ boot, game, scene: Uint8Array.from(atob(slice.scene), (c) => c.charCodeAt(0)), seed: slice.seed, dt: slice.dt });
   const byAlias = Object.fromEntries(Object.entries(aliases).flatMap(([alias, key]) => (img[key] ? [[alias, img[key]!]] : [])));
@@ -287,13 +289,20 @@ stage.ctx.drawImage(r.canvas, 0, 0);
   `*.mat.json` materials (PBR approximated, unlit, toon, matcap; opaque, mask and blend).
 - **Custom materials:** a `*.material.ts` needs its WGSL ported to a GLSL `vec4 surface()` passed as
   `shaders['x.material.ts']`. It reads `v_world`, `v_normal`, `v_uv`, `u_color`, `u_instance`
-  (`MaterialParams.params`), `u_globals[8]` (`MaterialGlobals.v0..v7`), `u_time`, the light and
+  (`MaterialParams.params`; both per-instance varyings, so never declare them as uniforms), `u_globals[8]` (`MaterialGlobals.v0..v7`), `u_time`, the light and
   camera, and each material parameter as `p_<name>`. A LateUpdate system writing
   `MaterialGlobals` (a moving hole) reaches the shader as in the engine.
-- **Meshes:** GLB with embedded images, triangle lists only; Draco, meshopt and quantisation
-  extensions are refused. Heavy models go to the ad's own `assets/` (read before the game's) slimmed:
-  strip the tangents the renderer never reads, use 16-bit indices, decimate, smaller textures. The
-  build deflates `files`, so a mesh inlines at about 60 % of its GLB size.
+- **Meshes:** GLB with embedded images, triangle lists only; Draco is refused. `playable.json`
+  `export.meshes` decides what the build does to them: `"strip"` (default, lossless: drops tangents,
+  colours and other data the renderer never reads), `"quantize"` (8-bit normals, 16-bit UVs, about
+  25 % smaller inline), `"meshopt"` (also `EXT_meshopt_compression`, about 55 % smaller) or
+  `"source"`. Skinned, animated or morphing models are copied as they are (the build notes say so).
+  Code in `web/` that reads GLBs itself (shadows, culling) must use `readGlb` or `parseGlb` from
+  `@gameengine/playable` before you pick `"meshopt"`. Heavy models still go to the ad's own
+  `assets/` (read before the game's) decimated with smaller textures. The build deflates `files`.
+- **Draw calls:** the renderer instances: every `MeshRenderer` of one mesh part and material draws
+  in one call, so many copies of a few props are cheap; many distinct materials or `.glb#Mesh`
+  parts are not.
 - **Params:** only the params a `.mat.json` lists become uniforms; fill the rest from the
   `*.material.ts` defaults in `web/` before passing materials to the renderer.
 - `samples/orbit-garden/playable-ads/garden-orbit` is the worked example (a hole-cut ground shader

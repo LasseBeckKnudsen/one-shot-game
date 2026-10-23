@@ -1,6 +1,7 @@
 import { math, query, read, write, LocalTransform } from '@gameengine/runtime';
 import { defineCheat } from '@gameengine/runtime/cheats';
 import { Flow, Match, Player, SoloLook } from './schema.gen.ts';
+import { cleanName, setPlayerName } from './netstate.ts';
 
 export const AimAt = defineCheat({
   id: 'aim.at',
@@ -89,5 +90,17 @@ export const SetScore = defineCheat({
   query: query(write(Player)),
   run(_ctx, { points }, q) {
     for (const c of q.chunks()) for (let i = 0; i < c.length; i++) c.set(Player, i, { score: points });
+  },
+});
+
+export const SetName = defineCheat({
+  id: 'net.name',
+  group: 'Match',
+  title: 'Set the online name',
+  description: 'Sets the name this player tells the others in an online match (what the lobby name box types).',
+  params: { name: { type: 'string', default: 'Tester' } },
+  presentation: true,
+  run({ name }) {
+    setPlayerName(cleanName(name));
   },
 });

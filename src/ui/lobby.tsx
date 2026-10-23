@@ -3,15 +3,15 @@
  * on this PC or joins one found on the network (presentation only: multiplayer.* never runs in the sim). The match
  * starts by itself when every seat is taken; the engine then rebuilds the world and this closes the lobby.
  */
-import { multiplayer } from '@gameengine/runtime';
+import { multiplayer, services } from '@gameengine/runtime';
 import { createEffect, createSignal, defineUI, onUiFrame, untrack, useResource, views, type ViewHandle } from '@gameengine/ui';
 import { Flow } from '../schema.gen.ts';
-import { lobbyOpen, setLobbyOpen } from '../netstate.ts';
+import { lobbyOpen, nameEditing, playerName, setLobbyOpen, setNameEditing } from '../netstate.ts';
 import { LobbyView, type LobbyModel } from '../views/lobby.view.tsx';
 
 type LanHost = ReturnType<typeof multiplayer.lanHosts>[number];
 
-const IDLE_STATUS = 'Pick a size and host, or join a match on your network.';
+const IDLE_STATUS = 'Pick a size and host, join a match on your network, or play on the server.';
 const HOST_STATUS = 'The match starts by itself when everyone is in.';
 
 const message = (e: unknown) => String((e as Error)?.message ?? e).replace(/^E_[A-Z_]+: /, '');
@@ -29,7 +29,10 @@ export const lobby = defineUI({
     const [status, setStatus] = createSignal(IDLE_STATUS);
     const [error, setError] = createSignal(false);
     let foundKey = '';
-    let noLan = false; // the browser cannot search a network or host a match: only a game server will do there
+    const [noLanSig, setNoLanSig] = createSignal(false); // the browser cannot search a network or host a match: only the game server will do there
+    let noLan = false;
+    /** The address of the game server of the page this runs in (the browser build), else undefined: the project's `multiplayer.server`. */
+    let pageServer: string | undefined;
 
     const say = (text: string, isError = false) => {
       setStatus(text);
@@ -52,6 +55,9 @@ export const lobby = defineUI({
       hosts: found().map((h, i) => ({ key: `h${i}`, name: h.name, joined: h.joined, players: h.players })),
       status: status(),
       error: error(),
+      noLan: noLanSig(),
+      name: playerName(),
+      editing: nameEditing(),
     });
 
     /** Each UI frame while the lobby is open: the match's progress, its errors and (while searching) the hosts on the network. */
@@ -80,7 +86,8 @@ export const lobby = defineUI({
           hosts = multiplayer.lanHosts().filter((h) => h.sameBuild).slice(0, 4);
         } catch (e) {
           noLan = true;
-          say(`${message(e)} Online play in the browser needs a game server, which is not set up yet.`, true);
+          setNoLanSig(true);
+          say('Pick a size and press PLAY ON SERVER.');
           return;
         }
         const key = hosts.map((h) => `${h.url}|${h.room}|${h.name}|${h.joined}/${h.players}`).join(',');
@@ -102,17 +109,41 @@ export const lobby = defineUI({
         } catch {
           // no match client here (a build without multiplayer)
         }
+        // a game published on the office arcade is served by its own match server next to the page: .../<game>/socket
+        void services.system.launchLink().then((r) => {
+          // no page address (a native player): the pattern does not match and the project's server is used
+          const m = /^(https?):\/\/([^/?#]+)([^?#]*)/.exec((r as { url?: string }).url ?? '');
+          if (m) pageServer = `${m[1] === 'https' ? 'wss' : 'ws'}://${m[2]}${m[3]!.replace(/\/+$/, '')}/socket`;
+        }, () => undefined);
         handle = views.push(LobbyView, untrack(model), {
           onIntent: (name, payload) => {
             const p = payload as { players?: number; key?: string } | undefined;
             if (name === 'pick' && p?.players) setPlayers(p.players);
+            else if (name === 'name') {
+              // the name box takes the keyboard (NameEntry types into it); on a phone the on-screen keyboard shows
+              const on = !nameEditing();
+              setNameEditing(on);
+              if (on) void services.keyboard.show({ type: 'text', text: playerName() }).catch(() => undefined);
+              else void services.keyboard.hide().catch(() => undefined);
+            }
             else if (name === 'host') {
+              if (noLan) return; // the browser cannot host: only PLAY ON SERVER
               try {
                 const hosted = multiplayer.host({ players: players() });
                 setAddress(hosted.url);
                 setJoined(1);
                 setMode('hosting');
                 say(HOST_STATUS);
+              } catch (e) {
+                say(message(e), true);
+              }
+            } else if (name === 'server') {
+              if (mode() !== 'idle') return;
+              try {
+                multiplayer.join(pageServer ? { server: pageServer, players: players() } : { players: players() });
+                setJoining('the server');
+                setMode('joining');
+                say('Connecting to the server...');
               } catch (e) {
                 say(message(e), true);
               }
@@ -141,6 +172,10 @@ export const lobby = defineUI({
       } else if (!on && handle) {
         stopFrames?.();
         stopFrames = null;
+        if (nameEditing()) {
+          setNameEditing(false);
+          void services.keyboard.hide().catch(() => undefined);
+        }
         handle.close();
         handle = null;
         // the match started (or the start screen went away): the next visit starts fresh

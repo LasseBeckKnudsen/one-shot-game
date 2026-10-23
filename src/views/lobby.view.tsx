@@ -1,4 +1,4 @@
-/** The online lobby over the start screen: host a 2-4 player match or join one found on the network. Intents: pick {players}, host, cancel, join {key}, back. */
+/** The online lobby over the start screen: host a 2-4 player match or join one found on the network. Intents: pick {players}, host, cancel, join {key}, server, name, back. */
 import { Widget, defineView } from '@gameengine/ui';
 
 export interface LobbyHost {
@@ -23,12 +23,18 @@ export interface LobbyModel {
   /** The bottom line: what is happening, or what went wrong. */
   status: string;
   error: boolean;
+  /** This build cannot host or search a network (the browser): only the game server works. */
+  noLan?: boolean;
+  /** The name box: the typed name (empty: a hint) and whether it has the keyboard (a cursor shows). */
+  name?: string;
+  editing?: boolean;
 }
 
 const IDLE_STATUS = 'Pick a size and host, or join a match on your network.';
 
 const findNote = (m: LobbyModel) =>
-  m.mode === 'hosting' ? 'You are hosting: finding other matches is paused.'
+  m.noLan ? 'Hosting and finding matches on a network need the desktop game. Use PLAY ON SERVER.'
+    : m.mode === 'hosting' ? 'You are hosting: finding other matches is paused.'
     : m.mode === 'joining' ? 'You joined a match: finding is paused.'
       : 'Searching the local network...';
 
@@ -47,6 +53,7 @@ export const LobbyView = defineView<LobbyModel>({
     },
     hosting: { players: 3, mode: 'hosting', joined: 2, address: 'ws://192.168.1.20:7600', hosts: [], status: 'The match starts by itself when everyone is in.', error: false },
     joining: { players: 2, mode: 'joining', joined: 0, address: '', hosts: [], status: "Joined Ana's PC. Waiting for the others...", error: false },
+    browser: { players: 2, mode: 'idle', joined: 0, address: '', hosts: [], status: 'Pick a size and press PLAY ON SERVER.', error: false, noLan: true },
     error: {
       players: 2, mode: 'idle', joined: 0, address: '', hosts: [], error: true,
       status: '192.168.1.31 found your match but could not connect: allow TCP port 7600 in this PC\'s firewall.',
@@ -68,13 +75,16 @@ export const LobbyView = defineView<LobbyModel>({
         listing: () => model().mode === 'idle' && model().hosts.length > 0,
         findNote: () => findNote(model()),
         status: () => model().status,
+        hostLabel: () => (model().noLan ? 'HOST (desktop only)' : 'HOST'),
+        hostTone: () => (model().noLan ? 'wood' : 'green'),
+        nameText: () => (model().editing ? `${model().name ?? ''}_` : model().name || 'Tap to type'),
         error: () => model().error,
       }}
       onIntent={(_, e) => {
         const k = e.path.at(-1)!;
         if (k === 'p2' || k === 'p3' || k === 'p4') intent('pick', { players: Number(k.slice(1)) });
         else if (k === 'join') intent('join', { key: e.item });
-        else if (k === 'host' || k === 'cancel' || k === 'back') intent(k);
+        else if (k === 'host' || k === 'cancel' || k === 'back' || k === 'server' || k === 'name') intent(k);
       }}
     />
   ),

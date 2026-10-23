@@ -2,11 +2,11 @@
  * Presentation side of play, solo or online (all LateUpdate: it reads the sim and never changes a hash):
  * which seat this device plays, its input in an online match, the camera and first-person rig of that seat, and its HUD data.
  */
-import { defineSystem, query, read, write, math, multiplayer, Camera, PlayerInputs, playerInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
+import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
 import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
 import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatCam, VmRig } from './schema.gen.ts';
 import { announcement } from './announce.ts';
-import { boardOpen, feed, onlinePaused, onlineSens, setBoardOpen, setFeed, setOnlinePaused } from './netstate.ts';
+import { boardOpen, cleanName, feed, nameEditing, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
 
 const SENS = 0.0022;
 
@@ -132,7 +132,7 @@ export const AnnounceFeed = defineSystem({
     const me = localSeat();
     const fresh = [];
     for (const e of ctx.events.read(Announce)) {
-      const { head, taunt } = announcement(e.kind, e.a, e.b, me, Math.random());
+      const { head, taunt } = announcement(e.kind, e.a, e.b, me, Math.random(), seatNames());
       fresh.push({ id: ++feedId, head, taunt, mine: e.a === me || (e.kind === 0 && e.b === me) });
     }
     if (fresh.length > 0) setFeed([...feed(), ...fresh].slice(-6));
@@ -185,3 +185,67 @@ export const HudMirror = defineSystem({
 function readPlayer(p: { score: number; hits: number; state: unknown; respawn: number; loaded: boolean; superCd: number; deathBy: number }) {
   return { score: p.score, hits: p.hits, dead: p.state === 'Dead', respawn: p.respawn, loaded: p.loaded, superCd: p.superCd, deathBy: p.deathBy };
 }
+
+/** The lobby's name box has the keyboard: typed text edits `playerName`, Enter or Escape end it. */
+export const NameEntry = defineSystem({
+  name: 'NameEntry',
+  stage: 'LateUpdate',
+  events: [TextInput, KeyEvent],
+  run(ctx) {
+    if (!nameEditing()) return;
+    let name = playerName();
+    let done = false;
+    for (const e of ctx.events.read(TextInput)) name = cleanName(name + e.text);
+    for (const e of ctx.events.read(KeyEvent)) {
+      if (!e.down) continue;
+      if (e.code === Keys.Backspace) name = name.slice(0, -1);
+      else if (e.code === Keys.Enter || e.code === Keys.Escape) done = true;
+    }
+    if (name !== playerName()) setPlayerName(name);
+    if (done) {
+      setNameEditing(false);
+      void services.keyboard.hide().catch(() => undefined);
+    }
+  },
+});
+
+/** Seconds between a seat repeating its name (a seat that joined late, or a notice lost, learns it within this). */
+const NAME_EVERY = 3;
+
+/**
+ * Names travel as `multiplayer.say('name', { n })` notices (the match carries no names): this device says its own on joining and every few
+ * seconds, and files the ones the other seats say under their seat for the announcements and the leaderboard.
+ */
+let nextSay = 0;
+
+export const NameSync = defineSystem({
+  name: 'NameSync',
+  stage: 'LateUpdate',
+  run(ctx) {
+    if (!inOnlineMatch()) {
+      nextSay = 0;
+      if (Object.keys(seatNames()).length > 0) setSeatNames({});
+      return;
+    }
+    const me = localSeat();
+    const own = playerName().trim();
+    let heard = false;
+    let names = seatNames();
+    for (const ev of multiplayer.events()) {
+      if (ev.type === 'joined') heard = true;
+      else if (ev.type === 'notice' && ev.topic === 'name' && ev.from !== null && ev.from !== me) {
+        const n = cleanName(String((ev.data as { n?: unknown } | null)?.n ?? '')).trim();
+        if (names[ev.from] !== n) names = { ...names, [ev.from]: n };
+      }
+    }
+    if (names !== seatNames()) setSeatNames(names);
+    if (own && (heard || ctx.step >= nextSay)) {
+      nextSay = ctx.step + NAME_EVERY * 60;
+      try {
+        multiplayer.say('name', { n: own });
+      } catch {
+        // the server's rate limit or a closing match: the next repeat tells it
+      }
+    }
+  },
+});

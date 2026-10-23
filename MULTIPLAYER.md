@@ -8,8 +8,9 @@ Everyone must run the game on the patched engine (mouse in a match, world reset 
 ## Play
 1. Everyone starts the game on a PC (same build; the lobby only lists hosts with the same build).
 2. One player: **JOIN GAME → HOST A MATCH**, picks 2, 3 or 4 players, clicks HOST. The other players: **JOIN GAME**, wait a second for the host to appear in "FIND A MATCH", click JOIN.
-3. The match starts by itself when all seats are taken. With few players some bots stay in the arena (2 players: 4 bots, 3: 2, 4: none).
-4. **Esc** opens the pause menu (the match goes on for everyone else). **Quit to menu** leaves; if the host quits, the match ends for everyone.
+3. The match starts by itself when all seats are taken. Online matches have no bots.
+4. Your name: in the lobby click the name box, type (letters, digits, space, `_`, `-`; up to 12), Enter. The others see it in announcements and the leaderboard (sent with `multiplayer.say`, so it needs no engine change); without a name you are "Player N". It is remembered for next time.
+5. **Esc** opens the pause menu (the match goes on for everyone else). **Quit to menu** leaves; if the host quits, the match ends for everyone.
 
 Without the lobby: `gameengine run --host` on one PC and `gameengine run --join lan` (or `--join ws://<ip>:7600`) on the others.
 

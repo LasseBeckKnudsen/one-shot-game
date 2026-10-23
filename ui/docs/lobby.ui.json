@@ -31,6 +31,7 @@
       "name": "Element",
       "children": [
         "l_title",
+        "l_namerow",
         "l_cols",
         "l_foot"
       ],
@@ -180,8 +181,12 @@
       "doc": "ui-button",
       "key": "host",
       "props": {
-        "label": "HOST",
-        "tone": "green"
+        "label": {
+          "property": "hostLabel"
+        },
+        "tone": {
+          "property": "hostTone"
+        }
       },
       "style": {
         "margin": [
@@ -340,6 +345,7 @@
       "name": "Element",
       "children": [
         "l_status",
+        "l_server",
         "l_back"
       ],
       "style": {
@@ -373,6 +379,58 @@
       },
       "style": {
         "w": 360
+      }
+    },
+    "l_server": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "server",
+      "style": {
+        "w": 420
+      },
+      "props": {
+        "label": "PLAY ON SERVER",
+        "tone": "green"
+      }
+    },
+    "l_namerow": {
+      "type": "element",
+      "name": "Element",
+      "children": [
+        "l_namelbl",
+        "l_namebtn"
+      ],
+      "style": {
+        "pad": 0,
+        "dir": "row",
+        "gap": 24,
+        "align": "center",
+        "justify": "center"
+      }
+    },
+    "l_namelbl": {
+      "type": "label",
+      "name": "Label",
+      "text": "Your name",
+      "style": {
+        "fontSize": 32,
+        "weight": 800,
+        "color": "#d9c7a0ff"
+      }
+    },
+    "l_namebtn": {
+      "type": "use",
+      "doc": "ui-button",
+      "key": "name",
+      "style": {
+        "w": 520,
+        "h": 84
+      },
+      "props": {
+        "label": {
+          "property": "nameText"
+        },
+        "tone": "wood"
       }
     }
   },
@@ -487,6 +545,22 @@
           }
         }
       }
+    },
+    "nameText": {
+      "type": "text",
+      "default": "Tap to type"
+    },
+    "hostLabel": {
+      "type": "text",
+      "default": "HOST"
+    },
+    "hostTone": {
+      "type": "enum",
+      "values": [
+        "green",
+        "wood"
+      ],
+      "default": "green"
     }
   }
 }

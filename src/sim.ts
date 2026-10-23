@@ -553,9 +553,20 @@ export const Respawn = defineSystem({
     player: query(write(Player), write(LocalTransform)),
     spawns: query(read(SpawnPoint), read(LocalTransform)),
     critters: query(read(Critter), read(LocalTransform)),
-    others: query(read(Player), read(LocalTransform)),
   },
-  run(ctx, { player, spawns, critters, others }) {
+  run(ctx, { player, spawns, critters }) {
+    // the players still standing, read before any of them is written (one query only: a second, read-only one over the same
+    // entities would alias the writes below)
+    const standing: { index: number; x: number; z: number }[] = [];
+    for (const pc of player.chunks()) {
+      for (let i = 0; i < pc.length; i++) {
+        const p = pc.get(Player, i);
+        if (p.state !== 'Dead') {
+          const t = pc.get(LocalTransform, i).position;
+          standing.push({ index: p.index, x: t[0], z: t[2] });
+        }
+      }
+    }
     for (const pc of player.chunks()) {
       for (let i = 0; i < pc.length; i++) {
         const p = pc.get(Player, i);
@@ -573,13 +584,10 @@ export const Respawn = defineSystem({
           for (let s = 0; s < sc.length; s++) {
             const sp = sc.get(LocalTransform, s).position;
             let near = 1e9;
-            for (const oc of others.chunks()) {
-              for (let k = 0; k < oc.length; k++) {
-                if (oc.get(Player, k).index === p.index || oc.get(Player, k).state === 'Dead') continue;
-                const ot = oc.get(LocalTransform, k).position;
-                const d = (ot[0] - sp[0]) ** 2 + (ot[2] - sp[2]) ** 2;
-                if (d < near) near = d;
-              }
+            for (const o of standing) {
+              if (o.index === p.index) continue;
+              const d = (o.x - sp[0]) ** 2 + (o.z - sp[2]) ** 2;
+              if (d < near) near = d;
             }
             for (const cc of critters.chunks()) {
               for (let k = 0; k < cc.length; k++) {
@@ -824,9 +832,6 @@ export const StartMusic = defineSystem({
   },
 });
 
-/** Bots an online match keeps for its player count (a two-player arena would feel empty without a few). */
-const botsFor = (players: number): number => math.max(0, 8 - 2 * players);
-
 /**
  * The app flow: Start -> Loading -> Playing <-> Paused for a solo match (Escape pauses; the UI raises StartSolo, GameReady,
  * ResumeGame, QuitToMenu). An online match is started by the engine, which rebuilds the world with the match seed: this
@@ -883,7 +888,7 @@ export const FlowControl = defineSystem({
     if (screen === 'Playing' && !trimmed) {
       trimmed = true;
       const keepSeats = online ? online.players : 1;
-      const keepBots = online ? botsFor(online.players) : 8;
+      const keepBots = online ? 0 : 8;
       for (const c of seats.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Player, i).index >= keepSeats) ctx.commands.despawn(c.entity(i));
       for (const c of bodies.chunks()) for (let i = 0; i < c.length; i++) if (c.get(SeatBody, i).index >= keepSeats) ctx.commands.despawn(c.entity(i));
       for (const c of rigs.chunks()) for (let i = 0; i < c.length; i++) if (c.get(VmRig, i).index >= keepSeats) ctx.commands.despawn(c.entity(i));
@@ -900,12 +905,12 @@ export const SeatBodies = defineSystem({
   queries: { bodies: query(read(SeatBody), write(LocalTransform), write(Animator)), player: query(read(Player), read(LocalTransform)) },
   events: [ShotFired],
   run(ctx, { bodies, player }) {
-    const seats = new Map<number, { yaw: number; x: number; y: number; z: number; walking: boolean; aiming: boolean; dead: boolean }>();
+    const seats = new Map<number, { yaw: number; x: number; y: number; z: number; walking: boolean; airborne: boolean; aiming: boolean; dead: boolean }>();
     for (const c of player.chunks()) {
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i).position;
-        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, aiming: p.aiming, dead: p.state === 'Dead' });
+        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, airborne: p.vy !== 0 && !p.climbing, aiming: p.aiming, dead: p.state === 'Dead' });
       }
     }
     const fired = new Set<number>();
@@ -918,6 +923,7 @@ export const SeatBodies = defineSystem({
         const k = b.dead ? 0 : 1;
         c.set(LocalTransform, i, { position: [b.x, b.y, b.z], rotation: yawPitchQuat(b.yaw, 0), scale: [k, k, k] });
         setAnimParam(c, i, 'walking', b.walking);
+        setAnimParam(c, i, 'airborne', b.airborne);
         setAnimParam(c, i, 'aiming', b.aiming);
         setAnimParam(c, i, 'dead', false);
         if (fired.has(c.get(SeatBody, i).index)) triggerAnim(c, i, 'fire');

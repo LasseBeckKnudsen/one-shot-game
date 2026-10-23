@@ -1,6 +1,6 @@
 ---
 name: camera
-version: 1.0.1
+version: 1.0.4
 tier: required
 description: Cameras — read before adding, moving, aiming, framing, zooming, following, shaking or switching a Camera. The three kinds (2D, tilted ortho, perspective), what WorldView drives, CameraFollow, CameraShake, VirtualCamera, WorldViewFollow, `gameengine camera list|visible|frame|shot`, W_CAMERA_* codes.
 ---
@@ -35,6 +35,7 @@ camera from the scene file alone.
 | Move or zoom a 2D view | Write `WorldView` in a sim system (taps map through it) | Edit the camera's transform or `orthoSize` |
 | Follow a target in 2D | Set the `WorldViewFollow` resource (`target`, `damping`, `deadZone`, `lookahead`, `bounded` with `boundsMin`/`boundsMax`); it runs in the sim, replays repeat it | `CameraFollow` on a flat camera (`W_CAMERA_FOLLOW_2D`) |
 | Follow a target in 3D | `CameraFollow` + `VisualOffset` on the camera (`offset`, `damping`, `deadZone`, `lookahead`, `bounded`) | A sim system reading `Camera` |
+| Mouse-look on desktop | `services.system.setMouseCapture({ enabled: true })` from UI code (needs the `system` plugin); then `PointerHover`/`PointerMove` positions accumulate raw motion, so turn by the difference between successive ones in a sim system. Clicks land at that virtual position. Releasing, or the window losing focus, jumps the pointer back to the real cursor in one move: cap the turn per step. In editor Play the game view locks on the next click and Escape unlocks (the game gets the Escape key). Web: the browser pointer lock, taken on the next click and again after Escape (the game gets the Escape key). Answers `captured: false` in tests and phones: keep a drag fallback | Reading the OS cursor, or assuming capture held after a focus change |
 | Shake | `CameraShake` + `VisualOffset` on the camera, then `shakeCamera(camera, 0.5)` from presentation | Writing shake into `LocalTransform` |
 | Cut or blend between shots | Entities with `VirtualCamera` (`priority`, `blend`, `fovY`) and a `LocalTransform`; the highest priority that is not Hidden or Disabled drives the camera, which needs `VisualOffset` | Copying poses into the camera every frame |
 

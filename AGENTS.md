@@ -34,6 +34,7 @@ for a restart unless the engine's own binaries changed. Keep every save compilin
 - State lives in components and resources (`schema/*.schema.ts`, then `gameengine gen`), never in module variables.
 - Input → sim → presentation, never back: sim systems never read cameras, UI, real time or `sim: false` state (skill `sim-boundaries`).
 - UI: new screens, popups and widgets are UI documents (`ui/**/*.ui.json`), built and changed only with `gameengine ui doc` (MCP `ui_doc_*`), never by writing the JSON (skill `ui-documents`). A controller fills a view's model and the view raises intents; UI never reads the world.
+- **Touch feel: read skill `touch-input` before building or tuning any tap, swipe, drag or pinch control.** Players judge a phone game by how its touch feels. Act as the finger crosses the threshold, not when it lifts (`Swipe` fires mid-gesture by default). Fling with `Drag` `End`'s `velocity`, and keep dragged pieces under the finger with `teleport(e)` each step. Tune thresholds in `input.json` `gestures`, never with hand-made timers.
 - **Cameras: read skill `camera` before any camera change.** Start with `gameengine camera list` (each camera's kind and what drives it). The first orthographic camera's size and 2D position come from `WorldView`, not its own fields; follow, shake and shot switches are `CameraFollow`, `CameraShake`, `VirtualCamera` (3D, on the camera's `VisualOffset`) or `WorldViewFollow` (2D, in the sim), never hand-written camera code. Prove it with `gameengine camera shot`.
 - Every view and gameplay screen fits every screen shape its platforms have: the board stays whole and clear of the HUD and safe area, views never clip. Check the extremes before handing back (skill `screen-fit`).
 - Scenes live in `scenes/`, prefabs in `prefabs/` (other paths fail with `E_DOCUMENT_PATH`). Order a scene's `entities` for a person, as the editor's Hierarchy shows file order: cameras and lights, then the level, gameplay objects and effects, grouped under named parents (`Environment`, `Enemies`); add an entity next to its siblings.
@@ -63,7 +64,9 @@ or `.agents/skills/<name>/SKILL.md` for Codex; `gameengine skills list` names th
 | Any task | `work-loop` (commands for each step, the live editor) |
 | Sim code | `determinism`, `sim-boundaries`, `ecs-systems` (run conditions, events, change filters) |
 | Behaviour or a bug fix | `testing` |
-| A screen, popup, button or widget | `ui-documents`, then `screen-fit` for boards, HUDs and views |
+| Any touch control: taps, swipes, drags, pinches, flings | `touch-input` (feel, velocity, `input.json` `gestures`) |
+| An interactive widget or MCP App inside chat | `mcp-widgets` (chat controls and live previews) |
+| A game screen, popup, button or widget | `ui-documents`, then `screen-fit` for boards, HUDs and views |
 | Adding, moving, framing, following, shaking or switching a camera | `camera` (start with `gameengine camera list`) |
 | Anything heavy, and before handing it back | `mobile-performance-review` (budgets per device class, the checklist) |
 | A hot or over-budget system | `perf-to-rust` (fix it in TypeScript first; prove the hash unchanged with `gameengine test --hash-trace`) |

@@ -1,8 +1,8 @@
 ---
 name: playable-ads
-version: 1.3.2
+version: 1.5.0
 tier: required
-description: Playable ads from the game — cut a slice in playable-ads/<ad>/, verify it in the engine, rewrite it for the web, then `gameengine playable export-assets|build|validate` per network (AppLovin, Unity, ironSource, Google, Meta, Mintegral, TikTok). Use for any playable, HTML5 or MRAID ad, end card or ad-network size problem.
+description: Playable ads from the game — cut a slice in playable-ads/<ad>/, verify it in the engine, rewrite it for the web, then `gameengine playable export-assets|build|validate` per network (AppLovin, Unity, ironSource, Google, Meta, Mintegral, TikTok). Use for any playable, HTML5 or MRAID ad, end card, loading phase, slow start or ad-network size problem.
 ---
 
 # Playable ads (ADR 0069)
@@ -67,13 +67,49 @@ built size against that cap, not only against each network's.
    `gameengine playable validate <ad> --json`. Fix every failed check; read `results[].checks`.
 7. **Look at it:** the editor's Playable Ads mode shows `dist/preview` in phone frames, with a
    size meter per network. Tell the user what to try there.
-8. **Promote:** when the same web code (a gem renderer, a hand tutorial, a board) is used by a
+8. **Check it plays:** `gameengine playable validate <ad> --run` plays each build in headless
+   Chromium with every loading phase failing, taps until the end card shows and checks the
+   network's store call fired.
+9. **Promote:** when the same web code (a gem renderer, a hand tutorial, a board) is used by a
    **second** ad, move it into `playable-ads/_shared/` and import it from both. Not before.
+
+## Loading phases (ADR 0348)
+
+The first frame waits for **core** only. Put what the first seconds do not show in phases:
+
+```json
+"phases": [
+  { "name": "audio", "assets": ["swap", "match"], "start": "first-touch" },
+  { "name": "level2", "assets": ["level2_board", "boss"], "deadlineSec": 12 }
+],
+"endCard": ["icon"],
+"budgets": { "coreBytes": 300000 }
+```
+
+- Every asset key no phase lists is core. List phases in the order the player needs them.
+- `start: "first-touch"` for what only matters once the player plays (sounds: audio is silent
+  until the first touch anyway). `deadlineSec` (default 10) is when the phase counts as missed.
+- `endCard` keys stay in core (the build refuses otherwise): the CTA never waits on a phase.
+- In `web/`: `const loader = createPhaseLoader(phases)` (from `@gameengine/playable/phases`,
+  `phases` from `playable:manifest`), `loader.start()` once core is decoded, then
+  `loader.whenReady('level2').then(use, fallback)`. `p.decoded` has the images decoded,
+  `p.sounds` go to `Sounds.add`. On a missed phase **always have a fallback**: a lighter variant,
+  skip ahead, or the end card. A missed phase keeps loading: for content that is still useful
+  late (sounds), add it from `loader.on` when its state turns `ready`, not only from `whenReady`.
+- Never call the loader from a system: it throws in sim. Phases hold `assets` only; the start
+  scene, `data`, clips, effects, skeletons and wasm stay in core.
+- Transports come from the network: inline in the HTML everywhere, files in the zip on Google and
+  TikTok (`dist/<network>.zip`, upload that). A network in `playable-ads/networks.json` may allow
+  `remote` phases from `remote.base` (`--remote-base`); never for the seven built-in networks.
+- Try a slow and a failing network in the editor preview (**Loading**), and run `validate --run`.
+- `playable:start`, `playable:first-touch`, `playable:phase`, `playable:end-card` and
+  `playable:cta` are window events for the company's own tracking; the ad itself sends nothing.
 
 ## Rules every ad must follow (networks reject otherwise)
 
 - **One file, nothing external:** no `fetch`, XHR, WebSocket, CDN script, font or image URL.
-  Everything is inlined by `playable build`. Only the network's own tag is allowed (`mraid.js`,
+  Everything is inlined by `playable build` (Google and TikTok get a zip whose files load by
+  relative path). Only the network's own tag is allowed (`mraid.js`,
   Google's Exit API).
 - **CTA through the network:** call `openStore(url)` / `showEndCard()` from the runtime; it uses
   `mraid.open`, `ExitApi.exit`, `FbPlayableAd.onCTAClick`, `install`, or `openAppStore` per
@@ -84,7 +120,8 @@ built size against that cap, not only against each network's.
 - **End:** show the end card (`showEndCard`), which also calls Mintegral's `gameEnd`.
 - **Size caps:** Meta 2 MB, ironSource 4 MB, the others 5 MB (ask which one the ad targets,
   above). Aim for well under 1 MB:
-  WebP images (`export.images: "webp"`), MP3 at 96 kbps, only the assets the loop shows.
+  WebP images (`export.images: "webp"`), MP3 at 96 kbps, 3D models with `export.meshes:
+  "quantize"` or `"meshopt"` (skill `playable-ad-porting`), only the assets the loop shows.
 - Portrait and landscape both have to work; the stage letterboxes a fixed design size.
 
 ## Commands
@@ -96,6 +133,6 @@ built size against that cap, not only against each network's.
 | Run the slice | `gameengine playable run <ad> [--headless --steps N]` |
 | Export assets only | `gameengine playable export-assets <ad>` (needs `cwebp`, `ffmpeg`) |
 | Build all networks | `gameengine playable build <ad> [--network meta,unity]` |
-| Check networks | `gameengine playable validate <ad> [--network tiktok]` (exit 1 on a failure) |
+| Check networks | `gameengine playable validate <ad> [--network tiktok] [--run]` (exit 1 on a failure; `--run` plays each build headless with its phases failing) |
 
 MCP: `playable_list`, `playable_new`, `playable_export_assets`, `playable_build`, `playable_validate`.

@@ -113,7 +113,7 @@ root.append({'name': 'Sun', 'id': 'sun',
              'Light': {'color': '#ffdcae', 'intensity': 2.6, 'castShadows': True, 'shadowDistance': 70, 'shadowBias': 0.04, 'sunAngle': 0.03},
              'LocalTransform': {'rotation': yaw_q(2.35, -0.45)}})
 root.append({'name': 'Sky', 'id': 'sky',
-             'Environment': {'map': 'env/sky.jpg', 'intensity': 1.15, 'skybox': True, 'tint': '#c4dcff', 'ambient': '#7b9bc0'},
+             'Environment': {'map': 'env/sky.jpg', 'intensity': 1.15, 'skybox': True, 'tint': '#dce9ff', 'ambient': '#a39d94'},
              'LocalTransform': {}})
 
 env = []
@@ -170,9 +170,15 @@ for (x, z) in huts:
     hx, hz = (3.15, 3.46) if quarter == 0 else (3.46, 3.15)
     village.append({'name': 'Hut', 'id': eid('hut'),
                     'LocalTransform': {'position': [x, 0, z], 'rotation': yaw_q(face)},
-                    'MeshRenderer': {'mesh': 'models/hut_meshy.glb'},
-                    'Solid': {'radius': 2.4, 'height': 30},
-                    'Platform': {'halfX': hx, 'halfZ': hz, 'top': 0.67}})
+                    'MeshRenderer': {'mesh': 'models/hut_meshy.glb'}})
+    # the whole footprint (cabin, deck and steps) is solid: a grid of overlapping discs, so nobody (or no stone) gets in
+    R_HUT = 1.65
+    xs = [-hx + R_HUT, 0.0, hx - R_HUT]
+    zs = [-hz + R_HUT, 0.0, hz - R_HUT]
+    for dx in xs:
+        for dz in zs:
+            village.append({'name': 'HutCollider', 'id': eid('hutcol'), 'LocalTransform': {'position': [round(x + dx, 3), 0, round(z + dz, 3)]},
+                            'Solid': {'radius': R_HUT, 'height': 30}})
 village.append(prop('Tower', 'tower', 0, -33, solid=(1.6, 100)))
 village.append({'name': 'TowerDeck', 'id': 'towerdeck', 'LocalTransform': {'position': [0, 0, -33]}, 'Platform': {'halfX': 2.6, 'halfZ': 2.6, 'top': 7.75}, 'Blocker': {'halfX': 2.6, 'halfZ': 2.6, 'y0': 7.0, 'y1': 7.75}})
 for k, (deg, r_, sc) in enumerate([(35, 62, 1.5), (95, 70, 1.8), (160, 64, 1.4), (215, 72, 1.7), (275, 66, 1.5), (330, 74, 1.9)]):  # distant towers beyond the fence: vertical silhouettes, no collision
@@ -192,22 +198,43 @@ village.append(prop('Lantern', 'lantern_post', -2.7, 14.8, y=0.35, yaw=PI))
 village.append(prop('Banner', 'banner_post', -2.5, 18.9, y=0.35, yaw=PI))
 root.append(group('Village', village))
 
-# ---- Meshy treehouses on their own posts, linked by rope bridges ------------------------------
+# ---- big tree platforms: a tall tree through a wide railed deck on pillars, a ladder up, rope bridges between ---------
 canopy = []
 DECK_TOP = 5.3
+PLAT = 1.5                      # the lookout deck model (6.1 x 7.2 m, steps on its +Z side) scaled up
+PSY = 1.15                      # taller railing
+PX = 3.05 * PLAT                # half width
+PZ0, PZ1 = -3.2 * PLAT, 3.98 * PLAT
+PZC, PZH = (PZ0 + PZ1) / 2, (PZ1 - PZ0) / 2
+
+
+def local(x, z, face, lx, lz):
+    # world position of a point (lx right, lz toward the arena) in the frame of a platform at (x, z) facing `face`
+    return x + lx * math.cos(face) + lz * math.sin(face), z - lx * math.sin(face) + lz * math.cos(face)
+
+
 for (x, z) in TREEHOUSES:
     face = math.atan2(-x, -z)
-    canopy.append({'name': 'Treehouse', 'id': eid('treehouse'),
-                   'LocalTransform': {'position': [x, 0, z], 'rotation': yaw_q(face)},
-                   'MeshRenderer': {'mesh': 'models/treehouse.glb'},
-                   'Solid': {'radius': 2.3, 'height': 30},
-                   'Platform': {'halfX': 3.2, 'halfZ': 3.2, 'top': DECK_TOP},
-                   'Blocker': {'halfX': 3.2, 'halfZ': 3.2, 'yaw': round(face, 4), 'y0': 4.3, 'y1': DECK_TOP}})
-    # the rope ladder hangs from the deck's front-right corner (model space x +1.5, z +3.3), facing the middle of the arena
-    lx = x + 1.5 * math.cos(face) + 3.3 * math.sin(face)
-    lz = z - 1.5 * math.sin(face) + 3.3 * math.cos(face)
-    canopy.append({'name': 'Ladder', 'id': eid('ladder'), 'LocalTransform': {'position': [round(lx, 3), 0, round(lz, 3)]},
-                   'Ladder': {'top': DECK_TOP, 'nx': round(math.sin(face), 4), 'nz': round(math.cos(face), 4), 'reach': 1.6}})
+    canopy.append({'name': 'PlatformDeck', 'id': eid('platdeck'),
+                   'LocalTransform': {'position': [x, round(DECK_TOP - 0.35 * PSY, 3), z], 'rotation': yaw_q(face), 'scale': [PLAT, PSY, PLAT]},
+                   'MeshRenderer': {'mesh': 'models/deck.glb'}})
+    cx, cz = local(x, z, face, 0, PZC)
+    canopy.append({'name': 'PlatformFloor', 'id': eid('platfloor'), 'LocalTransform': {'position': [round(cx, 3), 0, round(cz, 3)]},
+                   'Blocker': {'halfX': round(PX, 3), 'halfZ': round(PZH, 3), 'yaw': round(face, 4), 'y0': DECK_TOP - 0.5, 'y1': DECK_TOP, 'walk': True}})
+    # the tall tree the platform is built around (its trunk is solid, its crown a ceiling like every other tree)
+    tt = prop('PlatformTree', 'tree_b', x, z, yaw=face, s=1.0, solid=(TREES['tree_b'][0] * 0.8, 100))
+    th, rf, yf = CANOPY['tree_b']
+    tt['Blocker'] = {'radius': round(th * rf, 2), 'y0': round(th * yf, 2), 'y1': round(th, 2)}
+    canopy.append(tt)
+    for lx, lz in ((-3.9, -4.2), (3.9, -4.2), (-3.9, 5.0), (3.9, 5.0)):  # pillars carry the deck down to the ground
+        px_, pz_ = local(x, z, face, lx, lz)
+        canopy.append({'name': 'Pillar', 'id': eid('pillar'), 'LocalTransform': {'position': [round(px_, 3), 0, round(pz_, 3)], 'scale': [2.0, round(DECK_TOP / 1.43, 3), 2.0]},
+                       'MeshRenderer': {'mesh': 'models/log_pillar.glb'}})
+    # the rope ladder hangs at the front edge, facing the middle of the arena
+    lx_, lz_ = local(x, z, face, 2.4, PZ1 + 0.4)
+    canopy.append({'name': 'Ladder', 'id': eid('ladder'), 'LocalTransform': {'position': [round(lx_, 3), 0, round(lz_, 3)]},
+                   'Ladder': {'top': DECK_TOP, 'nx': round(math.sin(face), 4), 'nz': round(math.cos(face), 4), 'reach': 1.8}})
+BRIDGE_LEN, BRIDGE_END = 10.17, 4.8   # the bridge model's length and where a platform's edge is from its middle
 for i, a_ in enumerate(TREEHOUSES):
     for j, b_ in enumerate(TREEHOUSES):
         if j <= i:
@@ -217,16 +244,22 @@ for i, a_ in enumerate(TREEHOUSES):
             continue
         mx, mz = (a_[0] + b_[0]) / 2, (a_[1] + b_[1]) / 2
         ang = math.atan2(-(b_[1] - a_[1]), b_[0] - a_[0])
+        length = dist - 2 * BRIDGE_END
+        sx = length / BRIDGE_LEN
+        dxn, dzn = (b_[0] - a_[0]) / dist, (b_[1] - a_[1]) / dist
+        # the model runs from x = -0.31 to 9.86: put its middle on the middle between the platforms
+        ox, oz = mx - dxn * 4.775 * sx, mz - dzn * 4.775 * sx
         canopy.append({'name': 'Bridge', 'id': eid('bridge'),
-                       'LocalTransform': {'position': [round(mx, 3), DECK_TOP + 0.05, round(mz, 3)], 'rotation': yaw_q(ang), 'scale': [round((dist - 6.4) / 10.0, 3), 1, 1]},
-                       'MeshRenderer': {'mesh': 'models/bridge.glb'},
-                       'Blocker': {'halfX': round((dist - 6.4) / 2, 3), 'halfZ': 0.85, 'yaw': round(ang, 4), 'y0': DECK_TOP - 0.45, 'y1': DECK_TOP + 0.05, 'walk': True}})
-for (x, z) in TREEHOUSES:  # hanging baskets and lanterns frame the decks
+                       'LocalTransform': {'position': [round(ox, 3), DECK_TOP + 0.05, round(oz, 3)], 'rotation': yaw_q(ang), 'scale': [round(sx, 3), 1, 1]},
+                       'MeshRenderer': {'mesh': 'models/bridge.glb'}})
+        canopy.append({'name': 'BridgeFloor', 'id': eid('bridgefloor'), 'LocalTransform': {'position': [round(mx, 3), 0, round(mz, 3)]},
+                       'Blocker': {'halfX': round(length / 2, 3), 'halfZ': 0.85, 'yaw': round(ang, 4), 'y0': DECK_TOP - 0.45, 'y1': DECK_TOP + 0.05, 'walk': True}})
+for (x, z) in TREEHOUSES:  # hanging baskets frame the platforms
     face = math.atan2(-x, -z)
     for j in range(4):
         ang = face + j * PI / 2 + PI / 4
-        canopy.append(prop('Basket', 'planter_hanging', x + math.sin(ang) * 3.5, z + math.cos(ang) * 3.5, y=DECK_TOP - 1.3, yaw=ang, shadows=False))
-root.append(group('Treehouses', canopy))
+        canopy.append(prop('Basket', 'planter_hanging', x + math.sin(ang) * 5.6, z + math.cos(ang) * 5.6, y=DECK_TOP - 1.3, yaw=ang, shadows=False))
+root.append(group('TreePlatforms', canopy))
 
 # ---- the level boundary: fence ring, bushes and rocks just outside the invisible wall --------------
 BOUND_R = 41.0
