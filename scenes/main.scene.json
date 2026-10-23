@@ -113,9 +113,9 @@
               "name": "Eye",
               "id": "seatcam0",
               "LocalTransform": {},
-              "VisualOffset": {},
               "SeatCam": {},
-              "VirtualCamera": { "camera": "@playercam", "priority": 100, "blend": 0, "fovY": 1.0 }
+              "VirtualCamera": { "camera": "@playercam", "priority": 100, "blend": 0, "fovY": 1.0 },
+              "VisualOffset": {}
             }
           ]
         },
@@ -129,9 +129,9 @@
               "name": "Eye",
               "id": "seatcam1",
               "LocalTransform": {},
-              "VisualOffset": {},
               "SeatCam": { "seat": 1 },
-              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
+              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 },
+              "VisualOffset": {}
             }
           ]
         },
@@ -145,9 +145,9 @@
               "name": "Eye",
               "id": "seatcam2",
               "LocalTransform": {},
-              "VisualOffset": {},
               "SeatCam": { "seat": 2 },
-              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
+              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 },
+              "VisualOffset": {}
             }
           ]
         },
@@ -161,9 +161,9 @@
               "name": "Eye",
               "id": "seatcam3",
               "LocalTransform": {},
-              "VisualOffset": {},
               "SeatCam": { "seat": 3 },
-              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 }
+              "VirtualCamera": { "camera": "@playercam", "blend": 0, "fovY": 1.0 },
+              "VisualOffset": {}
             }
           ]
         }
@@ -189,6 +189,14 @@
               "BoneAttach": { "rig": "@body0", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 2 }
+            },
+            {
+              "name": "Ice",
+              "id": "body0ice",
+              "IceShell": {},
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false, "layers": 2 },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -207,6 +215,14 @@
               "BoneAttach": { "rig": "@body1", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 4 }
+            },
+            {
+              "name": "Ice",
+              "id": "body1ice",
+              "IceShell": { "owner": 1 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false, "layers": 4 },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -225,6 +241,14 @@
               "BoneAttach": { "rig": "@body2", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 8 }
+            },
+            {
+              "name": "Ice",
+              "id": "body2ice",
+              "IceShell": { "owner": 2 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false, "layers": 8 },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -243,6 +267,14 @@
               "BoneAttach": { "rig": "@body3", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false, "layers": 16 }
+            },
+            {
+              "name": "Ice",
+              "id": "body3ice",
+              "IceShell": { "owner": 3 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false, "layers": 16 },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         }
@@ -1309,21 +1341,21 @@
           "id": "crate1",
           "LocalTransform": { "position": [-2.2, 0.35, 15.9], "rotation": [0.0, 0.17411, -0.0, 0.98473] },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.85, "height": 1.1 }
+          "Solid": { "radius": 0.85, "height": 1.1, "walk": true }
         },
         {
           "name": "Crate",
           "id": "crate2",
           "LocalTransform": { "position": [-2.3, 0.35, 17.3], "rotation": [0.0, -0.09983, 0.0, 0.995], "scale": [0.8, 0.8, 0.8] },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.56, "height": 0.72 }
+          "Solid": { "radius": 0.56, "height": 0.72, "walk": true }
         },
         {
           "name": "Barrel",
           "id": "barrel1",
           "LocalTransform": { "position": [2.3, 0.35, 16.2], "rotation": [0.0, 0.0, -0.0, 1.0] },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.55, "height": 1.0 }
+          "Solid": { "radius": 0.55, "height": 1.0, "walk": true }
         },
         {
           "name": "Lantern",
@@ -1336,14 +1368,14 @@
           "id": "planterl1",
           "LocalTransform": { "position": [-1.7, 0.35, 14.95], "rotation": [0.0, 0.0, -0.0, 1.0] },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.8, "height": 0.6 }
+          "Solid": { "radius": 0.8, "height": 0.6, "walk": true }
         },
         {
           "name": "PlanterR",
           "id": "planterr1",
           "LocalTransform": { "position": [1.9, 0.35, 14.95], "rotation": [0.0, 0.0, -0.0, 1.0] },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.8, "height": 0.6 }
+          "Solid": { "radius": 0.8, "height": 0.6, "walk": true }
         },
         {
           "name": "Lantern",
@@ -1412,7 +1444,15 @@
           "name": "Ladder",
           "id": "ladder2",
           "Ladder": { "nx": 0.8878, "nz": 0.4603, "reach": 1.8 },
-          "LocalTransform": { "position": [-20.24, 0, -13.198] }
+          "LocalTransform": { "position": [-20.24, 0, -13.198] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder2model",
+              "LocalTransform": { "rotation": [0, 0.519478, 0, 0.854484], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "PlatformDeck",
@@ -1462,7 +1502,15 @@
           "name": "Ladder",
           "id": "ladder3",
           "Ladder": { "nx": -0.9138, "nz": 0.4061, "reach": 1.8 },
-          "LocalTransform": { "position": [22.154, 0, -7.22] }
+          "LocalTransform": { "position": [22.154, 0, -7.22] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder3model",
+              "LocalTransform": { "rotation": [0, -0.544926, 0, 0.838484], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "PlatformDeck",
@@ -1512,7 +1560,15 @@
           "name": "Ladder",
           "id": "ladder4",
           "Ladder": { "nx": 0.9062, "nz": -0.4229, "reach": 1.8 },
-          "LocalTransform": { "position": [-25.243, 0, 9.131] }
+          "LocalTransform": { "position": [-25.243, 0, 9.131] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder4model",
+              "LocalTransform": { "rotation": [0, 0.843472, 0, 0.537173], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "PlatformDeck",
@@ -1562,7 +1618,15 @@
           "name": "Ladder",
           "id": "ladder5",
           "Ladder": { "nx": -0.9285, "nz": -0.3714, "reach": 1.8 },
-          "LocalTransform": { "position": [23.194, 0, 11.863] }
+          "LocalTransform": { "position": [23.194, 0, 11.863] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder5model",
+              "LocalTransform": { "rotation": [0, -0.828067, 0, 0.560629], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "PlatformDeck",
@@ -1612,7 +1676,15 @@
           "name": "Ladder",
           "id": "ladder6",
           "Ladder": { "nx": 0.3714, "nz": -0.9285, "reach": 1.8 },
-          "LocalTransform": { "position": [-11.863, 0, 23.194] }
+          "LocalTransform": { "position": [-11.863, 0, 23.194] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder6model",
+              "LocalTransform": { "rotation": [0, 0.981956, 0, 0.189108], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "PlatformDeck",
@@ -1662,7 +1734,15 @@
           "name": "Ladder",
           "id": "ladder7",
           "Ladder": { "nx": -0.4229, "nz": -0.9062, "reach": 1.8 },
-          "LocalTransform": { "position": [9.131, 0, 25.243] }
+          "LocalTransform": { "position": [9.131, 0, 25.243] },
+          "children": [
+            {
+              "name": "LadderModel",
+              "id": "ladder7model",
+              "LocalTransform": { "rotation": [0, -0.976263, 0, 0.216586], "scale": [1, 0.982, 1] },
+              "MeshRenderer": { "mesh": "models/ladder_5m3.glb", "color": "#a26b36" }
+            }
+          ]
         },
         {
           "name": "Bridge",
@@ -3214,7 +3294,7 @@
             "scale": [1.045885812685306, 1.045885812685306, 1.045885812685306]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.889, "height": 1.15 }
+          "Solid": { "radius": 0.889, "height": 1.15, "walk": true }
         },
         {
           "name": "Crate",
@@ -3225,7 +3305,7 @@
             "scale": [1.482406385054842, 1.482406385054842, 1.482406385054842]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.26, "height": 1.63 }
+          "Solid": { "radius": 1.26, "height": 1.63, "walk": true }
         },
         {
           "name": "Crate",
@@ -3236,7 +3316,7 @@
             "scale": [1.1139909572756865, 1.1139909572756865, 1.1139909572756865]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.947, "height": 1.23 }
+          "Solid": { "radius": 0.947, "height": 1.23, "walk": true }
         },
         {
           "name": "Crate",
@@ -3247,7 +3327,7 @@
             "scale": [1.3809660374998138, 1.3809660374998138, 1.3809660374998138]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.174, "height": 1.52 }
+          "Solid": { "radius": 1.174, "height": 1.52, "walk": true }
         },
         {
           "name": "Crate",
@@ -3258,7 +3338,7 @@
             "scale": [1.5768358182094488, 1.5768358182094488, 1.5768358182094488]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.34, "height": 1.73 }
+          "Solid": { "radius": 1.34, "height": 1.73, "walk": true }
         },
         {
           "name": "Crate",
@@ -3269,7 +3349,7 @@
             "scale": [1.1639887258278698, 1.1639887258278698, 1.1639887258278698]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.989, "height": 1.28 }
+          "Solid": { "radius": 0.989, "height": 1.28, "walk": true }
         },
         {
           "name": "Crate",
@@ -3280,7 +3360,7 @@
             "scale": [1.5941369488176351, 1.5941369488176351, 1.5941369488176351]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.355, "height": 1.75 }
+          "Solid": { "radius": 1.355, "height": 1.75, "walk": true }
         },
         {
           "name": "Crate",
@@ -3291,7 +3371,7 @@
             "scale": [1.2778373191119075, 1.2778373191119075, 1.2778373191119075]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.086, "height": 1.41 }
+          "Solid": { "radius": 1.086, "height": 1.41, "walk": true }
         },
         {
           "name": "Crate",
@@ -3302,7 +3382,7 @@
             "scale": [1.3666821655694248, 1.3666821655694248, 1.3666821655694248]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.162, "height": 1.5 }
+          "Solid": { "radius": 1.162, "height": 1.5, "walk": true }
         },
         {
           "name": "Crate",
@@ -3313,7 +3393,7 @@
             "scale": [0.9660774945617281, 0.9660774945617281, 0.9660774945617281]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.821, "height": 1.06 }
+          "Solid": { "radius": 0.821, "height": 1.06, "walk": true }
         },
         {
           "name": "Crate",
@@ -3324,7 +3404,7 @@
             "scale": [1.1815953137392812, 1.1815953137392812, 1.1815953137392812]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.004, "height": 1.3 }
+          "Solid": { "radius": 1.004, "height": 1.3, "walk": true }
         },
         {
           "name": "Crate",
@@ -3335,7 +3415,7 @@
             "scale": [1.0586080821055979, 1.0586080821055979, 1.0586080821055979]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.9, "height": 1.16 }
+          "Solid": { "radius": 0.9, "height": 1.16, "walk": true }
         },
         {
           "name": "Crate",
@@ -3346,7 +3426,7 @@
             "scale": [1.198908892637698, 1.198908892637698, 1.198908892637698]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.019, "height": 1.32 }
+          "Solid": { "radius": 1.019, "height": 1.32, "walk": true }
         },
         {
           "name": "Crate",
@@ -3357,7 +3437,7 @@
             "scale": [1.474775571256314, 1.474775571256314, 1.474775571256314]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.254, "height": 1.62 }
+          "Solid": { "radius": 1.254, "height": 1.62, "walk": true }
         },
         {
           "name": "Crate",
@@ -3368,7 +3448,7 @@
             "scale": [1.38991647900933, 1.38991647900933, 1.38991647900933]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.181, "height": 1.53 }
+          "Solid": { "radius": 1.181, "height": 1.53, "walk": true }
         },
         {
           "name": "Crate",
@@ -3379,7 +3459,7 @@
             "scale": [1.3260228177228903, 1.3260228177228903, 1.3260228177228903]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.127, "height": 1.46 }
+          "Solid": { "radius": 1.127, "height": 1.46, "walk": true }
         },
         {
           "name": "Crate",
@@ -3390,7 +3470,7 @@
             "scale": [1.2612254477951845, 1.2612254477951845, 1.2612254477951845]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.072, "height": 1.39 }
+          "Solid": { "radius": 1.072, "height": 1.39, "walk": true }
         },
         {
           "name": "Crate",
@@ -3401,7 +3481,7 @@
             "scale": [1.5614233182273494, 1.5614233182273494, 1.5614233182273494]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.327, "height": 1.72 }
+          "Solid": { "radius": 1.327, "height": 1.72, "walk": true }
         },
         {
           "name": "Crate",
@@ -3412,7 +3492,7 @@
             "scale": [1.0712195525655104, 1.0712195525655104, 1.0712195525655104]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.911, "height": 1.18 }
+          "Solid": { "radius": 0.911, "height": 1.18, "walk": true }
         },
         {
           "name": "Crate",
@@ -3423,7 +3503,7 @@
             "scale": [1.2241233379996441, 1.2241233379996441, 1.2241233379996441]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.041, "height": 1.35 }
+          "Solid": { "radius": 1.041, "height": 1.35, "walk": true }
         },
         {
           "name": "Crate",
@@ -3434,7 +3514,7 @@
             "scale": [1.532840129722111, 1.532840129722111, 1.532840129722111]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 1.303, "height": 1.69 }
+          "Solid": { "radius": 1.303, "height": 1.69, "walk": true }
         },
         {
           "name": "Crate",
@@ -3445,7 +3525,7 @@
             "scale": [1.0850576148776283, 1.0850576148776283, 1.0850576148776283]
           },
           "MeshRenderer": { "mesh": "models/crate.glb" },
-          "Solid": { "radius": 0.922, "height": 1.19 }
+          "Solid": { "radius": 0.922, "height": 1.19, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3456,7 +3536,7 @@
             "scale": [1.1867921976860596, 1.1867921976860596, 1.1867921976860596]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.653, "height": 1.19 }
+          "Solid": { "radius": 0.653, "height": 1.19, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3467,7 +3547,7 @@
             "scale": [0.9381356755433651, 0.9381356755433651, 0.9381356755433651]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.516, "height": 0.94 }
+          "Solid": { "radius": 0.516, "height": 0.94, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3478,7 +3558,7 @@
             "scale": [1.1340119296053843, 1.1340119296053843, 1.1340119296053843]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.624, "height": 1.13 }
+          "Solid": { "radius": 0.624, "height": 1.13, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3489,7 +3569,7 @@
             "scale": [0.9868441773066007, 0.9868441773066007, 0.9868441773066007]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.543, "height": 0.99 }
+          "Solid": { "radius": 0.543, "height": 0.99, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3500,7 +3580,7 @@
             "scale": [0.9189315927089341, 0.9189315927089341, 0.9189315927089341]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.505, "height": 0.92 }
+          "Solid": { "radius": 0.505, "height": 0.92, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3511,7 +3591,7 @@
             "scale": [1.2000466529373812, 1.2000466529373812, 1.2000466529373812]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.66, "height": 1.2 }
+          "Solid": { "radius": 0.66, "height": 1.2, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3522,7 +3602,7 @@
             "scale": [1.2446543610273884, 1.2446543610273884, 1.2446543610273884]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.685, "height": 1.24 }
+          "Solid": { "radius": 0.685, "height": 1.24, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3533,7 +3613,7 @@
             "scale": [1.3526239817549905, 1.3526239817549905, 1.3526239817549905]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.744, "height": 1.35 }
+          "Solid": { "radius": 0.744, "height": 1.35, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3544,7 +3624,7 @@
             "scale": [1.1987608102035154, 1.1987608102035154, 1.1987608102035154]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.659, "height": 1.2 }
+          "Solid": { "radius": 0.659, "height": 1.2, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3555,7 +3635,7 @@
             "scale": [1.0983621566465112, 1.0983621566465112, 1.0983621566465112]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.604, "height": 1.1 }
+          "Solid": { "radius": 0.604, "height": 1.1, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3566,7 +3646,7 @@
             "scale": [1.0977632453301613, 1.0977632453301613, 1.0977632453301613]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.604, "height": 1.1 }
+          "Solid": { "radius": 0.604, "height": 1.1, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3577,7 +3657,7 @@
             "scale": [1.2961787154151378, 1.2961787154151378, 1.2961787154151378]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.713, "height": 1.3 }
+          "Solid": { "radius": 0.713, "height": 1.3, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3588,7 +3668,7 @@
             "scale": [0.9229448128723494, 0.9229448128723494, 0.9229448128723494]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.508, "height": 0.92 }
+          "Solid": { "radius": 0.508, "height": 0.92, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3599,7 +3679,7 @@
             "scale": [1.003254076848527, 1.003254076848527, 1.003254076848527]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.552, "height": 1.0 }
+          "Solid": { "radius": 0.552, "height": 1.0, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3610,7 +3690,7 @@
             "scale": [0.9977522891606279, 0.9977522891606279, 0.9977522891606279]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.549, "height": 1.0 }
+          "Solid": { "radius": 0.549, "height": 1.0, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3621,7 +3701,7 @@
             "scale": [0.9859427550262888, 0.9859427550262888, 0.9859427550262888]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.542, "height": 0.99 }
+          "Solid": { "radius": 0.542, "height": 0.99, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3632,7 +3712,7 @@
             "scale": [1.3400847478817055, 1.3400847478817055, 1.3400847478817055]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.737, "height": 1.34 }
+          "Solid": { "radius": 0.737, "height": 1.34, "walk": true }
         },
         {
           "name": "Barrel",
@@ -3643,7 +3723,7 @@
             "scale": [0.9674399038215515, 0.9674399038215515, 0.9674399038215515]
           },
           "MeshRenderer": { "mesh": "models/barrel.glb" },
-          "Solid": { "radius": 0.532, "height": 0.97 }
+          "Solid": { "radius": 0.532, "height": 0.97, "walk": true }
         },
         {
           "name": "LogPillar",
@@ -3808,7 +3888,7 @@
             "scale": [1.0336935110593881, 1.0336935110593881, 1.0336935110593881]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.137, "height": 0.93 }
+          "Solid": { "radius": 1.137, "height": 0.93, "walk": true }
         },
         {
           "name": "Rock",
@@ -3819,7 +3899,7 @@
             "scale": [1.1156618281877266, 1.1156618281877266, 1.1156618281877266]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.227, "height": 1.0 }
+          "Solid": { "radius": 1.227, "height": 1.0, "walk": true }
         },
         {
           "name": "Rock",
@@ -3830,7 +3910,7 @@
             "scale": [1.0582265499065076, 1.0582265499065076, 1.0582265499065076]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.164, "height": 0.95 }
+          "Solid": { "radius": 1.164, "height": 0.95, "walk": true }
         },
         {
           "name": "Rock",
@@ -3841,7 +3921,7 @@
             "scale": [1.7059092305980466, 1.7059092305980466, 1.7059092305980466]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.877, "height": 1.54 }
+          "Solid": { "radius": 1.877, "height": 1.54, "walk": true }
         },
         {
           "name": "Rock",
@@ -3852,7 +3932,7 @@
             "scale": [1.0439252811803699, 1.0439252811803699, 1.0439252811803699]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.148, "height": 0.94 }
+          "Solid": { "radius": 1.148, "height": 0.94, "walk": true }
         },
         {
           "name": "Rock",
@@ -3863,7 +3943,7 @@
             "scale": [1.6470141337015418, 1.6470141337015418, 1.6470141337015418]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 1.812, "height": 1.48 }
+          "Solid": { "radius": 1.812, "height": 1.48, "walk": true }
         },
         {
           "name": "BigRock",
@@ -3874,7 +3954,7 @@
             "scale": [2.8330475277830804, 2.8330475277830804, 2.8330475277830804]
           },
           "MeshRenderer": { "mesh": "models/rock.glb" },
-          "Solid": { "radius": 3.116, "height": 2.55 }
+          "Solid": { "radius": 3.116, "height": 2.55, "walk": true }
         },
         {
           "name": "Bush",
@@ -4193,7 +4273,7 @@
             "scale": [1.221392106057553, 1.221392106057553, 1.221392106057553]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.977, "height": 0.73 }
+          "Solid": { "radius": 0.977, "height": 0.73, "walk": true }
         },
         {
           "name": "PlanterBox",
@@ -4204,7 +4284,7 @@
             "scale": [1.322973462426668, 1.322973462426668, 1.322973462426668]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 1.058, "height": 0.79 }
+          "Solid": { "radius": 1.058, "height": 0.79, "walk": true }
         },
         {
           "name": "PlanterBox",
@@ -4215,7 +4295,7 @@
             "scale": [1.1453555461319909, 1.1453555461319909, 1.1453555461319909]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.916, "height": 0.69 }
+          "Solid": { "radius": 0.916, "height": 0.69, "walk": true }
         },
         {
           "name": "PlanterBox",
@@ -4226,7 +4306,7 @@
             "scale": [1.0900343706161515, 1.0900343706161515, 1.0900343706161515]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.872, "height": 0.65 }
+          "Solid": { "radius": 0.872, "height": 0.65, "walk": true }
         },
         {
           "name": "PlanterBox",
@@ -4237,7 +4317,7 @@
             "scale": [1.3909852629896484, 1.3909852629896484, 1.3909852629896484]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 1.113, "height": 0.83 }
+          "Solid": { "radius": 1.113, "height": 0.83, "walk": true }
         },
         {
           "name": "PlanterBox",
@@ -4248,7 +4328,7 @@
             "scale": [1.1081456615513166, 1.1081456615513166, 1.1081456615513166]
           },
           "MeshRenderer": { "mesh": "models/planter_box.glb" },
-          "Solid": { "radius": 0.887, "height": 0.66 }
+          "Solid": { "radius": 0.887, "height": 0.66, "walk": true }
         },
         {
           "name": "Stump",
@@ -4259,7 +4339,7 @@
             "scale": [1.430557436934713, 1.430557436934713, 1.430557436934713]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.715, "height": 0.86 }
+          "Solid": { "radius": 0.715, "height": 0.86, "walk": true }
         },
         {
           "name": "Stump",
@@ -4270,7 +4350,7 @@
             "scale": [1.7547319434338746, 1.7547319434338746, 1.7547319434338746]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.877, "height": 1.05 }
+          "Solid": { "radius": 0.877, "height": 1.05, "walk": true }
         },
         {
           "name": "Stump",
@@ -4281,7 +4361,7 @@
             "scale": [1.2851682355726268, 1.2851682355726268, 1.2851682355726268]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.643, "height": 0.77 }
+          "Solid": { "radius": 0.643, "height": 0.77, "walk": true }
         },
         {
           "name": "Stump",
@@ -4292,7 +4372,7 @@
             "scale": [1.2028636210035821, 1.2028636210035821, 1.2028636210035821]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.601, "height": 0.72 }
+          "Solid": { "radius": 0.601, "height": 0.72, "walk": true }
         },
         {
           "name": "Stump",
@@ -4303,7 +4383,7 @@
             "scale": [1.3401332230583805, 1.3401332230583805, 1.3401332230583805]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.67, "height": 0.8 }
+          "Solid": { "radius": 0.67, "height": 0.8, "walk": true }
         },
         {
           "name": "Stump",
@@ -4314,7 +4394,7 @@
             "scale": [1.7259160194239949, 1.7259160194239949, 1.7259160194239949]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.863, "height": 1.04 }
+          "Solid": { "radius": 0.863, "height": 1.04, "walk": true }
         },
         {
           "name": "Stump",
@@ -4325,7 +4405,7 @@
             "scale": [1.6229734868076717, 1.6229734868076717, 1.6229734868076717]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.811, "height": 0.97 }
+          "Solid": { "radius": 0.811, "height": 0.97, "walk": true }
         },
         {
           "name": "Stump",
@@ -4336,7 +4416,7 @@
             "scale": [1.4201522381424154, 1.4201522381424154, 1.4201522381424154]
           },
           "MeshRenderer": { "mesh": "models/stump.glb" },
-          "Solid": { "radius": 0.71, "height": 0.85 }
+          "Solid": { "radius": 0.71, "height": 0.85, "walk": true }
         },
         {
           "name": "Tuft",
@@ -8850,6 +8930,14 @@
               "BoneAttach": { "rig": "@bot1", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot1ice",
+              "IceShell": { "owner": 101 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8867,6 +8955,14 @@
               "BoneAttach": { "rig": "@bot2", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot2ice",
+              "IceShell": { "owner": 102 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8884,6 +8980,14 @@
               "BoneAttach": { "rig": "@bot3", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot3ice",
+              "IceShell": { "owner": 103 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8901,6 +9005,14 @@
               "BoneAttach": { "rig": "@bot4", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot4ice",
+              "IceShell": { "owner": 104 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8918,6 +9030,14 @@
               "BoneAttach": { "rig": "@bot5", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot5ice",
+              "IceShell": { "owner": 105 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8935,6 +9055,14 @@
               "BoneAttach": { "rig": "@bot6", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot6ice",
+              "IceShell": { "owner": 106 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8952,6 +9080,14 @@
               "BoneAttach": { "rig": "@bot7", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot7ice",
+              "IceShell": { "owner": 107 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         },
@@ -8969,6 +9105,14 @@
               "BoneAttach": { "rig": "@bot8", "joint": "Hand.L" },
               "LocalTransform": { "position": [0.0, 0.04, 0.0], "rotation": [-0.7071, 0.0, 0.0, 0.7071], "scale": [1.8, 1.8, 1.8] },
               "MeshRenderer": { "mesh": "models/bot_sling.glb", "castShadows": false }
+            },
+            {
+              "name": "Ice",
+              "id": "bot8ice",
+              "IceShell": { "owner": 108 },
+              "LocalTransform": {},
+              "MeshRenderer": { "mesh": "models/ice_shell.glb", "castShadows": false },
+              "VisualOffset": { "scale": [0, 0, 0] }
             }
           ]
         }

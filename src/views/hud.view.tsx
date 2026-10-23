@@ -32,6 +32,8 @@ export interface HudModel {
   banner: string;
   bannerSub: string;
   tone: 'hit' | 'miss' | 'hurt' | 'over';
+  /** A missed shot froze me: the ice frame is on the screen edge. */
+  frozen: boolean;
   bannerPop: number;
   hint: boolean;
   /** My place among everyone, e.g. "2nd / 6". */
@@ -47,7 +49,7 @@ export interface HudModel {
 
 const base: HudModel = {
   score: 3, penalty: 2, timeText: '02:34', urgent: false, stone: 'loaded', cd: 0, ring: 1, ready: true, readyPulse: 0,
-  banner: '', bannerSub: '', tone: 'hit', bannerPop: 0, hint: false, placeText: '3rd / 9', first: false, board: false, rows: [], toasts: [],
+  banner: '', bannerSub: '', tone: 'hit', frozen: false, bannerPop: 0, hint: false, placeText: '3rd / 9', first: false, board: false, rows: [], toasts: [],
 };
 
 const eight: HudRow[] = [
@@ -68,7 +70,7 @@ export const HudView = defineView<HudModel>({
     play: { ...base, hint: true },
     cooling: { ...base, score: 7, penalty: 4, timeText: '01:12', stone: 'flying', cd: 23, ring: 0.42, ready: false },
     hit: { ...base, score: 8, penalty: 4, timeText: '01:10', cd: 23, ring: 0.42, ready: false, banner: '+1 PLONK!', bannerSub: 'Nice shot', tone: 'hit' },
-    miss: { ...base, score: 4, penalty: 2, timeText: '00:42', urgent: true, stone: 'gone', cd: 5, ring: 0.9, ready: false, banner: 'MISSED!', bannerSub: 'respawning in 2', tone: 'miss' },
+    miss: { ...base, score: 4, penalty: 2, timeText: '00:42', urgent: true, stone: 'flying', cd: 5, ring: 0.9, ready: false, banner: 'FROZEN!', bannerSub: 'thawing in 3', tone: 'miss', frozen: true },
     hurt: { ...base, score: 3, penalty: 2, timeText: '00:30', urgent: true, stone: 'gone', banner: 'You got plonked!', bannerSub: 'Hit by a bot! Respawning in 3', tone: 'hurt' },
     boardHidden: { ...base, score: 6, rows: eight },
     boardShown: { ...base, score: 6, board: true, rows: eight },
@@ -104,6 +106,7 @@ export const HudView = defineView<HudModel>({
         banner: () => model().banner,
         bannerSub: () => model().bannerSub,
         tone: () => model().tone,
+        frozen: () => model().frozen,
         bannerPop: () => model().bannerPop,
         hint: () => model().hint,
         placeText: () => model().placeText,

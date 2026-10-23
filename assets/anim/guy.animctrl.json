@@ -20,6 +20,10 @@
     {
       "name": "airborne",
       "type": "bool"
+    },
+    {
+      "name": "frozen",
+      "type": "bool"
     }
   ],
   "layers": [
@@ -72,6 +76,13 @@
             "clip": "anim3d/guy_land.anim3d.json#guy_land"
           },
           "loop": false
+        },
+        {
+          "name": "Frozen",
+          "motion": {
+            "clip": "anim3d/guy_idle.anim3d.json#guy_idle"
+          },
+          "speed": 0
         }
       ],
       "transitions": [
@@ -96,6 +107,28 @@
             }
           ],
           "duration": 0.05
+        },
+        {
+          "from": "*",
+          "to": "Frozen",
+          "conditions": [
+            {
+              "parameter": "frozen",
+              "op": "true"
+            }
+          ],
+          "duration": 0.06
+        },
+        {
+          "from": "Frozen",
+          "to": "Idle",
+          "conditions": [
+            {
+              "parameter": "frozen",
+              "op": "false"
+            }
+          ],
+          "duration": 0.15
         },
         {
           "from": "*",

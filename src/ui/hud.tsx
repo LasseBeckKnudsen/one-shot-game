@@ -121,7 +121,8 @@ export const hud = defineUI({
     const bannerKind = createMemo(() => {
       const m = mine();
       if (match().phase === 'Over') return 'over';
-      if (m.playerDead) return m.deathBy > 0 ? 'hurt' : 'miss';
+      if (m.playerDead) return 'hurt';
+      if (m.freezeIn > 0) return 'miss';
       return hitFlash() ? 'hit' : '';
     });
     createEffect(() => {
@@ -172,9 +173,9 @@ export const hud = defineUI({
         banner = 'You got plonked!';
         bannerSub = `${m.deathBy >= 1000 ? `Hit by player ${m.deathBy - 1000 + 1}!` : 'Hit by a bot!'} Respawning in ${m.respawnIn}`;
         tone = 'hurt';
-      } else if (m.playerDead) {
-        banner = 'MISSED!';
-        bannerSub = `respawning in ${m.respawnIn}`;
+      } else if (m.freezeIn > 0) {
+        banner = 'FROZEN!';
+        bannerSub = `missed: thawing in ${m.freezeIn}`;
         tone = 'miss';
       } else if (hitFlash()) {
         banner = '+1 PLONK!';
@@ -189,6 +190,7 @@ export const hud = defineUI({
         timeText: clock(match().timeLeft),
         urgent: match().timeLeft < 60,
         stone: over || m.playerDead ? 'gone' : m.stoneLoaded ? 'loaded' : 'flying',
+        frozen: !over && !m.playerDead && m.freezeIn > 0,
         cd,
         ring: cd === 0 ? 1 : Math.min(1, Math.max(0, 1 - cd / SUPER_COOLDOWN)),
         ready: cd === 0,

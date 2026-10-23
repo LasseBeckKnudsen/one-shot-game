@@ -15,6 +15,7 @@
         "pad": 0
       },
       "children": [
+        "h_frost",
         "h_top",
         "h_feed",
         "h_mid",
@@ -763,6 +764,18 @@
       "type": "repeat",
       "doc": "hud-toast",
       "property": "toasts"
+    },
+    "h_frost": {
+      "type": "element",
+      "name": "Frost",
+      "children": [],
+      "style": {
+        "pad": 0,
+        "w": "100%",
+        "h": "100%",
+        "image": "ui/frost_edge",
+        "opacity": 0
+      }
     }
   },
   "view": {
@@ -940,7 +953,7 @@
         "miss": {
           "set": {
             "h_banner": {
-              "color": "#ffb066ff"
+              "color": "#9fe6ffff"
             }
           }
         },
@@ -993,6 +1006,23 @@
       "type": "list",
       "of": "hud-toast",
       "default": []
+    },
+    "frozen": {
+      "type": "yesno",
+      "default": false,
+      "poses": {
+        "yes": {
+          "set": {
+            "h_frost": {
+              "opacity": 0.82
+            }
+          },
+          "transition": {
+            "type": "easeOut",
+            "ms": 180
+          }
+        }
+      }
     }
   },
   "reactions": {

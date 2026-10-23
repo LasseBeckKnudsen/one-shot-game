@@ -370,6 +370,13 @@ export const schemaIr = {
           "doc": "Seconds until it is back (0 = alive)"
         },
         {
+          "name": "freeze",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until a missed shot thaws (frozen: no wandering or shooting, still hittable)"
+        },
+        {
           "name": "home",
           "kind": "vec3",
           "scalar": "f32",
@@ -424,6 +431,21 @@ export const schemaIr = {
           "scalar": "u32",
           "lanes": 1,
           "doc": "The seat that scored the hit"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "IceShell",
+      "kind": "component",
+      "sim": false,
+      "fields": [
+        {
+          "name": "owner",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "A seat 0..3, or 100 + a bot number"
         }
       ],
       "package": "OneShot"
@@ -503,6 +525,13 @@ export const schemaIr = {
           "scalar": "u32",
           "lanes": 1,
           "doc": "Whole seconds until respawn"
+        },
+        {
+          "name": "freezeIn",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Whole seconds until this seat thaws (0 = not frozen)"
         },
         {
           "name": "stoneLoaded",
@@ -788,6 +817,13 @@ export const schemaIr = {
           "doc": "Seconds until the player is back"
         },
         {
+          "name": "freeze",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until a missed shot thaws: frozen means no moving or firing, and still being hittable"
+        },
+        {
           "name": "protect",
           "kind": "f32",
           "scalar": "f32",
@@ -1010,6 +1046,13 @@ export const schemaIr = {
           "lanes": 1,
           "default": 100,
           "doc": "Top of the obstacle, metres"
+        },
+        {
+          "name": "walk",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Its top can be stood on, and a jump clears it: crates, rocks, barrels"
         }
       ],
       "package": "OneShot",
@@ -1487,6 +1530,8 @@ export interface CritterViews {
   speed: Float32Array;
   /** Seconds until it is back (0 = alive) */
   dead: Float32Array;
+  /** Seconds until a missed shot thaws (frozen: no wandering or shooting, still hittable) */
+  freeze: Float32Array;
   home: Float32Array;
   /** Bot number (1..N); stones carry it as their owner */
   id: Uint32Array;
@@ -1503,6 +1548,8 @@ export interface CritterValue {
   speed: number;
   /** Seconds until it is back (0 = alive) */
   dead: number;
+  /** Seconds until a missed shot thaws (frozen: no wandering or shooting, still hittable) */
+  freeze: number;
   home: [number, number, number];
   /** Bot number (1..N); stones carry it as their owner */
   id: number;
@@ -1513,7 +1560,7 @@ export interface CritterValue {
   aim: number;
 }
 /** Critter (component, sim) */
-export const Critter = typeToken<CritterViews, CritterValue>('Critter', 'component', { sig: 'heading:f32:1,turn:f32:1,speed:f32:1,dead:f32:1,home:vec3:3,id:u32:1,score:i32:1,loaded:bool:1,aim:f32:1', read: (v: CritterViews, i: number, o: Record<string, unknown>) => { o.heading = v.heading[i]; o.turn = v.turn[i]; o.speed = v.speed[i]; o.dead = v.dead[i]; o.home = $r.lanes(v.home, i, 3, o.home); o.id = v.id[i]; o.score = v.score[i]; o.loaded = v.loaded[i] !== 0; o.aim = v.aim[i]; return o; } });
+export const Critter = typeToken<CritterViews, CritterValue>('Critter', 'component', { sig: 'heading:f32:1,turn:f32:1,speed:f32:1,dead:f32:1,freeze:f32:1,home:vec3:3,id:u32:1,score:i32:1,loaded:bool:1,aim:f32:1', read: (v: CritterViews, i: number, o: Record<string, unknown>) => { o.heading = v.heading[i]; o.turn = v.turn[i]; o.speed = v.speed[i]; o.dead = v.dead[i]; o.freeze = v.freeze[i]; o.home = $r.lanes(v.home, i, 3, o.home); o.id = v.id[i]; o.score = v.score[i]; o.loaded = v.loaded[i] !== 0; o.aim = v.aim[i]; return o; } });
 
 export interface CritterHitViews {
   position: Float32Array;
@@ -1527,6 +1574,17 @@ export interface CritterHitValue {
 }
 /** CritterHit (event, sim) */
 export const CritterHit = typeToken<CritterHitViews, CritterHitValue>('CritterHit', 'event', { sig: 'position:vec3:3,seat:u32:1', read: (v: CritterHitViews, i: number, o: Record<string, unknown>) => { o.position = $r.lanes(v.position, i, 3, o.position); o.seat = v.seat[i]; return o; } });
+
+export interface IceShellViews {
+  /** A seat 0..3, or 100 + a bot number */
+  owner: Uint32Array;
+}
+export interface IceShellValue {
+  /** A seat 0..3, or 100 + a bot number */
+  owner: number;
+}
+/** IceShell (component, presentation-only) */
+export const IceShell = typeToken<IceShellViews, IceShellValue>('IceShell', 'component', { sig: 'owner:u32:1', read: (v: IceShellViews, i: number, o: Record<string, unknown>) => { o.owner = v.owner[i]; return o; } });
 
 export interface LadderViews {
   /** Feet height of the platform at the top */
@@ -1559,6 +1617,8 @@ export interface LocalHudViews {
   playerDead: Uint8Array;
   /** Whole seconds until respawn */
   respawnIn: Uint32Array;
+  /** Whole seconds until this seat thaws (0 = not frozen) */
+  freezeIn: Uint32Array;
   stoneLoaded: Uint8Array;
   /** Whole seconds until the launch jump is ready */
   superCd: Uint32Array;
@@ -1586,6 +1646,8 @@ export interface LocalHudValue {
   playerDead: boolean;
   /** Whole seconds until respawn */
   respawnIn: number;
+  /** Whole seconds until this seat thaws (0 = not frozen) */
+  freezeIn: number;
   stoneLoaded: boolean;
   /** Whole seconds until the launch jump is ready */
   superCd: number;
@@ -1606,7 +1668,7 @@ export interface LocalHudValue {
   row7: number;
 }
 /** LocalHud (resource, presentation-only) */
-export const LocalHud = typeToken<LocalHudViews, LocalHudValue>('LocalHud', 'resource', { sig: 'seat:u32:1,score:i32:1,hits:u32:1,playerDead:bool:1,respawnIn:u32:1,stoneLoaded:bool:1,superCd:u32:1,deathBy:u32:1,rank:u32:1,players:u32:1,rows:u32:1,row0:i32:1,row1:i32:1,row2:i32:1,row3:i32:1,row4:i32:1,row5:i32:1,row6:i32:1,row7:i32:1', read: (v: LocalHudViews, i: number, o: Record<string, unknown>) => { o.seat = v.seat[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.playerDead = v.playerDead[i] !== 0; o.respawnIn = v.respawnIn[i]; o.stoneLoaded = v.stoneLoaded[i] !== 0; o.superCd = v.superCd[i]; o.deathBy = v.deathBy[i]; o.rank = v.rank[i]; o.players = v.players[i]; o.rows = v.rows[i]; o.row0 = v.row0[i]; o.row1 = v.row1[i]; o.row2 = v.row2[i]; o.row3 = v.row3[i]; o.row4 = v.row4[i]; o.row5 = v.row5[i]; o.row6 = v.row6[i]; o.row7 = v.row7[i]; return o; } });
+export const LocalHud = typeToken<LocalHudViews, LocalHudValue>('LocalHud', 'resource', { sig: 'seat:u32:1,score:i32:1,hits:u32:1,playerDead:bool:1,respawnIn:u32:1,freezeIn:u32:1,stoneLoaded:bool:1,superCd:u32:1,deathBy:u32:1,rank:u32:1,players:u32:1,rows:u32:1,row0:i32:1,row1:i32:1,row2:i32:1,row3:i32:1,row4:i32:1,row5:i32:1,row6:i32:1,row7:i32:1', read: (v: LocalHudViews, i: number, o: Record<string, unknown>) => { o.seat = v.seat[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.playerDead = v.playerDead[i] !== 0; o.respawnIn = v.respawnIn[i]; o.freezeIn = v.freezeIn[i]; o.stoneLoaded = v.stoneLoaded[i] !== 0; o.superCd = v.superCd[i]; o.deathBy = v.deathBy[i]; o.rank = v.rank[i]; o.players = v.players[i]; o.rows = v.rows[i]; o.row0 = v.row0[i]; o.row1 = v.row1[i]; o.row2 = v.row2[i]; o.row3 = v.row3[i]; o.row4 = v.row4[i]; o.row5 = v.row5[i]; o.row6 = v.row6[i]; o.row7 = v.row7[i]; return o; } });
 
 export interface MatchViews {
   /** Seconds left in the round */
@@ -1678,6 +1740,8 @@ export interface PlayerViews {
   state: Uint8Array;
   /** Seconds until the player is back */
   respawn: Float32Array;
+  /** Seconds until a missed shot thaws: frozen means no moving or firing, and still being hittable */
+  freeze: Float32Array;
   /** Spawn protection seconds */
   protect: Float32Array;
   /** The stone is in the sling */
@@ -1726,6 +1790,8 @@ export interface PlayerValue {
   state: PlayerStateName | number;
   /** Seconds until the player is back */
   respawn: number;
+  /** Seconds until a missed shot thaws: frozen means no moving or firing, and still being hittable */
+  freeze: number;
   /** Spawn protection seconds */
   protect: number;
   /** The stone is in the sling */
@@ -1756,7 +1822,7 @@ export interface PlayerValue {
   crouch: boolean;
 }
 /** Player (component, sim) */
-export const Player = typeToken<PlayerViews, PlayerValue>('Player', 'component', { sig: 'index:u32:1,yaw:f32:1,pitch:f32:1,score:i32:1,hits:u32:1,misses:u32:1,deaths:u32:1,deathBy:u32:1,vy:f32:1,speed:f32:1,state:enum:1,respawn:f32:1,protect:f32:1,loaded:bool:1,aiming:bool:1,fireHeld:bool:1,jumpHeld:bool:1,sinceJump:f32:1,superCd:f32:1,climbing:bool:1,ladderX:f32:1,ladderZ:f32:1,ladderNx:f32:1,ladderNz:f32:1,ladderTop:f32:1,ladderCool:f32:1,eye:f32:1,crouch:bool:1', read: (v: PlayerViews, i: number, o: Record<string, unknown>) => { o.index = v.index[i]; o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.misses = v.misses[i]; o.deaths = v.deaths[i]; o.deathBy = v.deathBy[i]; o.vy = v.vy[i]; o.speed = v.speed[i]; o.state = $r.enm('PlayerState', v.state[i]!); o.respawn = v.respawn[i]; o.protect = v.protect[i]; o.loaded = v.loaded[i] !== 0; o.aiming = v.aiming[i] !== 0; o.fireHeld = v.fireHeld[i] !== 0; o.jumpHeld = v.jumpHeld[i] !== 0; o.sinceJump = v.sinceJump[i]; o.superCd = v.superCd[i]; o.climbing = v.climbing[i] !== 0; o.ladderX = v.ladderX[i]; o.ladderZ = v.ladderZ[i]; o.ladderNx = v.ladderNx[i]; o.ladderNz = v.ladderNz[i]; o.ladderTop = v.ladderTop[i]; o.ladderCool = v.ladderCool[i]; o.eye = v.eye[i]; o.crouch = v.crouch[i] !== 0; return o; } });
+export const Player = typeToken<PlayerViews, PlayerValue>('Player', 'component', { sig: 'index:u32:1,yaw:f32:1,pitch:f32:1,score:i32:1,hits:u32:1,misses:u32:1,deaths:u32:1,deathBy:u32:1,vy:f32:1,speed:f32:1,state:enum:1,respawn:f32:1,freeze:f32:1,protect:f32:1,loaded:bool:1,aiming:bool:1,fireHeld:bool:1,jumpHeld:bool:1,sinceJump:f32:1,superCd:f32:1,climbing:bool:1,ladderX:f32:1,ladderZ:f32:1,ladderNx:f32:1,ladderNz:f32:1,ladderTop:f32:1,ladderCool:f32:1,eye:f32:1,crouch:bool:1', read: (v: PlayerViews, i: number, o: Record<string, unknown>) => { o.index = v.index[i]; o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.misses = v.misses[i]; o.deaths = v.deaths[i]; o.deathBy = v.deathBy[i]; o.vy = v.vy[i]; o.speed = v.speed[i]; o.state = $r.enm('PlayerState', v.state[i]!); o.respawn = v.respawn[i]; o.freeze = v.freeze[i]; o.protect = v.protect[i]; o.loaded = v.loaded[i] !== 0; o.aiming = v.aiming[i] !== 0; o.fireHeld = v.fireHeld[i] !== 0; o.jumpHeld = v.jumpHeld[i] !== 0; o.sinceJump = v.sinceJump[i]; o.superCd = v.superCd[i]; o.climbing = v.climbing[i] !== 0; o.ladderX = v.ladderX[i]; o.ladderZ = v.ladderZ[i]; o.ladderNx = v.ladderNx[i]; o.ladderNz = v.ladderNz[i]; o.ladderTop = v.ladderTop[i]; o.ladderCool = v.ladderCool[i]; o.eye = v.eye[i]; o.crouch = v.crouch[i] !== 0; return o; } });
 
 export interface PlayerHitViews {
   by: Uint32Array;
@@ -1817,14 +1883,18 @@ export interface SolidViews {
   radius: Float32Array;
   /** Top of the obstacle, metres */
   height: Float32Array;
+  /** Its top can be stood on, and a jump clears it: crates, rocks, barrels */
+  walk: Uint8Array;
 }
 export interface SolidValue {
   radius: number;
   /** Top of the obstacle, metres */
   height: number;
+  /** Its top can be stood on, and a jump clears it: crates, rocks, barrels */
+  walk: boolean;
 }
 /** A vertical cylinder players, critters and stones cannot pass. (component, sim) */
-export const Solid = typeToken<SolidViews, SolidValue>('Solid', 'component', { sig: 'radius:f32:1,height:f32:1', read: (v: SolidViews, i: number, o: Record<string, unknown>) => { o.radius = v.radius[i]; o.height = v.height[i]; return o; } });
+export const Solid = typeToken<SolidViews, SolidValue>('Solid', 'component', { sig: 'radius:f32:1,height:f32:1,walk:bool:1', read: (v: SolidViews, i: number, o: Record<string, unknown>) => { o.radius = v.radius[i]; o.height = v.height[i]; o.walk = v.walk[i] !== 0; return o; } });
 
 export interface SoloLookViews {
   yaw: Float32Array;

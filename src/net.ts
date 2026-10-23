@@ -3,7 +3,7 @@
  * which seat this device plays, its input in an online match, the camera and first-person rig of that seat, and its HUD data.
  */
 import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, LocalTransform, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
-import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down, predictInput } from './input.ts';
+import { BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down, predictInput } from './input.ts';
 import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
 import { yawPitchQuat } from './sim.ts';
 import { announcement } from './announce.ts';
@@ -39,8 +39,9 @@ function sampleLook(): void {
     netLook.pitch = math.clamp(netLook.pitch - mouse.dy * sens, -PITCH_LIMIT, PITCH_LIMIT);
   }
   netLook.aiming = aiming;
+  // zoom (right button) stays on this device: it is the camera's field of view and the look's sensitivity, never part of what the server or the others see
   // paused: keep sending the facing but no buttons, so the character stands still
-  const buttons = packLook(netLook.yaw, netLook.pitch) | (paused ? 0 : (fire ? BTN_FIRE : 0) | (aiming ? BTN_AIM : 0));
+  const buttons = packLook(netLook.yaw, netLook.pitch) | (paused ? 0 : fire ? BTN_FIRE : 0);
   multiplayer.setInput(buttons >>> 0, [0, 0]);
 }
 multiplayer.onSample(sampleLook);
@@ -173,6 +174,7 @@ export const HudMirror = defineSystem({
       hits: mine.hits,
       playerDead: mine.dead,
       respawnIn: mine.dead ? math.ceil(mine.respawn) : 0,
+      freezeIn: !mine.dead && mine.freeze > 0 ? math.ceil(mine.freeze) : 0,
       stoneLoaded: mine.loaded,
       superCd: math.ceil(mine.superCd),
       deathBy: mine.deathBy,
@@ -189,8 +191,8 @@ export const HudMirror = defineSystem({
   },
 });
 
-function readPlayer(p: { score: number; hits: number; state: unknown; respawn: number; loaded: boolean; superCd: number; deathBy: number }) {
-  return { score: p.score, hits: p.hits, dead: p.state === 'Dead', respawn: p.respawn, loaded: p.loaded, superCd: p.superCd, deathBy: p.deathBy };
+function readPlayer(p: { score: number; hits: number; state: unknown; respawn: number; freeze: number; loaded: boolean; superCd: number; deathBy: number }) {
+  return { score: p.score, hits: p.hits, dead: p.state === 'Dead', respawn: p.respawn, freeze: p.freeze, loaded: p.loaded, superCd: p.superCd, deathBy: p.deathBy };
 }
 
 /** The lobby's name box has the keyboard: typed text edits `playerName`, Enter or Escape end it. */

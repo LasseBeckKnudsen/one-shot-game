@@ -8,14 +8,14 @@ import { setAnimParam, triggerAnim, Animator, defineSystem, query, read, write, 
 import { AirReady } from './schema.gen.ts';
 import { Blocker, Ladder, Jumped, SuperJumped, VmRig, Settings, SetSensitivity, Flow, GameReady, QuitToMenu, ResumeGame, StartSolo } from './schema.gen.ts';
 import { Announce, Critter, CritterHit, PlayerHit, Match, Platform, Player, PlayerRespawned, SeatBody, ShotFired, Solid, SoloLook, SpawnPoint, Stone, StoneMissed, Temp } from './schema.gen.ts';
-import { BTN_AIM, BTN_BOARD, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
+import { BTN_BOARD, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
 
 export const EYE = 1.65;
 const WALK = 5.6;
 const JUMP = 9.2;
 const GRAVITY = 21;
 /** The double-jump launch: Space twice within DOUBLE_TAP seconds fires the player high up; SUPER_COOLDOWN seconds to recharge. */
-const SUPER_JUMP = 27;
+const SUPER_JUMP = 22.6; // a third less than the original 27 m/s: about 12 m up instead of 17
 const DOUBLE_TAP = 0.32;
 const SUPER_COOLDOWN = 40;
 const CLIMB_SPEED = 3.4;
@@ -35,10 +35,12 @@ const CRITTER_R = 0.55;
 const CRITTER_TOP = 1.75;
 const ROUND_SECONDS = 360;
 const RESPAWN = 3;
+/** Seconds a missed shot freezes its shooter: no moving, jumping or firing, still hittable, nothing lost. */
+const FREEZE = 5;
 /** Seconds nobody can hit a player who just respawned (firing ends it early). */
 const RESPAWN_PROTECT = 8;
 
-type Circle = { x: number; z: number; r: number; h: number };
+type Circle = { x: number; z: number; r: number; h: number; walk: boolean };
 
 /** Quaternion for yaw about Y then pitch about X (camera looks down -Z at rest). */
 export function yawPitchQuat(yaw: number, pitch: number): [number, number, number, number] {
@@ -51,7 +53,7 @@ export function yawPitchQuat(yaw: number, pitch: number): [number, number, numbe
 
 function pushOut(p: { x: number; z: number }, solids: Circle[], radius: number, height: number): void {
   for (const s of solids) {
-    if (s.h < height) continue;
+    if (s.walk && s.h < height) continue; // a crate or rock lower than the feet's reach is stepped or jumped onto, not pushed against
     const dx = p.x - s.x;
     const dz = p.z - s.z;
     const min = s.r + radius;
@@ -113,7 +115,6 @@ export const SoloInput = defineSystem({
     if ((act['jump'] ?? 0) > 0.5) buttons |= BTN_JUMP;
     if ((act['crouch'] ?? 0) > 0.5) buttons |= BTN_CROUCH;
     if (clicking || (act['fire'] ?? 0) > 0.5) buttons |= BTN_FIRE;
-    if (aiming) buttons |= BTN_AIM;
     if ((act['board'] ?? 0) > 0.5) buttons |= BTN_BOARD;
     ctx.set(PlayerInputs, { players: 1, buttons0: buttons >>> 0, stick0: [act['moveX'] ?? 0, act['moveY'] ?? 0] });
   },
@@ -134,9 +135,7 @@ export const Look = defineSystem({
         const inp = playerInput(inputs, p.index);
         if (down(inp.buttons, BTN_LOOK)) {
           const l = unpackLook(inp.buttons);
-          c.set(Player, i, { yaw: l.yaw, pitch: l.pitch, aiming: down(inp.buttons, BTN_AIM) });
-        } else {
-          c.set(Player, i, { aiming: down(inp.buttons, BTN_AIM) });
+          c.set(Player, i, { yaw: l.yaw, pitch: l.pitch });
         }
       }
     }
@@ -162,7 +161,7 @@ export const Move = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const s = c.get(Solid, i);
         const t = c.get(LocalTransform, i);
-        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height });
+        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height, walk: s.walk });
       }
     }
     const rects: { x: number; z: number; hx: number; hz: number; top: number }[] = [];
@@ -202,7 +201,9 @@ export const Move = defineSystem({
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i);
         if (p.state === 'Dead') continue;
-        const inp = playerInput(inputs, p.index);
+        const raw = playerInput(inputs, p.index);
+        // frozen (a missed shot): no walking, jumping or crouching, but the look goes on
+        const inp = p.freeze > 0 ? { buttons: raw.buttons & ~(BTN_JUMP | BTN_CROUCH), stick: [0, 0] as [number, number] } : raw;
         const act = { moveX: inp.stick[0], moveY: inp.stick[1] };
         const jumpHeld = down(inp.buttons, BTN_JUMP);
         const jumpPressed = jumpHeld && !p.jumpHeld;
@@ -245,9 +246,9 @@ export const Move = defineSystem({
         }
         const crouching = down(inp.buttons, BTN_CROUCH);
         const eye = p.eye + math.clamp((crouching ? EYE_CROUCH : EYE) - p.eye, -9 * ctx.dt, 9 * ctx.dt);
-        const speed = WALK * (p.aiming ? 0.6 : 1) * (crouching ? CROUCH_SPEED : 1);
+        const speed = WALK * (crouching ? CROUCH_SPEED : 1);
         const pos = { x: t.position[0] + vx * speed * ctx.dt, z: t.position[2] + vz * speed * ctx.dt };
-        pushOut(pos, circles, PLAYER_R, 0);
+        pushOut(pos, circles, PLAYER_R, t.position[1] - p.eye + 0.6);
         const rr = math.sqrt(pos.x * pos.x + pos.z * pos.z);
         if (rr > ARENA) {
           pos.x *= ARENA / rr;
@@ -261,16 +262,19 @@ export const Move = defineSystem({
           if (math.abs(pos.x - d.x) <= d.hx && math.abs(pos.z - d.z) <= d.hz && d.top > floor && d.top <= feet + 0.6) floor = d.top;
         }
         for (const b of blocks) if (b.walk && b.y1 > floor && b.y1 <= feet + 0.6 && inside(b, pos.x, pos.z)) floor = b.y1;
+        for (const o of circles) if (o.walk && o.h > floor && o.h <= feet + 0.6 && (pos.x - o.x) ** 2 + (pos.z - o.z) ** 2 < o.r * o.r) floor = o.h;
         let vy = p.vy;
         const grounded = feet <= floor + 0.02;
         const jumpDown = jumpHeld;
         const pressed = jumpPressed;
         // Jumping (or falling) next to a ladder grabs it.
         const ladderCool = math.max(0, p.ladderCool - ctx.dt);
-        if (ladderCool === 0 && (pressed || !grounded)) {
+        if (ladderCool === 0) {
           for (const l of rungs) {
             const d = math.sqrt((pos.x - l.x) ** 2 + (pos.z - l.z) ** 2);
-            if (d < l.reach && feet >= -0.1 && feet <= l.top + 0.1) {
+            // grabbed by jumping or falling past it, or just by walking into it (W, facing it from its outer side)
+            const walkedInto = my > 0.3 && d < 1.3 && fx * -l.nx + fz * -l.nz > 0.5;
+            if (d < l.reach && feet >= -0.1 && feet <= l.top + 0.1 && (pressed || !grounded || walkedInto)) {
               c.set(Player, i, { climbing: true, ladderX: l.x, ladderZ: l.z, ladderNx: l.nx, ladderNz: l.nz, ladderTop: l.top, vy: 0, jumpHeld: jumpDown, sinceJump: 9, ladderCool: 0 });
               c.set(LocalTransform, i, { position: [l.x + l.nx * 0.45, feet + p.eye, l.z + l.nz * 0.45] });
               break;
@@ -411,7 +415,7 @@ export const StoneFlight = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const s = c.get(Solid, i);
         const t = c.get(LocalTransform, i);
-        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height });
+        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height, walk: s.walk });
       }
     }
     const targets: Victim[] = [];
@@ -505,7 +509,7 @@ export const StoneFlight = defineSystem({
           // The victim loses half its points and is out for a moment.
           if (v.kind === 'bot') {
             const g = v.chunk.get(Critter, v.row);
-            v.chunk.set(Critter, v.row, { dead: 2, score: math.max(0, g.score - hitPenalty(g.score)) });
+            v.chunk.set(Critter, v.row, { dead: 2, freeze: 0, score: math.max(0, g.score - hitPenalty(g.score)) });
             spawnCorpse(ctx, v.x, 0, v.z, g.heading, BOT_TINTS[g.id % BOT_TINTS.length]!);
             ctx.events.emit(CritterHit, { position: [v.x, 0.8, v.z], seat: shooterSeat });
             ctx.events.emit(PlaySound, { sound: 'audio/hit', volume: 1, spatial: true, position: [v.x, 1, v.z] });
@@ -513,7 +517,7 @@ export const StoneFlight = defineSystem({
             ctx.commands.spawn({ LocalTransform: { position: [v.x, 0.9, v.z] }, ParticleSystem: { effect: 'fx/critter_poof.vfx.json' }, Temp: { life: 1.5 } });
           } else {
             const vp = v.chunk.get(Player, v.row);
-            v.chunk.set(Player, v.row, { state: 'Dead', respawn: RESPAWN, vy: 0, climbing: false, score: math.max(0, vp.score - hitPenalty(vp.score)), deaths: vp.deaths + 1, deathBy: s.owner });
+            v.chunk.set(Player, v.row, { state: 'Dead', respawn: RESPAWN, freeze: 0, vy: 0, climbing: false, score: math.max(0, vp.score - hitPenalty(vp.score)), deaths: vp.deaths + 1, deathBy: s.owner });
             spawnCorpse(ctx, v.x + math.sin(vp.yaw) * 0.9, v.y, v.z + math.cos(vp.yaw) * 0.9, vp.yaw + 3.14159, SEAT_TINTS[vp.index % MAX_SEATS]!);
             ctx.events.emit(PlayerHit, { by: s.owner, seat: vp.index });
             if (shooterSeat >= 0) ctx.events.emit(CritterHit, { position: [v.x, 1.0, v.z], seat: shooterSeat });
@@ -522,21 +526,20 @@ export const StoneFlight = defineSystem({
             ctx.commands.spawn({ LocalTransform: { position: [v.x + math.sin(vp.yaw) * 1.6, 1.0, v.z + math.cos(vp.yaw) * 1.6] }, ParticleSystem: { effect: 'fx/hit_burst.vfx.json' }, Temp: { life: 2.2 } });
           }
         } else {
-          // A miss costs the shooter a point and its life.
+          // A miss freezes the shooter: it cannot move or fire for a few seconds and can still be hit, but loses nothing.
           ctx.events.emit(StoneMissed, { position: [x, y, z], seat: shooterSeat < 0 ? 99 : shooterSeat });
           ctx.events.emit(Announce, { kind: 1, a: shooterCode, b: 0 });
           ctx.commands.spawn({ LocalTransform: { position: [x, math.max(0.05, y), z] }, ParticleSystem: { effect: 'fx/impact.vfx.json' }, Temp: { life: 1.5 } });
           if (shooterPlayer) {
             const pp = shooterPlayer.chunk.get(Player, shooterPlayer.row);
             const pt = shooterPlayer.chunk.get(LocalTransform, shooterPlayer.row).position;
-            shooterPlayer.chunk.set(Player, shooterPlayer.row, { state: 'Dead', respawn: RESPAWN, vy: 0, climbing: false, score: math.max(0, pp.score - 1), misses: pp.misses + 1, deaths: pp.deaths + 1, deathBy: 0 });
-            spawnCorpse(ctx, pt[0] + math.sin(pp.yaw) * 0.9, pt[1] - pp.eye, pt[2] + math.cos(pp.yaw) * 0.9, pp.yaw + 3.14159, SEAT_TINTS[pp.index % MAX_SEATS]!);
+            shooterPlayer.chunk.set(Player, shooterPlayer.row, { freeze: FREEZE, misses: pp.misses + 1 });
+            ctx.commands.spawn({ LocalTransform: { position: [pt[0], pt[1] - pp.eye + 0.9, pt[2]] }, ParticleSystem: { effect: 'fx/freeze_burst.vfx.json' }, Temp: { life: 2 } });
             ctx.events.emit(PlaySound, { sound: 'audio/miss', volume: 1, spatial: true, position: [pt[0], pt[1], pt[2]] });
           } else if (shooterBot) {
-            const g = shooterBot.chunk.get(Critter, shooterBot.row);
             const bt = shooterBot.chunk.get(LocalTransform, shooterBot.row).position;
-            shooterBot.chunk.set(Critter, shooterBot.row, { score: math.max(0, g.score - 1), dead: 2, loaded: true });
-            spawnCorpse(ctx, bt[0], 0, bt[2], g.heading, BOT_TINTS[g.id % BOT_TINTS.length]!);
+            shooterBot.chunk.set(Critter, shooterBot.row, { freeze: FREEZE });
+            ctx.commands.spawn({ LocalTransform: { position: [bt[0], 0.9, bt[2]] }, ParticleSystem: { effect: 'fx/freeze_burst.vfx.json' }, Temp: { life: 2 } });
             ctx.events.emit(PlaySound, { sound: 'audio/miss', volume: 0.7, spatial: true, position: [x, y, z] });
           }
         }
@@ -571,6 +574,17 @@ export const Respawn = defineSystem({
       for (let i = 0; i < pc.length; i++) {
         const p = pc.get(Player, i);
         if (p.protect > 0) pc.set(Player, i, { protect: math.max(0, p.protect - ctx.dt) });
+        if (p.freeze > 0 && p.state !== 'Dead') {
+          // thawing: the stone is back in the sling
+          const left = math.max(0, p.freeze - ctx.dt);
+          pc.set(Player, i, left > 0 ? { freeze: left } : { freeze: 0, loaded: true });
+          if (left <= 0) {
+            const pt = pc.get(LocalTransform, i).position;
+            ctx.commands.spawn({ LocalTransform: { position: [pt[0], pt[1] - p.eye + 0.9, pt[2]] }, ParticleSystem: { effect: 'fx/thaw_burst.vfx.json' }, Temp: { life: 2 } });
+            ctx.events.emit(PlayerRespawned, { seat: p.index });
+            ctx.events.emit(PlaySound, { sound: 'audio/respawn', volume: 0.5, spatial: true, position: [pt[0], pt[1], pt[2]] });
+          }
+        }
         if (p.state !== 'Dead') continue;
         const left = p.respawn - ctx.dt;
         if (left > 0) {
@@ -602,7 +616,7 @@ export const Respawn = defineSystem({
             }
           }
         }
-        pc.set(Player, i, { state: 'Alive', loaded: true, protect: RESPAWN_PROTECT, vy: 0, climbing: false });
+        pc.set(Player, i, { state: 'Alive', loaded: true, protect: RESPAWN_PROTECT, freeze: 0, vy: 0, climbing: false });
         pc.set(LocalTransform, i, { position: [best[0], EYE, best[1]] });
         pc.set(Player, i, { eye: EYE, crouch: false });
         ctx.commands.spawn({ LocalTransform: { position: [best[0], 0.05, best[1]] }, ParticleSystem: { effect: 'fx/respawn.vfx.json' }, Temp: { life: 2.2 } });
@@ -639,7 +653,7 @@ export const CritterAI = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const s = c.get(Solid, i);
         const t = c.get(LocalTransform, i);
-        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height });
+        circles.push({ x: t.position[0], z: t.position[2], r: s.radius, h: s.height, walk: s.walk });
       }
     }
     const humans: { seat: number; x: number; y: number; z: number; sneaking: boolean; alive: boolean }[] = [];
@@ -689,7 +703,22 @@ export const CritterAI = defineSystem({
           c.set(Critter, i, { dead: 0, turn: 0.5, loaded: true, aim: ctx.rng.between(4, 8) });
           c.set(LocalTransform, i, { position: [p.x, 0, p.z], scale: [1, 1, 1] });
           setAnimParam(c, i, 'dead', false);
+          setAnimParam(c, i, 'frozen', false);
           ctx.commands.spawn({ LocalTransform: { position: [p.x, 0.05, p.z] }, ParticleSystem: { effect: 'fx/critter_spawn.vfx.json' }, Temp: { life: 1.5 } });
+          continue;
+        }
+        if (g.freeze > 0) {
+          // frozen by its own miss: it stands still (and can still be hit) until it thaws with its stone back
+          const left = math.max(0, g.freeze - ctx.dt);
+          setAnimParam(c, i, 'frozen', left > 0);
+          setAnimParam(c, i, 'walking', false);
+          setAnimParam(c, i, 'aiming', false);
+          if (left > 0) {
+            c.set(Critter, i, { freeze: left });
+          } else {
+            c.set(Critter, i, { freeze: 0, loaded: true, aim: ctx.rng.between(2, 5) });
+            ctx.commands.spawn({ LocalTransform: { position: [t.position[0], 0.9, t.position[2]] }, ParticleSystem: { effect: 'fx/thaw_burst.vfx.json' }, Temp: { life: 2 } });
+          }
           continue;
         }
         // Who could it shoot at: the player if close, else the nearest other bot.
@@ -906,12 +935,12 @@ export const SeatBodies = defineSystem({
   queries: { bodies: query(read(SeatBody), write(LocalTransform), write(Animator)), player: query(read(Player), read(LocalTransform)) },
   events: [ShotFired],
   run(ctx, { bodies, player }) {
-    const seats = new Map<number, { yaw: number; x: number; y: number; z: number; walking: boolean; airborne: boolean; aiming: boolean; dead: boolean }>();
+    const seats = new Map<number, { yaw: number; x: number; y: number; z: number; walking: boolean; airborne: boolean; frozen: boolean; aiming: boolean; dead: boolean }>();
     for (const c of player.chunks()) {
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i).position;
-        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, airborne: p.vy !== 0 && !p.climbing, aiming: p.aiming, dead: p.state === 'Dead' });
+        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, airborne: p.vy !== 0 && !p.climbing, frozen: p.freeze > 0, aiming: p.aiming, dead: p.state === 'Dead' });
       }
     }
     const fired = new Set<number>();
@@ -925,6 +954,7 @@ export const SeatBodies = defineSystem({
         c.set(LocalTransform, i, { position: [b.x, b.y, b.z], rotation: yawPitchQuat(b.yaw, 0), scale: [k, k, k] });
         setAnimParam(c, i, 'walking', b.walking);
         setAnimParam(c, i, 'airborne', b.airborne);
+        setAnimParam(c, i, 'frozen', b.frozen);
         setAnimParam(c, i, 'aiming', b.aiming);
         setAnimParam(c, i, 'dead', false);
         if (fired.has(c.get(SeatBody, i).index)) triggerAnim(c, i, 'fire');

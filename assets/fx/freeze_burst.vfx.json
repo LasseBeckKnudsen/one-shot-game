@@ -1,0 +1,376 @@
+{
+  "$schemaVersion": 1,
+  "name": "freeze_burst",
+  "emitters": [
+    {
+      "name": "flash",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.25,
+        0.25
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "size": [
+        5.0,
+        5.0
+      ],
+      "texture": "textures/fx/glow",
+      "color": [
+        0.45,
+        1.1,
+        1.7,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.4
+        ],
+        [
+          1,
+          1.2
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "ring",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.5,
+        0.5
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "size": [
+        6.5,
+        6.5
+      ],
+      "texture": "textures/fx/ring",
+      "color": [
+        0.6,
+        1.3,
+        1.8,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          0.5,
+          1,
+          1,
+          1,
+          0.7
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.1
+        ],
+        [
+          0.2,
+          0.7
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "ring2",
+      "capacity": 2,
+      "bursts": [
+        {
+          "at": 0.08,
+          "count": 1
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.6,
+        0.6
+      ],
+      "speed": [
+        0,
+        0
+      ],
+      "size": [
+        4.2,
+        4.2
+      ],
+      "texture": "textures/fx/ring",
+      "color": [
+        0.2,
+        0.6,
+        1.7,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          0.9
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.1
+        ],
+        [
+          0.2,
+          0.65
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "blend": "additive"
+    },
+    {
+      "name": "shards",
+      "capacity": 32,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 24
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.6,
+        1.1
+      ],
+      "speed": [
+        4,
+        10
+      ],
+      "size": [
+        0.4,
+        0.85
+      ],
+      "texture": "textures/fx/star4",
+      "color": [
+        0.5,
+        1.2,
+        1.7,
+        1
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          0.6,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.3
+        ],
+        [
+          0.15,
+          1
+        ],
+        [
+          1,
+          0.2
+        ]
+      ],
+      "blend": "additive",
+      "shape": {
+        "kind": "sphere",
+        "radius": 0.15
+      },
+      "drag": 2.6,
+      "gravity": [
+        0,
+        -3,
+        0
+      ],
+      "rotation": [
+        0,
+        1.57
+      ],
+      "spin": [
+        -4,
+        4
+      ],
+      "color2": [
+        1.5,
+        1.6,
+        1.7,
+        1
+      ]
+    },
+    {
+      "name": "snow",
+      "capacity": 20,
+      "bursts": [
+        {
+          "at": 0,
+          "count": 14
+        }
+      ],
+      "loop": false,
+      "lifetime": [
+        0.9,
+        1.6
+      ],
+      "speed": [
+        0.6,
+        2.2
+      ],
+      "size": [
+        0.6,
+        1.1
+      ],
+      "texture": "textures/fx/puff",
+      "color": [
+        0.82,
+        0.95,
+        1.0,
+        0.75
+      ],
+      "colorOverLife": [
+        [
+          0,
+          1,
+          1,
+          1,
+          0.9
+        ],
+        [
+          0.6,
+          1,
+          1,
+          1,
+          0.6
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "sizeOverLife": [
+        [
+          0,
+          0.4
+        ],
+        [
+          0.3,
+          1
+        ],
+        [
+          1,
+          1.3
+        ]
+      ],
+      "blend": "alpha",
+      "shape": {
+        "kind": "sphere",
+        "radius": 0.5
+      },
+      "gravity": [
+        0,
+        0.6,
+        0
+      ],
+      "drag": 1.4,
+      "rotation": [
+        0,
+        6.28
+      ],
+      "spin": [
+        -1,
+        1
+      ],
+      "color2": [
+        0.6,
+        0.85,
+        1.0,
+        0.6
+      ]
+    }
+  ]
+}

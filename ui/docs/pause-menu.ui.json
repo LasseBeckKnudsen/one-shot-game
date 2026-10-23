@@ -220,6 +220,7 @@
         "p_k1",
         "p_k2",
         "p_k3",
+        "pau_k3",
         "p_k4",
         "p_k5",
         "p_k6",
@@ -290,7 +291,7 @@
       "key": "k4",
       "props": {
         "keycap": "Right click",
-        "action": "Steady aim"
+        "action": "Zoom in (slower look)"
       }
     },
     "p_k5": {
@@ -367,6 +368,15 @@
       "props": {
         "keycap": "Tab",
         "action": "Show or hide the leaderboard"
+      }
+    },
+    "pau_k3": {
+      "type": "use",
+      "doc": "key-row",
+      "key": "k11",
+      "props": {
+        "keycap": "A miss",
+        "action": "Freezes you 5 s (can still be hit)"
       }
     }
   },

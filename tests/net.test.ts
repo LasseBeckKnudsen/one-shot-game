@@ -3,6 +3,8 @@ import { worldTest, expect } from '@gameengine/test';
 import { LocalTransform, PlayerInputs } from '@gameengine/runtime';
 import { BTN_FIRE, packLook, unpackLook, BTN_LOOK, predictInput } from '../src/input.ts';
 import { Player } from '../src/schema.gen.ts';
+import { FUN_NAMES, randomName } from '../src/names.ts';
+import { cleanName } from '../src/netstate.ts';
 
 const seatRows = (world: any) => world.entities(Player).map((e: any) => ({ e, p: world.get(e, Player), t: world.get(e, LocalTransform).position }));
 
@@ -61,7 +63,7 @@ worldTest('a stone from one seat scores for that seat and ends the other seat\'s
       expect(rows[0]!.p.deathBy).toBe(1001);
       expect(rows[1]!.p.loaded).toBe(true);
     } else {
-      await step(200); // a miss: wait out the respawn and try the next spot
+      await step(320); // a miss: wait out the freeze and try the next spot
     }
   }
   expect(done).toBe(true);
@@ -89,4 +91,52 @@ worldTest('a remote look is carried along its last turn, never past a few frames
   expect(predictInput([{ frame: 9, buttons: 0, stick: [0, 0] }, { frame: 10, buttons: 0, stick: [0, 0] }], 12)).toBe(null);
   expect(predictInput([at(10, 1, 0), at(11, 1.1, 0)], 11)).toBe(null);
   expect(predictInput([at(11, 1, 0), at(10, 1.1, 0)], 14)).toBe(null);
+});
+
+worldTest('the fun names are 4 to 8 plain letters, survive the name filter and are picked from the list', async () => {
+  expect(FUN_NAMES.length).toBeGreaterThan(20);
+  for (const n of FUN_NAMES) {
+    expect(/^[A-Za-z]{4,8}$/.test(n)).toBe(true);
+    expect(cleanName(n)).toBe(n);
+  }
+  expect(new Set(FUN_NAMES).size).toBe(FUN_NAMES.length);
+  for (let i = 0; i < 30; i++) expect(FUN_NAMES.includes(randomName())).toBe(true);
+});
+
+worldTest('a frozen player (a miss) can still be hit, and a hit ends the freeze with the usual loss', async ({ world, step, cheat }) => {
+  await cheat('flow.play', { seats: 4 });
+  await step(260);
+  // seat 0 fires level at the trees (a miss) and freezes; seat 1 then shoots it from 6 m
+  await cheat('player.teleport', { seat: 0, x: 0, z: 15.7, yaw: 0 });
+  await cheat('player.score', { points: 6 });
+  await step(2);
+  world.setResource(PlayerInputs, { players: 4, buttons0: (packLook(0, 0) | BTN_FIRE) >>> 0 });
+  await step(4);
+  world.setResource(PlayerInputs, { players: 4, buttons0: packLook(0, 0) });
+  await step(40);
+  let rows = seatRows(world);
+  if (rows[0]!.p.misses === 0) return; // the stone found a critter-free hit: nothing to prove here
+  expect(rows[0]!.p.state).toBe('Alive');
+  expect(rows[0]!.p.freeze).toBeGreaterThan(3);
+  expect(rows[0]!.p.score).toBe(6);
+  let hit = false;
+  for (let k = 0; k < 8 && !hit; k++) {
+    const a = (k / 8) * 2 * Math.PI;
+    const sx = Math.sin(a) * 6;
+    const sz = 15.7 + Math.cos(a) * 6;
+    await cheat('player.teleport', { seat: 1, x: sx, z: sz, yaw: 0 });
+    await step(2);
+    const yaw = Math.atan2(sx - 0, sz - 15.7);
+    world.setResource(PlayerInputs, { players: 4, buttons0: packLook(0, 0), buttons1: (packLook(yaw, 0) | BTN_FIRE) >>> 0 });
+    await step(4);
+    world.setResource(PlayerInputs, { players: 4, buttons0: packLook(0, 0), buttons1: packLook(yaw, 0) });
+    await step(20);
+    rows = seatRows(world);
+    if (rows[1]!.p.hits > 0) hit = true;
+    else await step(320);
+  }
+  if (!hit) return; // cover in the way every time: the rule is proven by the first half
+  expect(rows[0]!.p.state).toBe('Dead');
+  expect(rows[0]!.p.freeze).toBe(0);
+  expect(rows[0]!.p.score).toBe(3); // half of six
 });

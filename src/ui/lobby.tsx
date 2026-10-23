@@ -6,7 +6,8 @@
 import { multiplayer, services } from '@gameengine/runtime';
 import { createEffect, createSignal, defineUI, onUiFrame, untrack, useResource, views, type ViewHandle } from '@gameengine/ui';
 import { Flow } from '../schema.gen.ts';
-import { lobbyOpen, nameEditing, playerName, setLobbyOpen, setNameEditing } from '../netstate.ts';
+import { lobbyOpen, nameEditing, playerName, setLobbyOpen, setNameEditing, setPlayerName } from '../netstate.ts';
+import { randomName } from '../names.ts';
 import { LobbyView, type LobbyModel } from '../views/lobby.view.tsx';
 
 type LanHost = ReturnType<typeof multiplayer.lanHosts>[number];
@@ -103,6 +104,8 @@ export const lobby = defineUI({
     createEffect(() => {
       const on = lobbyOpen() && flow().screen === 'Start';
       if (on && !handle) {
+        // a player who never typed a name gets a fun one (kept in the settings store, so it is theirs from now on)
+        if (!playerName()) setPlayerName(randomName());
         reset();
         try {
           multiplayer.events(); // drop what arrived while the lobby was closed
@@ -112,8 +115,12 @@ export const lobby = defineUI({
         // a game published on the office arcade is served by its own match server next to the page: .../<game>/socket
         void services.system.launchLink().then((r) => {
           // no page address (a native player): the pattern does not match and the project's server is used
-          const m = /^(https?):\/\/([^/?#]+)([^?#]*)/.exec((r as { url?: string }).url ?? '');
+          const link = (r as { url?: string }).url ?? '';
+          const m = /^(https?):\/\/([^/?#]+)([^?#]*)/.exec(link);
           if (m) pageServer = `${m[1] === 'https' ? 'wss' : 'ws'}://${m[2]}${m[3]!.replace(/\/+$/, '')}/socket`;
+          // ?server=ws://host:port points the page at another match server (a dev server refuses a release page: its build id differs)
+          const forced = /[?&]server=(wss?:\/\/[^&#\s]+)/.exec(link);
+          if (forced) pageServer = forced[1];
         }, () => undefined);
         handle = views.push(LobbyView, untrack(model), {
           onIntent: (name, payload) => {

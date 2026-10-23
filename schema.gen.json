@@ -364,6 +364,13 @@
           "doc": "Seconds until it is back (0 = alive)"
         },
         {
+          "name": "freeze",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until a missed shot thaws (frozen: no wandering or shooting, still hittable)"
+        },
+        {
           "name": "home",
           "kind": "vec3",
           "scalar": "f32",
@@ -418,6 +425,21 @@
           "scalar": "u32",
           "lanes": 1,
           "doc": "The seat that scored the hit"
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "IceShell",
+      "kind": "component",
+      "sim": false,
+      "fields": [
+        {
+          "name": "owner",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "A seat 0..3, or 100 + a bot number"
         }
       ],
       "package": "OneShot"
@@ -497,6 +519,13 @@
           "scalar": "u32",
           "lanes": 1,
           "doc": "Whole seconds until respawn"
+        },
+        {
+          "name": "freezeIn",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1,
+          "doc": "Whole seconds until this seat thaws (0 = not frozen)"
         },
         {
           "name": "stoneLoaded",
@@ -782,6 +811,13 @@
           "doc": "Seconds until the player is back"
         },
         {
+          "name": "freeze",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Seconds until a missed shot thaws: frozen means no moving or firing, and still being hittable"
+        },
+        {
           "name": "protect",
           "kind": "f32",
           "scalar": "f32",
@@ -1004,6 +1040,13 @@
           "lanes": 1,
           "default": 100,
           "doc": "Top of the obstacle, metres"
+        },
+        {
+          "name": "walk",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Its top can be stood on, and a jump clears it: crates, rocks, barrels"
         }
       ],
       "package": "OneShot",

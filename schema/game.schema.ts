@@ -26,6 +26,7 @@ export const Player = component(
     speed: f32({ doc: 'Horizontal speed, drives the weapon bob' }),
     state: enumOf('PlayerState', ['Alive', 'Dead'], { default: 'Alive' }),
     respawn: f32({ doc: 'Seconds until the player is back' }),
+    freeze: f32({ doc: 'Seconds until a missed shot thaws: frozen means no moving or firing, and still being hittable' }),
     protect: f32({ doc: 'Spawn protection seconds' }),
     loaded: bool({ default: true, doc: 'The stone is in the sling' }),
     aiming: bool(),
@@ -59,6 +60,7 @@ export const Critter = component(
     turn: f32({ doc: 'Seconds until the next change of heading' }),
     speed: f32({ default: 2.4 }),
     dead: f32({ doc: 'Seconds until it is back (0 = alive)' }),
+    freeze: f32({ doc: 'Seconds until a missed shot thaws (frozen: no wandering or shooting, still hittable)' }),
     home: vec3(),
     id: u32({ doc: 'Bot number (1..N); stones carry it as their owner' }),
     score: i32(),
@@ -70,7 +72,7 @@ export const Critter = component(
 
 export const Solid = component(
   'Solid',
-  { radius: f32({ default: 1 }), height: f32({ default: 100, doc: 'Top of the obstacle, metres' }) },
+  { radius: f32({ default: 1 }), height: f32({ default: 100, doc: 'Top of the obstacle, metres' }), walk: bool({ doc: 'Its top can be stood on, and a jump clears it: crates, rocks, barrels' }) },
   { sim: true, doc: 'A vertical cylinder players, critters and stones cannot pass.' },
 );
 
@@ -88,6 +90,9 @@ export const StoneMissed = event('StoneMissed', { position: vec3(), seat: u32({ 
 export const PlayerRespawned = event('PlayerRespawned', { seat: u32() }, { sim: true });
 
 export const Temp = component('Temp', { life: f32({ default: 1.5, doc: 'Seconds until the entity is removed' }) }, { sim: true });
+
+/** The ice shell around a frozen character: shown by presentation (scale 1) while its owner is frozen, else hidden (scale 0). */
+export const IceShell = component('IceShell', { owner: u32({ doc: 'A seat 0..3, or 100 + a bot number' }) }, { sim: false });
 
 export const Viewmodel = component(
   'Viewmodel',
@@ -137,6 +142,7 @@ export const LocalHud = resource(
     hits: u32(),
     playerDead: bool(),
     respawnIn: u32({ doc: 'Whole seconds until respawn' }),
+    freezeIn: u32({ doc: 'Whole seconds until this seat thaws (0 = not frozen)' }),
     stoneLoaded: bool({ default: true }),
     superCd: u32({ doc: 'Whole seconds until the launch jump is ready' }),
     deathBy: u32(),

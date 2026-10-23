@@ -3,8 +3,9 @@
  * All LateUpdate: it reads the sim and writes only VisualOffset / Camera, so no hash ever sees it.
  */
 import { defineSystem, query, read, write, math, shakeCamera, Camera, VirtualCamera, VisualOffset } from '@gameengine/runtime';
-import { Cloud, CritterHit, Player, SeatCam, ShotFired, StoneMissed, Viewmodel } from './schema.gen.ts';
-import { localSeat } from './net.ts';
+import { Cloud, Critter, CritterHit, IceShell, Player, SeatCam, ShotFired, SoloLook, StoneMissed, Viewmodel } from './schema.gen.ts';
+import { inOnlineMatch, localSeat } from './net.ts';
+import { netLook } from './netstate.ts';
 
 /** The rig plays its own clips (ViewmodelAnim in the sim); this only shows the stone in the pouch while its seat's stone is loaded (and this device plays that seat). */
 export const ViewmodelMotion = defineSystem({
@@ -33,12 +34,13 @@ export const ViewmodelMotion = defineSystem({
 export const CameraFeel = defineSystem({
   name: 'CameraFeel',
   stage: 'LateUpdate',
-  queries: { cams: query(read(Camera)), views: query(read(SeatCam), write(VirtualCamera)), player: query(read(Player)) },
+  queries: { cams: query(read(Camera)), views: query(read(SeatCam), write(VirtualCamera)) },
+  resources: [read(SoloLook)],
   events: [ShotFired, CritterHit, StoneMissed],
-  run(ctx, { cams, views, player }) {
+  run(ctx, { cams, views }) {
     const me = localSeat();
-    let aiming = false;
-    for (const c of player.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Player, i).index === me) aiming = c.get(Player, i).aiming;
+    // zoom is local: this device's right button (solo: SoloLook, online: the mouse sampler), never the sim
+    const aiming = inOnlineMatch() ? netLook.aiming : ctx.get(SoloLook).aiming;
     let shots = 0;
     let hits = 0;
     let misses = 0;
@@ -83,6 +85,24 @@ export const CloudDrift = defineSystem({
           position: [(math.sin(a) - math.sin(a0)) * r, 0, (-math.cos(a) + math.cos(a0)) * r],
           rotation: [0, math.sin(-d / 2), 0, math.cos(-d / 2)],
         });
+      }
+    }
+  },
+});
+
+/** The ice around every frozen character (players and bots): its shell is shown while its owner's freeze runs and hidden otherwise. */
+export const IceFx = defineSystem({
+  name: 'IceFx',
+  stage: 'LateUpdate',
+  queries: { ice: query(read(IceShell), write(VisualOffset)), players: query(read(Player)), bots: query(read(Critter)) },
+  run(ctx, { ice, players, bots }) {
+    const frozen = new Set<number>();
+    for (const c of players.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Player, i).freeze > 0 && c.get(Player, i).state !== 'Dead') frozen.add(c.get(Player, i).index);
+    for (const c of bots.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Critter, i).freeze > 0 && c.get(Critter, i).dead <= 0) frozen.add(100 + c.get(Critter, i).id);
+    for (const c of ice.chunks()) {
+      for (let i = 0; i < c.length; i++) {
+        const k = frozen.has(c.get(IceShell, i).owner) ? 1 : 0;
+        if (c.get(VisualOffset, i).scale[0] !== k) c.set(VisualOffset, i, { scale: [k, k, k] });
       }
     }
   },

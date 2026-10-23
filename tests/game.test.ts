@@ -1,6 +1,6 @@
 import { worldTest, expect } from '@gameengine/test';
 import { LocalTransform } from '@gameengine/runtime';
-import { Blocker, Critter, Temp, Flow, GameReady, ResumeGame, Match, Player, StartSolo, Stone } from '../src/schema.gen.ts';
+import { Blocker, Critter, Ladder, Solid, Temp, Flow, GameReady, ResumeGame, Match, Player, StartSolo, Stone } from '../src/schema.gen.ts';
 
 /** Start screen -> loading -> playing, the way the UI drives it. */
 async function startMatch(input: any, step: any, world: any) {
@@ -52,7 +52,7 @@ worldTest('a stone aimed at a critter scores and returns to the sling', async ({
   expect(world.entities(Stone).length).toBe(0);
 });
 
-worldTest('a stone into the ground costs a point and a respawn', async ({ world, step, input }) => {
+worldTest('a missed stone freezes the shooter for five seconds: alive, still, nothing lost, then the stone is back', async ({ world, step, input }) => {
   await startMatch(input, step, world);
   const [player] = world.entities(Player);
   click(input); // level, at the horizon: nothing but trees ahead
@@ -60,11 +60,31 @@ worldTest('a stone into the ground costs a point and a respawn', async ({ world,
   const m = world.get(player!, Player);
   expect(m.misses + m.hits).toBe(1);
   if (m.misses === 1) {
+    expect(m.state).toBe('Alive');
+    expect(m.deaths).toBe(0);
     expect(m.score).toBe(0);
-    expect(world.get(player!, Player).state).toBe('Dead');
-    await step(200);
-    expect(world.get(player!, Player).state).toBe('Alive');
-    expect(world.get(player!, Player).loaded).toBe(true);
+    expect(m.freeze).toBeGreaterThan(4);
+    expect(m.loaded).toBe(false);
+    // frozen: walking forward goes nowhere
+    const before = world.get(player!, LocalTransform).position.slice();
+    input.key('KeyW', true);
+    await step(60);
+    input.key('KeyW', false);
+    const after = world.get(player!, LocalTransform).position;
+    expect(Math.abs(after[0]! - before[0]!) + Math.abs(after[2]! - before[2]!)).toBeLessThan(0.05);
+    // thawed after five seconds, with the stone back in the sling (a bot may hit the frozen player first: that is the rule too)
+    let t = world.get(player!, Player);
+    for (let k = 0; k < 340 && t.freeze > 0 && t.state === 'Alive'; k++) {
+      await step(1);
+      t = world.get(player!, Player);
+    }
+    if (t.state === 'Alive') {
+      expect(t.freeze).toBe(0);
+      expect(t.loaded).toBe(true);
+    } else {
+      expect(t.freeze).toBe(0);
+      expect(t.deaths).toBe(1);
+    }
   }
 });
 
@@ -214,4 +234,48 @@ worldTest('Shift crouch-walks: slower, lower and harder to hit', async ({ world,
   expect(sneak.dist).toBeLessThan(walk.dist * 0.6);
   expect(sneak.eye).toBeLessThan(walk.eye - 0.4);
   expect(sneak.crouching).toBe(true);
+});
+
+worldTest('walking into a tree platform ladder grabs it and W climbs up to the deck', async ({ world, step, input, cheat }) => {
+  await startMatch(input, step, world);
+  const [player] = world.entities(Player);
+  const lad = world.entities(Ladder).map((e) => ({ l: world.get(e, Ladder), t: world.get(e, LocalTransform).position })).find((x) => x.l.top > 5 && x.l.top < 6)!;
+  // 1.4 m out from the ladder on its outer side, facing it
+  await cheat('player.teleport', { x: lad.t[0]! + lad.l.nx * 1.4, z: lad.t[2]! + lad.l.nz * 1.4, yaw: Math.atan2(lad.l.nx, lad.l.nz) });
+  await step(3);
+  input.key('KeyW', true);
+  await step(30);
+  expect(world.get(player!, Player).climbing).toBe(true);
+  await step(150);
+  input.key('KeyW', false);
+  await step(5);
+  expect(world.get(player!, LocalTransform).position[1]! - 1.65).toBeGreaterThan(5.1);
+});
+
+worldTest('a jump takes the player up onto a crate, a rock or a barrel and it stays there', async ({ world, step, input, cheat }) => {
+  await startMatch(input, step, world);
+  const [player] = world.entities(Player);
+  const tops = world.entities(Solid).map((e) => ({ s: world.get(e, Solid), t: world.get(e, LocalTransform).position })).filter((x) => x.s.walk && x.s.height > 0.9 && x.s.height < 1.6 && x.s.radius < 1.3);
+  expect(tops.length).toBeGreaterThan(5);
+  let stood = false;
+  for (const c of tops.slice(0, 12)) {
+    // 0.5 m out on its +x side, facing it (forward is -sin yaw, -cos yaw: yaw = pi/2 looks along -x)
+    await cheat('player.teleport', { x: c.t[0]! + c.s.radius + 0.5, z: c.t[2]!, yaw: Math.PI / 2 });
+    await step(3);
+    input.key('KeyW', true);
+    input.key('Space', true);
+    await step(3);
+    input.key('Space', false);
+    await step(Math.round((c.s.radius + 0.45) / 0.093) - 3); // walk in to about the middle, then stand
+    input.key('KeyW', false);
+    await step(40);
+    const y = world.get(player!, LocalTransform).position[1]! - 1.65;
+    const dx = world.get(player!, LocalTransform).position[0]! - c.t[0]!;
+    const dz = world.get(player!, LocalTransform).position[2]! - c.t[2]!;
+    if (y > c.s.height - 0.1 && dx * dx + dz * dz < c.s.radius * c.s.radius) {
+      stood = true;
+      break;
+    }
+  }
+  expect(stood).toBe(true);
 });

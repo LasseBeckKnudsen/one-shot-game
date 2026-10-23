@@ -63,13 +63,14 @@ declare module '@gameengine/ui' {
      *   - `board`: yesno, default false
      *   - `rows`: list of hud-row
      *   - `toasts`: list of hud-toast
+     *   - `frozen`: yesno, default false
      * Events: `leaderboard`
      * Code areas: none
      * Refs: `leaderboard`
      * Samples (`view render doc:hud --sample …`): `play`, `cooling`, `hit`, `miss`, `over`, `hurt`
      */
     'hud': {
-      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over'; placeText: string | { loc: string } | LocText; first: boolean; board: boolean; rows: readonly { key: string; rank?: string | { loc: string } | LocText; name?: string | { loc: string } | LocText; score?: number; me?: boolean }[]; toasts: readonly { key: string; head?: string | { loc: string } | LocText; taunt?: string | { loc: string } | LocText; mine?: boolean; gone?: boolean }[] };
+      props: { score: number; penalty: number; timeText: string | { loc: string } | LocText; urgent: boolean; banner: string | { loc: string } | LocText; bannerSub: string | { loc: string } | LocText; hint: boolean; cd: number; ring: number; ready: boolean; stone: 'loaded' | 'flying' | 'gone'; readyPulse: number; bannerPop: number; tone: 'hit' | 'miss' | 'hurt' | 'over'; placeText: string | { loc: string } | LocText; first: boolean; board: boolean; rows: readonly { key: string; rank?: string | { loc: string } | LocText; name?: string | { loc: string } | LocText; score?: number; me?: boolean }[]; toasts: readonly { key: string; head?: string | { loc: string } | LocText; taunt?: string | { loc: string } | LocText; mine?: boolean; gone?: boolean }[]; frozen: boolean };
       areas: never;
       refs: 'leaderboard';
     };
