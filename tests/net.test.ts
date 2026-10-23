@@ -1,7 +1,7 @@
 // Multiplayer logic: the sim reads only the packed per-seat input, so several seats can be driven from one world.
 import { worldTest, expect } from '@gameengine/test';
 import { LocalTransform, PlayerInputs } from '@gameengine/runtime';
-import { BTN_FIRE, packLook, unpackLook, BTN_LOOK } from '../src/input.ts';
+import { BTN_FIRE, packLook, unpackLook, BTN_LOOK, predictInput } from '../src/input.ts';
 import { Player } from '../src/schema.gen.ts';
 
 const seatRows = (world: any) => world.entities(Player).map((e: any) => ({ e, p: world.get(e, Player), t: world.get(e, LocalTransform).position }));
@@ -65,4 +65,28 @@ worldTest('a stone from one seat scores for that seat and ends the other seat\'s
     }
   }
   expect(done).toBe(true);
+});
+
+worldTest('a remote look is carried along its last turn, never past a few frames, and keeps its buttons', async () => {
+  const at = (frame: number, yaw: number, pitch: number, buttons = 0) => ({ frame, buttons: (packLook(yaw, pitch) | buttons) >>> 0, stick: [0, 1] as [number, number] });
+  // turning 0.02 rad a frame: three frames on it has moved on by about 0.045 (a quarter is not kept)
+  const g = predictInput([at(10, 1.0, 0), at(11, 1.02, 0.01, BTN_FIRE)], 14)!;
+  const l = unpackLook(g.buttons);
+  expect(l.yaw).toBeGreaterThan(1.02 + 0.04);
+  expect(l.yaw).toBeLessThan(1.02 + 0.05);
+  expect(l.pitch).toBeGreaterThan(0.01);
+  expect(g.buttons & BTN_FIRE).toBe(BTN_FIRE);
+  expect(g.stick).toEqual([0, 1]);
+  // a long gap runs ahead by at most 6 frames
+  const far = unpackLook(predictInput([at(10, 1.0, 0), at(11, 1.02, 0), ], 60)!.buttons);
+  expect(far.yaw).toBeLessThan(1.02 + 6 * 0.02);
+  // across the wrap it takes the short way
+  const wrap = unpackLook(predictInput([at(10, 6.27, 0), at(11, 0.02, 0)], 12)!.buttons);
+  expect(wrap.yaw).toBeLessThan(0.1);
+  // nothing to go on: no history, one input, no look, a frame that is not after the newest
+  expect(predictInput([], 5)).toBe(null);
+  expect(predictInput([at(10, 1, 0)], 12)).toBe(null);
+  expect(predictInput([{ frame: 9, buttons: 0, stick: [0, 0] }, { frame: 10, buttons: 0, stick: [0, 0] }], 12)).toBe(null);
+  expect(predictInput([at(10, 1, 0), at(11, 1.1, 0)], 11)).toBe(null);
+  expect(predictInput([at(11, 1, 0), at(10, 1.1, 0)], 14)).toBe(null);
 });

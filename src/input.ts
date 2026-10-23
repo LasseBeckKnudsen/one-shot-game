@@ -41,6 +41,37 @@ export function unpackLook(buttons: number): { yaw: number; pitch: number } {
   return { yaw: (yq / STEPS) * TAU, pitch: (pq / (STEPS - 1)) * 2 * PITCH_LIMIT - PITCH_LIMIT };
 }
 
+/** Most frames a guess carries a remote look past its newest confirmed input, and how much of the measured turn it keeps (a mouse stops about as fast as it starts). */
+const GUESS_FRAMES = 6;
+const GUESS_GAIN = 0.75;
+const PI = 3.14159265;
+/** The bits of an input word that are not the look: the buttons (jump..board) and the top bit. */
+const NON_LOOK = (0x3f | 0x80000000) >>> 0;
+
+/**
+ * A guess of a remote seat's input for `frame` when its confirmed input has not arrived (`multiplayer.onPredict`): the same buttons and stick as its newest
+ * confirmed one, and its look carried along the turn of its last two confirmed inputs. Repeating the last input would be wrong on every frame of a mouse turn.
+ * Null repeats the last input: no history, no look yet, or `frame` is not after the newest confirmed input.
+ */
+export function predictInput(
+  history: readonly { frame: number; buttons: number; stick: readonly [number, number] }[],
+  frame: number,
+): { buttons: number; stick: [number, number] } | null {
+  const last = history[history.length - 1];
+  const prev = history[history.length - 2];
+  if (!last || !prev || !down(last.buttons, BTN_LOOK) || !down(prev.buttons, BTN_LOOK) || last.frame <= prev.frame) return null;
+  const ahead = math.min(GUESS_FRAMES, frame - last.frame);
+  if (ahead <= 0) return null;
+  const a = unpackLook(prev.buttons);
+  const b = unpackLook(last.buttons);
+  const gap = last.frame - prev.frame;
+  const dyaw = b.yaw - a.yaw;
+  const turn = dyaw - TAU * math.floor((dyaw + PI) / TAU); // the short way round
+  const k = (ahead * GUESS_GAIN) / gap;
+  const look = packLook(b.yaw + turn * k, b.pitch + (b.pitch - a.pitch) * k);
+  return { buttons: ((last.buttons & NON_LOOK) | look) >>> 0, stick: [last.stick[0], last.stick[1]] };
+}
+
 /** Whether a button bit is down in a button word. */
 export const down = (buttons: number, bit: number): boolean => (buttons & bit) !== 0;
 

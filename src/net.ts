@@ -3,11 +3,11 @@
  * which seat this device plays, its input in an online match, the camera and first-person rig of that seat, and its HUD data.
  */
 import { defineSystem, query, read, write, math, multiplayer, services, Camera, KeyEvent, Keys, LocalTransform, PlayerInputs, playerInput, TextInput, VisualOffset, VirtualCamera } from '@gameengine/runtime';
-import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down } from './input.ts';
+import { BTN_AIM, BTN_BOARD, BTN_FIRE, BTN_MENU, PITCH_LIMIT, packLook, down, predictInput } from './input.ts';
 import { Announce, Critter, Flow, LocalHud, Match, NetLook, Player, SeatBody, SeatCam, VmRig } from './schema.gen.ts';
 import { yawPitchQuat } from './sim.ts';
 import { announcement } from './announce.ts';
-import { boardOpen, cleanName, feed, nameEditing, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
+import { boardOpen, cleanName, feed, nameEditing, netLook, onlinePaused, onlineSens, playerName, seatNames, setBoardOpen, setFeed, setNameEditing, setOnlinePaused, setPlayerName, setSeatNames } from './netstate.ts';
 
 const SENS = 0.0022;
 
@@ -24,8 +24,30 @@ export function inOnlineMatch(): boolean {
 /**
  * Online: this device's mouse look, fire and aim become the local input of its seat (`multiplayer.setInput`, OR-ed with the
  * keys the project's `multiplayer` map covers). The look is sent as absolute angles; see input.ts. In a match the engine
- * gives the sim and `ctx.events` no mouse at all, so the mouse comes from `multiplayer.pointer()`.
+ * gives the sim and `ctx.events` no mouse at all, so the mouse comes from `multiplayer.pointer()`. The engine calls this right before
+ * every match step (`multiplayer.onSample`), so the mouse reaches the sim in the same frame instead of two frames later.
  */
+function sampleLook(): void {
+  if (!netLook.seeded || !inOnlineMatch()) return;
+  const paused = onlinePaused();
+  const mouse = multiplayer.pointer();
+  const aiming = (mouse.buttons & 4) !== 0;
+  const fire = (mouse.buttons & 1) !== 0;
+  if (!paused) {
+    const sens = (aiming ? SENS * 0.55 : SENS) * onlineSens();
+    netLook.yaw -= mouse.dx * sens;
+    netLook.pitch = math.clamp(netLook.pitch - mouse.dy * sens, -PITCH_LIMIT, PITCH_LIMIT);
+  }
+  netLook.aiming = aiming;
+  // paused: keep sending the facing but no buttons, so the character stands still
+  const buttons = packLook(netLook.yaw, netLook.pitch) | (paused ? 0 : (fire ? BTN_FIRE : 0) | (aiming ? BTN_AIM : 0));
+  multiplayer.setInput(buttons >>> 0, [0, 0]);
+}
+multiplayer.onSample(sampleLook);
+/** A remote seat's input until its real one arrives: its look carried on, not repeated (a rollback fixes whatever it got wrong). */
+multiplayer.onPredict(({ frame, history }) => predictInput(history, frame));
+
+/** Online, once per frame: starts the look where the seat spawned, handles the pause key and leaves a match that closed under us. */
 export const NetInput = defineSystem({
   name: 'NetInput',
   stage: 'LateUpdate',
@@ -37,38 +59,22 @@ export const NetInput = defineSystem({
     if (st.phase === 'closed' && ctx.get(Flow).mode === 'Online') multiplayer.leave();
     if (st.phase !== 'running') return;
     const me = localSeat();
-    const look = ctx.get(NetLook);
-    let { yaw, pitch, aiming, seeded, menuHeld } = look;
-    if (!seeded) {
-      // start looking where the seat spawned
+    if (!netLook.seeded) {
       for (const c of seats.chunks()) {
         for (let i = 0; i < c.length; i++) {
           const p = c.get(Player, i);
           if (p.index === me) {
-            yaw = p.yaw;
-            pitch = p.pitch;
-            seeded = true;
+            netLook.yaw = p.yaw;
+            netLook.pitch = p.pitch;
+            netLook.seeded = true;
           }
         }
       }
     }
     // Escape comes through the key map as the menu bit of this seat's own input: a press toggles the local pause menu
     const menu = down(playerInput(ctx.get(PlayerInputs), me).buttons, BTN_MENU);
-    if (menu && !menuHeld) setOnlinePaused(!onlinePaused());
-    menuHeld = menu;
-    const paused = onlinePaused();
-    const mouse = multiplayer.pointer();
-    aiming = (mouse.buttons & 4) !== 0;
-    const fire = (mouse.buttons & 1) !== 0;
-    if (!paused) {
-      const sens = (aiming ? SENS * 0.55 : SENS) * onlineSens();
-      yaw -= mouse.dx * sens;
-      pitch = math.clamp(pitch - mouse.dy * sens, -PITCH_LIMIT, PITCH_LIMIT);
-    }
-    ctx.set(NetLook, { yaw, pitch, aiming, menuHeld, seeded });
-    // paused: keep sending the facing but no buttons, so the character stands still
-    const buttons = packLook(yaw, pitch) | (paused ? 0 : (fire ? BTN_FIRE : 0) | (aiming ? BTN_AIM : 0));
-    multiplayer.setInput(buttons >>> 0, [0, 0]);
+    if (menu && !ctx.get(NetLook).menuHeld) setOnlinePaused(!onlinePaused());
+    if (menu !== ctx.get(NetLook).menuHeld) ctx.setField(NetLook, 'menuHeld', menu);
   },
 });
 
@@ -320,12 +326,11 @@ export const LocalView = defineSystem({
   name: 'LocalView',
   stage: 'LateUpdate',
   queries: { players: query(read(Player), read(LocalTransform)), eyes: query(read(SeatCam), write(VisualOffset)) },
-  resources: [read(NetLook)],
   run(ctx, { players, eyes }) {
     const online = inOnlineMatch();
     if (!online) glides.clear();
     const me = localSeat();
-    const look = ctx.get(NetLook);
+    const look = netLook;
     let rotation: Quat = [0, 0, 0, 1];
     let position: [number, number, number] = [0, 0, 0];
     if (online) {

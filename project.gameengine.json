@@ -98,7 +98,8 @@
     "players": 2,
     "authority": "server",
     "port": 7600,
-    "window": 24,
+    "window": 12,
+    "pacing": { "adaptive": true, "maxWindow": 30, "inputDelay": 0 },
     "buttons": {
       "jump": [
         {

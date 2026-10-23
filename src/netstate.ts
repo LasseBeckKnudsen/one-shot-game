@@ -55,3 +55,9 @@ export const [nameEditing, setNameEditing] = createSignal(false);
 
 /** The names of the seats of the running online match, as each told it (`multiplayer.say('name')`); a seat that said none is "Player N". */
 export const [seatNames, setSeatNames] = createSignal<Readonly<Record<number, string>>>({});
+
+/**
+ * This device's look in an online match: integrated from the mouse by the sampler the engine calls right before every match step
+ * (net.ts `sampleLook`), which has no `ctx`, so it lives here. A match start resets it, and `NetInput` seeds it from the seat's spawn.
+ */
+export const netLook = { yaw: 0, pitch: 0, aiming: false, seeded: false };
