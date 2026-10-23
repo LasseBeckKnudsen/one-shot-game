@@ -26,10 +26,11 @@ const HEAD = 1.85;
 /** The invisible wall: the playable disc (the fence, bushes and rocks sit just outside it). */
 const ARENA = 40;
 const PLAYER_R = 0.4;
+/** How wide a player is to a stone (a bit more than the body pushes others away: a clean shot at a person should land). */
+const PLAYER_HIT_R = 0.65;
 const SENS = 0.0022;
 const EDGE_TURN = 1.9;
-const STONE_SPEED = 300;
-const STONE_DROP = 9.8;
+const STONE_SPEED = 900; // m/s: across the whole 60 m range in four steps, close to instant
 const STONE_RANGE = 60;
 const CRITTER_R = 0.55;
 const CRITTER_TOP = 1.75;
@@ -445,7 +446,7 @@ export const StoneFlight = defineSystem({
         const s = sc.get(Stone, i);
         const t = sc.get(LocalTransform, i);
         let [x, y, z] = t.position;
-        const vel: [number, number, number] = [s.velocity[0], s.velocity[1] - STONE_DROP * ctx.dt, s.velocity[2]];
+        const vel: [number, number, number] = [s.velocity[0], s.velocity[1], s.velocity[2]] // no drop: a shot is a straight line;
         const step: [number, number, number] = [vel[0] * ctx.dt, vel[1] * ctx.dt, vel[2] * ctx.dt];
         const dist = math.sqrt(step[0] * step[0] + step[1] * step[1] + step[2] * step[2]);
         const n = math.max(1, math.ceil(dist / 0.2));
@@ -463,8 +464,8 @@ export const StoneFlight = defineSystem({
             if ((g.kind === 'player' && g.id === shooterSeat) || (g.kind === 'bot' && g.id === s.owner)) continue;
             const dx = x - g.x;
             const dz = z - g.z;
-            const r = g.kind === 'player' ? PLAYER_R + 0.05 : CRITTER_R;
-            const top = g.y + (g.kind === 'player' ? g.h ?? 1.75 : CRITTER_TOP);
+            const r = g.kind === 'player' ? PLAYER_HIT_R : CRITTER_R;
+            const top = g.y + (g.kind === 'player' ? (g.h ?? 1.75) + 0.1 : CRITTER_TOP);
             if (dx * dx + dz * dz < r * r && y > g.y + 0.05 && y < top) {
               outcome = 'hit';
               victim = g;
