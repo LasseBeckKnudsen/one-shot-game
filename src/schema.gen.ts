@@ -131,6 +131,27 @@ export const schemaIr = {
           "scalar": "u8",
           "lanes": 1,
           "doc": "The seats and bots the match does not use were removed"
+        },
+        {
+          "name": "seated",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Online: every seat started empty, to be filled by SeatChanged (or by the fixed-match fallback)"
+        },
+        {
+          "name": "presence",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Online: the server told the sim who is in a seat at least once"
+        },
+        {
+          "name": "onlineFor",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Online: seconds since the match began while no presence has come yet"
         }
       ],
       "package": "OneShot"
@@ -933,6 +954,14 @@ export const schemaIr = {
           "scalar": "u8",
           "lanes": 1,
           "doc": "Crouch-walking (Shift): slower, lower, harder to spot"
+        },
+        {
+          "name": "active",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true,
+          "doc": "A player is in this seat (online: set by SeatChanged; an empty seat is hidden and skipped)"
         }
       ],
       "package": "OneShot"
@@ -996,6 +1025,32 @@ export const schemaIr = {
           "name": "seat",
           "kind": "u32",
           "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "SeatChanged",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "present",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "fresh",
+          "kind": "bool",
+          "scalar": "u8",
           "lanes": 1
         }
       ],
@@ -1385,6 +1440,12 @@ export interface FlowViews {
   matchSeed: Uint32Array;
   /** The seats and bots the match does not use were removed */
   trimmed: Uint8Array;
+  /** Online: every seat started empty, to be filled by SeatChanged (or by the fixed-match fallback) */
+  seated: Uint8Array;
+  /** Online: the server told the sim who is in a seat at least once */
+  presence: Uint8Array;
+  /** Online: seconds since the match began while no presence has come yet */
+  onlineFor: Float32Array;
 }
 export interface FlowValue {
   screen: FlowScreenName | number;
@@ -1397,9 +1458,15 @@ export interface FlowValue {
   matchSeed: number;
   /** The seats and bots the match does not use were removed */
   trimmed: boolean;
+  /** Online: every seat started empty, to be filled by SeatChanged (or by the fixed-match fallback) */
+  seated: boolean;
+  /** Online: the server told the sim who is in a seat at least once */
+  presence: boolean;
+  /** Online: seconds since the match began while no presence has come yet */
+  onlineFor: number;
 }
 /** Flow (resource, sim) */
-export const Flow = typeToken<FlowViews, FlowValue>('Flow', 'resource', { sig: 'screen:enum:1,mode:enum:1,loadTime:f32:1,ready:bool:1,matchSeed:u32:1,trimmed:bool:1', read: (v: FlowViews, i: number, o: Record<string, unknown>) => { o.screen = $r.enm('FlowScreen', v.screen[i]!); o.mode = $r.enm('FlowMode', v.mode[i]!); o.loadTime = v.loadTime[i]; o.ready = v.ready[i] !== 0; o.matchSeed = v.matchSeed[i]; o.trimmed = v.trimmed[i] !== 0; return o; } });
+export const Flow = typeToken<FlowViews, FlowValue>('Flow', 'resource', { sig: 'screen:enum:1,mode:enum:1,loadTime:f32:1,ready:bool:1,matchSeed:u32:1,trimmed:bool:1,seated:bool:1,presence:bool:1,onlineFor:f32:1', read: (v: FlowViews, i: number, o: Record<string, unknown>) => { o.screen = $r.enm('FlowScreen', v.screen[i]!); o.mode = $r.enm('FlowMode', v.mode[i]!); o.loadTime = v.loadTime[i]; o.ready = v.ready[i] !== 0; o.matchSeed = v.matchSeed[i]; o.trimmed = v.trimmed[i] !== 0; o.seated = v.seated[i] !== 0; o.presence = v.presence[i] !== 0; o.onlineFor = v.onlineFor[i]; return o; } });
 
 export type GameReadyViews = Record<string, never>;
 export type GameReadyValue = Record<string, never>;
@@ -1770,6 +1837,8 @@ export interface PlayerViews {
   eye: Float32Array;
   /** Crouch-walking (Shift): slower, lower, harder to spot */
   crouch: Uint8Array;
+  /** A player is in this seat (online: set by SeatChanged; an empty seat is hidden and skipped) */
+  active: Uint8Array;
 }
 export interface PlayerValue {
   /** Seat 0..3: which PlayerInputs entry drives this player */
@@ -1820,9 +1889,11 @@ export interface PlayerValue {
   eye: number;
   /** Crouch-walking (Shift): slower, lower, harder to spot */
   crouch: boolean;
+  /** A player is in this seat (online: set by SeatChanged; an empty seat is hidden and skipped) */
+  active: boolean;
 }
 /** Player (component, sim) */
-export const Player = typeToken<PlayerViews, PlayerValue>('Player', 'component', { sig: 'index:u32:1,yaw:f32:1,pitch:f32:1,score:i32:1,hits:u32:1,misses:u32:1,deaths:u32:1,deathBy:u32:1,vy:f32:1,speed:f32:1,state:enum:1,respawn:f32:1,freeze:f32:1,protect:f32:1,loaded:bool:1,aiming:bool:1,fireHeld:bool:1,jumpHeld:bool:1,sinceJump:f32:1,superCd:f32:1,climbing:bool:1,ladderX:f32:1,ladderZ:f32:1,ladderNx:f32:1,ladderNz:f32:1,ladderTop:f32:1,ladderCool:f32:1,eye:f32:1,crouch:bool:1', read: (v: PlayerViews, i: number, o: Record<string, unknown>) => { o.index = v.index[i]; o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.misses = v.misses[i]; o.deaths = v.deaths[i]; o.deathBy = v.deathBy[i]; o.vy = v.vy[i]; o.speed = v.speed[i]; o.state = $r.enm('PlayerState', v.state[i]!); o.respawn = v.respawn[i]; o.freeze = v.freeze[i]; o.protect = v.protect[i]; o.loaded = v.loaded[i] !== 0; o.aiming = v.aiming[i] !== 0; o.fireHeld = v.fireHeld[i] !== 0; o.jumpHeld = v.jumpHeld[i] !== 0; o.sinceJump = v.sinceJump[i]; o.superCd = v.superCd[i]; o.climbing = v.climbing[i] !== 0; o.ladderX = v.ladderX[i]; o.ladderZ = v.ladderZ[i]; o.ladderNx = v.ladderNx[i]; o.ladderNz = v.ladderNz[i]; o.ladderTop = v.ladderTop[i]; o.ladderCool = v.ladderCool[i]; o.eye = v.eye[i]; o.crouch = v.crouch[i] !== 0; return o; } });
+export const Player = typeToken<PlayerViews, PlayerValue>('Player', 'component', { sig: 'index:u32:1,yaw:f32:1,pitch:f32:1,score:i32:1,hits:u32:1,misses:u32:1,deaths:u32:1,deathBy:u32:1,vy:f32:1,speed:f32:1,state:enum:1,respawn:f32:1,freeze:f32:1,protect:f32:1,loaded:bool:1,aiming:bool:1,fireHeld:bool:1,jumpHeld:bool:1,sinceJump:f32:1,superCd:f32:1,climbing:bool:1,ladderX:f32:1,ladderZ:f32:1,ladderNx:f32:1,ladderNz:f32:1,ladderTop:f32:1,ladderCool:f32:1,eye:f32:1,crouch:bool:1,active:bool:1', read: (v: PlayerViews, i: number, o: Record<string, unknown>) => { o.index = v.index[i]; o.yaw = v.yaw[i]; o.pitch = v.pitch[i]; o.score = v.score[i]; o.hits = v.hits[i]; o.misses = v.misses[i]; o.deaths = v.deaths[i]; o.deathBy = v.deathBy[i]; o.vy = v.vy[i]; o.speed = v.speed[i]; o.state = $r.enm('PlayerState', v.state[i]!); o.respawn = v.respawn[i]; o.freeze = v.freeze[i]; o.protect = v.protect[i]; o.loaded = v.loaded[i] !== 0; o.aiming = v.aiming[i] !== 0; o.fireHeld = v.fireHeld[i] !== 0; o.jumpHeld = v.jumpHeld[i] !== 0; o.sinceJump = v.sinceJump[i]; o.superCd = v.superCd[i]; o.climbing = v.climbing[i] !== 0; o.ladderX = v.ladderX[i]; o.ladderZ = v.ladderZ[i]; o.ladderNx = v.ladderNx[i]; o.ladderNz = v.ladderNz[i]; o.ladderTop = v.ladderTop[i]; o.ladderCool = v.ladderCool[i]; o.eye = v.eye[i]; o.crouch = v.crouch[i] !== 0; o.active = v.active[i] !== 0; return o; } });
 
 export interface PlayerHitViews {
   by: Uint32Array;
@@ -1865,6 +1936,19 @@ export interface SeatCamValue {
 }
 /** SeatCam (component, presentation-only) */
 export const SeatCam = typeToken<SeatCamViews, SeatCamValue>('SeatCam', 'component', { sig: 'seat:u32:1', read: (v: SeatCamViews, i: number, o: Record<string, unknown>) => { o.seat = v.seat[i]; return o; } });
+
+export interface SeatChangedViews {
+  seat: Uint32Array;
+  present: Uint8Array;
+  fresh: Uint8Array;
+}
+export interface SeatChangedValue {
+  seat: number;
+  present: boolean;
+  fresh: boolean;
+}
+/** SeatChanged (event, sim) */
+export const SeatChanged = typeToken<SeatChangedViews, SeatChangedValue>('SeatChanged', 'event', { sig: 'seat:u32:1,present:bool:1,fresh:bool:1', read: (v: SeatChangedViews, i: number, o: Record<string, unknown>) => { o.seat = v.seat[i]; o.present = v.present[i] !== 0; o.fresh = v.fresh[i] !== 0; return o; } });
 
 export interface ShotFiredViews {
   position: Float32Array;

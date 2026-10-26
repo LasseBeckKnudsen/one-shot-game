@@ -12,6 +12,9 @@ import { LobbyView, type LobbyModel } from '../views/lobby.view.tsx';
 
 type LanHost = ReturnType<typeof multiplayer.lanHosts>[number];
 
+/** Seats of a server room: open rooms take players as they come, up to this many. */
+const SERVER_SEATS = 4;
+
 const IDLE_STATUS = 'Pick a size and host, join a match on your network, or play on the server.';
 const HOST_STATUS = 'The match starts by itself when everyone is in.';
 
@@ -26,6 +29,9 @@ export const lobby = defineUI({
     const [joined, setJoined] = createSignal(0);
     const [address, setAddress] = createSignal('');
     const [found, setFound] = createSignal<LanHost[]>([]);
+    /** Open rooms running on the match server, a free seat first (`multiplayer.rooms`). */
+    const [rooms, setRooms] = createSignal<{ server: string; room: string; seats: number; taken: number }[]>([]);
+    let roomsKey = '';
     const [joining, setJoining] = createSignal('');
     const [status, setStatus] = createSignal(IDLE_STATUS);
     const [error, setError] = createSignal(false);
@@ -45,6 +51,8 @@ export const lobby = defineUI({
       setAddress('');
       setFound([]);
       foundKey = '';
+      setRooms([]);
+      roomsKey = '';
       say(IDLE_STATUS);
     };
 
@@ -53,7 +61,10 @@ export const lobby = defineUI({
       mode: mode(),
       joined: joined(),
       address: address(),
-      hosts: found().map((h, i) => ({ key: `h${i}`, name: h.name, joined: h.joined, players: h.players })),
+      hosts: [
+        ...rooms().map((r, i) => ({ key: `r${i}`, name: `Server room ${i + 1}`, joined: r.taken, players: r.seats })),
+        ...found().map((h, i) => ({ key: `h${i}`, name: h.name, joined: h.joined, players: h.players })),
+      ],
       status: status(),
       error: error(),
       noLan: noLanSig(),
@@ -81,7 +92,24 @@ export const lobby = defineUI({
         setJoined(st.hosting?.joined ?? 1);
       } else if (mode() === 'joining') {
         if (!error()) say(st.phase === 'waiting' ? `Joined ${joining()}. Waiting for the others...` : `Connecting to ${joining()}...`);
-      } else if (!noLan) {
+      } else {
+        // the server's open rooms (players come and go while a room runs): poll every frame, the engine asks once a second
+        let listing: ReturnType<typeof multiplayer.rooms> = null;
+        try {
+          listing = multiplayer.rooms(pageServer ? { server: pageServer } : {});
+        } catch {
+          // the server cannot be reached right now: the list stays as it was
+        }
+        if (listing) {
+          const open = listing.rooms.filter((r) => r.free > 0).slice(0, 4).map((r) => ({ server: listing!.server, room: r.room, seats: r.seats, taken: r.taken }));
+          const key = open.map((r) => `${r.room}|${r.taken}/${r.seats}`).join(',');
+          if (key !== roomsKey) {
+            roomsKey = key;
+            setRooms(open);
+          }
+        }
+      }
+      if (mode() === 'idle' && !noLan) {
         let hosts: LanHost[];
         try {
           hosts = multiplayer.lanHosts().filter((h) => h.sameBuild).slice(0, 4);
@@ -147,7 +175,8 @@ export const lobby = defineUI({
             } else if (name === 'server') {
               if (mode() !== 'idle') return;
               try {
-                multiplayer.join(pageServer ? { server: pageServer, players: players() } : { players: players() });
+                // an open room: the fullest running room with a free seat, or a new one (always the full 4 seats)
+                multiplayer.join(pageServer ? { server: pageServer, players: SERVER_SEATS } : { players: SERVER_SEATS });
                 setJoining('the server');
                 setMode('joining');
                 say('Connecting to the server...');
@@ -157,6 +186,17 @@ export const lobby = defineUI({
             } else if (name === 'cancel') {
               multiplayer.leave();
               reset();
+            } else if (name === 'join' && p?.key?.startsWith('r')) {
+              const r = rooms()[Number(p.key.slice(1))];
+              if (!r) return;
+              try {
+                multiplayer.join({ server: r.server, room: r.room, players: SERVER_SEATS });
+                setJoining('the room');
+                setMode('joining');
+                say('Joining the room...');
+              } catch (e) {
+                say(message(e), true);
+              }
             } else if (name === 'join') {
               const h = found()[Number(p?.key?.slice(1))];
               if (!h) return;

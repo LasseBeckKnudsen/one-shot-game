@@ -43,6 +43,7 @@ export const Player = component(
     ladderCool: f32({ doc: 'Seconds before the player can grab a ladder again' }),
     eye: f32({ default: 1.65, doc: 'Eye height above the feet (lower while crouching)' }),
     crouch: bool({ doc: 'Crouch-walking (Shift): slower, lower, harder to spot' }),
+    active: bool({ default: true, doc: 'A player is in this seat (online: set by SeatChanged; an empty seat is hidden and skipped)' }),
   },
   { sim: true },
 );
@@ -87,6 +88,8 @@ export const SpawnPoint = component('SpawnPoint', {}, { sim: true });
 export const ShotFired = event('ShotFired', { position: vec3(), direction: vec3(), seat: u32() }, { sim: true });
 export const CritterHit = event('CritterHit', { position: vec3(), seat: u32({ doc: 'The seat that scored the hit' }) }, { sim: true });
 export const StoneMissed = event('StoneMissed', { position: vec3(), seat: u32({ doc: 'The seat that missed (bots: 99)' }) }, { sim: true });
+/** Open rooms: the server says a seat got a player (fresh: a new one) or lost it, at the same frame on every device and the server. */
+export const SeatChanged = event('SeatChanged', { seat: u32(), present: bool(), fresh: bool() }, { sim: true });
 export const PlayerRespawned = event('PlayerRespawned', { seat: u32() }, { sim: true });
 
 export const Temp = component('Temp', { life: f32({ default: 1.5, doc: 'Seconds until the entity is removed' }) }, { sim: true });

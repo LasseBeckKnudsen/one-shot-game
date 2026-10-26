@@ -1,6 +1,6 @@
 ---
 name: multiplayer
-version: 1.13.0
+version: 1.14.0
 tier: optional
 description: Online multiplayer — fixed matches and always-open worlds, authoritative or relay server exports, web/native clients, rollback, turn and snapshot sync, matchmaking and LAN. Use for online play, persistent shared worlds, joining or deploying servers, or late-join and reconnect behavior.
 ---
@@ -56,7 +56,19 @@ Add the block to `project.gameengine.json` (every field is optional; the scalars
   packed input, with the same bindings as `input.json` (`key`, `negative`/`positive` keys, gamepad
   `button` and `axis`). Touch controls add to it
   with `multiplayer.setInput(buttons, [x, y])`, OR-ed with the mapped keys.
-- `window`: how many frames a real-time client may run ahead of what the server confirmed.
+- `window`: how many frames a real-time client may run ahead of what the server confirmed (a rollback
+  keeps this many sim snapshots). A client needs about `rtt + margin` frames of it: past roughly
+  130 ms round trip the default 12 stalls the sim (`status().windowStalls`).
+- `pacing` (real-time; client scheduling only, the confirmed inputs and hashes do not change):
+  `adaptive` (default true) takes the margin the client keeps between its inputs and the server's
+  clock from measured jitter, between `minMarginMs` (33) and `maxMarginMs` (150);
+  `maxWindow` (default 0) lets the window follow the round trip up to that many frames, so a slow link
+  does not stall while a fast one keeps rollbacks shallow (costs `maxWindow + 2` snapshots, set it
+  to 30–40 for a game played on mobile data, 0 for a LAN game); `inputDelay` (0–4, default the
+  server's 1) is the frames between a local input and the frame it applies to: 0 applies it to the
+  frame being simulated and the client then runs that much further ahead. `adaptive: false` is the
+  old fixed margin and window. `status()` shows `marginMs`, `jitterMs`, `window`, `inputDelay`,
+  `stalls` split in `windowStalls` and `pacingWaits`.
 
 ## 2. Join from presentation, read the match in sim
 
@@ -84,7 +96,29 @@ call, `buttons` bit 0 left, 1 middle, 2 right) in a LateUpdate system and sends 
 `setInput`. `leave()` from a started match rebuilds the world on the next frame, so the game is
 back in a fresh offline world, not the match's last state.
 
-`join`, `leave`, `status`, `events`, `setInput`, `pointer` and `submitTurn` throw inside a sim system.
+`join`, `leave`, `status`, `events`, `setInput`, `pointer`, `onSample`, `onPredict` and `submitTurn` throw
+inside a sim system.
+
+### Input latency and prediction (real-time)
+
+- **Sample at the latest moment.** `setInput` from a LateUpdate system reaches the sim one step late
+  (it runs after the frame's steps), plus `pacing.inputDelay`. `multiplayer.onSample(() => { … })`
+  (module level, one function) is called by the engine before every match step, outside the sim: read
+  `pointer()`, call `setInput`, and the mouse of this frame is in the frame about to be simulated.
+  With `inputDelay: 0` that is zero frames from mouse to sim (two with LateUpdate and the default).
+  The function has no `ctx`; keep what it needs (the look angles) in presentation state and show
+  the same state in LateUpdate.
+- **Show your own look at once.** The sim learns a rollback correction of your seat later; show the
+  camera from presentation state instead: write a `VisualOffset` rotation on the entity a
+  `VirtualCamera` sits on (relative to its sim pose), which the camera now follows.
+- **Predict other players.** A missing remote input repeats that seat's last one, wrong at every
+  change. `multiplayer.onPredict(({ seat, frame, history }) => ({ buttons, stick }))` returns a better
+  guess from the seat's last eight confirmed inputs (`history`, oldest first, each with its frame);
+  null repeats the last. It must be **pure** (no `Math.random`, clock or state of its own), cheap (a few
+  calls a frame per remote seat, re-simulated frames too), and only decides speculative frames:
+  the server's input replaces it and the frames that differ are re-simulated, so it cannot desync.
+  Extrapolate by `frame − history.at(-1).frame`, not by one step: the history lags by the round trip.
+
 
 ### Browser builds
 
@@ -359,6 +393,7 @@ entities and 4 seats holds about 82 KB of replication state.
 
 ```bash
 gameengine mp test --players 2                         # relay, bots, simulated 4-frame latency + jitter
+gameengine mp test --authority server --latency 3 --jitter 3 --adaptive off   # the fixed pacing; compare stalls, late inputs and depth
 gameengine mp test --players 4 --authority server      # the server steps the game; hashes compared to it
 gameengine mp test --latency 10 --jitter 6 --frames 1200 --js hermes
 gameengine mp test --authority server --frames 1500 --event '{"$event":"ShrinkArena","radius":5}'
@@ -382,6 +417,12 @@ repeats with the same seed.
 `--event` raises a server event a third of the way in; an authoritative run also runs the game's
 server tasks (`server.taskCommands` in `--json`). Test a server event's handler like any event:
 `input.emit(ShrinkArena, { radius: 5 })` in a game test.
+
+`--latency` and `--jitter` are one way, in frames; the pacing flags (`--adaptive on|off`, `--max-window N`,
+`--input-delay N`) override `multiplayer.pacing` for the run. It prints per player the margin and
+jitter it measured, the window in force and the stalls (at the window / waiting on purpose), and
+`lateInputs`: inputs that reached the server after their frame, which it repeated the previous one for
+(the player's own input is then corrected on their device).
 
 `ok: false`, a `divergence` or a `desyncs` entry means state lives outside the world or depends
 on the device: fix it, never loosen the test. It also prints payload and on-wire bytes and packets per

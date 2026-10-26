@@ -161,7 +161,7 @@ export const HudMirror = defineSystem({
     for (const c of player.chunks()) {
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
-        entries.push({ kind: 0, id: p.index, score: p.score });
+        if (p.active) entries.push({ kind: 0, id: p.index, score: p.score }); // an empty online seat is nobody
         if (p.index === me) mine = readPlayer(p);
       }
     }

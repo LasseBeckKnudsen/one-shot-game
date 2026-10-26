@@ -2,7 +2,7 @@
 import { worldTest, expect } from '@gameengine/test';
 import { LocalTransform, PlayerInputs } from '@gameengine/runtime';
 import { BTN_FIRE, packLook, unpackLook, BTN_LOOK, predictInput } from '../src/input.ts';
-import { Player, SeatBody } from '../src/schema.gen.ts';
+import { Player, SeatBody, SeatChanged } from '../src/schema.gen.ts';
 import { FUN_NAMES, randomName } from '../src/names.ts';
 import { actorName, presenceLine } from '../src/announce.ts';
 import { cleanName } from '../src/netstate.ts';
@@ -162,4 +162,41 @@ worldTest('join and leave lines carry the name, and a seat without a name is "Pl
   expect(presenceLine(false, 'Otter').head).toBe('Otter left');
   expect(actorName(2, 0, false, { 2: 'Mango' })).toBe('Mango');
   expect(actorName(2, 0, false, {})).toBe('Player 3');
+});
+
+worldTest('a seat the server frees goes away, and a new player taking it starts fresh at a safe spawn', async ({ world, step, cheat, input }) => {
+  await cheat('flow.play', { seats: 4 });
+  await step(30);
+  await cheat('player.score', { points: 5 });
+  const seat = (k: number) => seatRows(world).find((r: any) => r.p.index === k)!;
+  const body = (k: number) => world.entities(SeatBody).find((b: any) => world.get(b, SeatBody).index === k)!;
+  input.emit(SeatChanged, { seat: 2, present: false, fresh: false });
+  await step(3);
+  expect(seat(2).p.active).toBe(false);
+  expect(world.get(body(2), LocalTransform).scale[0]).toBe(0);
+  // an empty seat is skipped: its input does not move it
+  const before = seat(2).t.slice();
+  world.setResource(PlayerInputs, { players: 4, stick2: [0, 1], buttons2: packLook(0, 0) });
+  await step(30);
+  expect(seat(2).t[0]).toBe(before[0]);
+  expect(seat(2).t[2]).toBe(before[2]);
+  world.setResource(PlayerInputs, { players: 4 });
+  // a new player takes it: score reset, alive, loaded, spawn protection, body shown
+  input.emit(SeatChanged, { seat: 2, present: true, fresh: true });
+  await step(3);
+  const p = seat(2).p;
+  expect(p.active).toBe(true);
+  expect(p.score).toBe(0);
+  expect(p.state).toBe('Alive');
+  expect(p.loaded).toBe(true);
+  expect(p.protect).toBeGreaterThan(7);
+  expect(world.get(body(2), LocalTransform).scale[0]).toBe(1);
+  // the player held for the seat coming back keeps their score
+  await cheat('player.score', { points: 4 });
+  input.emit(SeatChanged, { seat: 2, present: false, fresh: false });
+  await step(3);
+  input.emit(SeatChanged, { seat: 2, present: true, fresh: false });
+  await step(3);
+  expect(seat(2).p.active).toBe(true);
+  expect(seat(2).p.score).toBe(4);
 });

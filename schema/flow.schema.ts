@@ -13,6 +13,9 @@ export const Flow = resource(
     ready: bool({ doc: 'The presentation reported that the world is drawn and warm (GameReady)' }),
     matchSeed: u32({ doc: 'Bumped whenever a match starts, so the UI can restart per-match effects' }),
     trimmed: bool({ doc: 'The seats and bots the match does not use were removed' }),
+    seated: bool({ doc: 'Online: every seat started empty, to be filled by SeatChanged (or by the fixed-match fallback)' }),
+    presence: bool({ doc: 'Online: the server told the sim who is in a seat at least once' }),
+    onlineFor: f32({ doc: 'Online: seconds since the match began while no presence has come yet' }),
   },
   { sim: true },
 );

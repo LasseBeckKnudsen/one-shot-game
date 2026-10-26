@@ -27,7 +27,7 @@
       "source": "engine"
     },
     "camera": {
-      "version": "1.0.4",
+      "version": "1.1.0",
       "source": "engine"
     },
     "cheats": {
@@ -55,7 +55,7 @@
       "source": "engine"
     },
     "device-tiers": {
-      "version": "1.13.0",
+      "version": "1.14.0",
       "source": "engine"
     },
     "ecs-systems": {
@@ -99,7 +99,7 @@
       "source": "engine"
     },
     "multiplayer": {
-      "version": "1.13.0",
+      "version": "1.14.0",
       "source": "engine"
     },
     "navigation-3d": {
@@ -131,7 +131,7 @@
       "source": "engine"
     },
     "playable-ad-porting": {
-      "version": "1.10.0",
+      "version": "1.11.0",
       "source": "engine"
     },
     "playable-ads": {
@@ -143,7 +143,7 @@
       "source": "engine"
     },
     "rollback-multiplayer": {
-      "version": "1.2.1",
+      "version": "1.3.0",
       "source": "engine"
     },
     "save-slots": {
@@ -151,7 +151,7 @@
       "source": "engine"
     },
     "screen-fit": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "engine"
     },
     "ship-mobile": {
@@ -187,7 +187,7 @@
       "source": "engine"
     },
     "testing": {
-      "version": "1.16.0",
+      "version": "1.18.0",
       "source": "engine"
     },
     "tilemaps-nav": {
@@ -275,8 +275,8 @@
     ".agents/skills/atlasing/SKILL.md": "80393bcffc55de3d",
     ".claude/skills/audio/SKILL.md": "17d43b6157023c0d",
     ".agents/skills/audio/SKILL.md": "17d43b6157023c0d",
-    ".claude/skills/camera/SKILL.md": "43c417165676f54a",
-    ".agents/skills/camera/SKILL.md": "43c417165676f54a",
+    ".claude/skills/camera/SKILL.md": "a20db374cd3c95f5",
+    ".agents/skills/camera/SKILL.md": "a20db374cd3c95f5",
     ".claude/skills/cheats/SKILL.md": "bb8ee9c468af8505",
     ".agents/skills/cheats/SKILL.md": "bb8ee9c468af8505",
     ".claude/skills/content-database/SKILL.md": "05cbd5938ed145b0",
@@ -297,8 +297,8 @@
     ".agents/skills/dependency-injection/SKILL.md": "e564e19b4761a667",
     ".claude/skills/determinism/SKILL.md": "d4b978512c6bd19b",
     ".agents/skills/determinism/SKILL.md": "d4b978512c6bd19b",
-    ".claude/skills/device-tiers/SKILL.md": "be2dd135fde2fd83",
-    ".agents/skills/device-tiers/SKILL.md": "be2dd135fde2fd83",
+    ".claude/skills/device-tiers/SKILL.md": "92c6b6049775ff5a",
+    ".agents/skills/device-tiers/SKILL.md": "92c6b6049775ff5a",
     ".claude/skills/ecs-systems/SKILL.md": "c8cc302a68890835",
     ".agents/skills/ecs-systems/SKILL.md": "c8cc302a68890835",
     ".claude/skills/editor-modes/SKILL.md": "4db77e74af42023e",
@@ -321,8 +321,8 @@
     ".agents/skills/mobile-performance-review/budgets.md": "4af2d8fb60dfd0d7",
     ".claude/skills/models-3d/SKILL.md": "20cfaead681944b1",
     ".agents/skills/models-3d/SKILL.md": "20cfaead681944b1",
-    ".claude/skills/multiplayer/SKILL.md": "7f79528ef336b0b5",
-    ".agents/skills/multiplayer/SKILL.md": "7f79528ef336b0b5",
+    ".claude/skills/multiplayer/SKILL.md": "27d8fbff36cccd63",
+    ".agents/skills/multiplayer/SKILL.md": "27d8fbff36cccd63",
     ".claude/skills/navigation-3d/SKILL.md": "9afaa3cdbe969d50",
     ".agents/skills/navigation-3d/SKILL.md": "9afaa3cdbe969d50",
     ".claude/skills/open-world-streaming/SKILL.md": "e922b8427b082533",
@@ -341,18 +341,18 @@
     ".agents/skills/physics/SKILL.md": "612b37e1d4b2e9d1",
     ".claude/skills/platform-services/SKILL.md": "722ce48b217caefe",
     ".agents/skills/platform-services/SKILL.md": "722ce48b217caefe",
-    ".claude/skills/playable-ad-porting/SKILL.md": "001eb10191e779f1",
-    ".agents/skills/playable-ad-porting/SKILL.md": "001eb10191e779f1",
+    ".claude/skills/playable-ad-porting/SKILL.md": "078d9c5bd017d1a3",
+    ".agents/skills/playable-ad-porting/SKILL.md": "078d9c5bd017d1a3",
     ".claude/skills/playable-ads/SKILL.md": "1d48fe156fa23bcd",
     ".agents/skills/playable-ads/SKILL.md": "1d48fe156fa23bcd",
     ".claude/skills/project-tools/SKILL.md": "2f39cfe4328da6b9",
     ".agents/skills/project-tools/SKILL.md": "2f39cfe4328da6b9",
-    ".claude/skills/rollback-multiplayer/SKILL.md": "8bf573178497a43f",
-    ".agents/skills/rollback-multiplayer/SKILL.md": "8bf573178497a43f",
+    ".claude/skills/rollback-multiplayer/SKILL.md": "cb11d48c8f21807d",
+    ".agents/skills/rollback-multiplayer/SKILL.md": "cb11d48c8f21807d",
     ".claude/skills/save-slots/SKILL.md": "860c83d6c82c0e75",
     ".agents/skills/save-slots/SKILL.md": "860c83d6c82c0e75",
-    ".claude/skills/screen-fit/SKILL.md": "d59d9eeee19346b3",
-    ".agents/skills/screen-fit/SKILL.md": "d59d9eeee19346b3",
+    ".claude/skills/screen-fit/SKILL.md": "2c583687cf145fdb",
+    ".agents/skills/screen-fit/SKILL.md": "2c583687cf145fdb",
     ".claude/skills/ship-mobile/SKILL.md": "2292ccd470df6946",
     ".agents/skills/ship-mobile/SKILL.md": "2292ccd470df6946",
     ".claude/skills/ship-web/SKILL.md": "f427299a1a0ad5eb",
@@ -369,8 +369,8 @@
     ".agents/skills/story-dialogue/SKILL.md": "6bb9a8cb21e35768",
     ".claude/skills/surface-paint/SKILL.md": "71755616815f97bd",
     ".agents/skills/surface-paint/SKILL.md": "71755616815f97bd",
-    ".claude/skills/testing/SKILL.md": "64b0db918a6eb7f0",
-    ".agents/skills/testing/SKILL.md": "64b0db918a6eb7f0",
+    ".claude/skills/testing/SKILL.md": "790a7e701b495d42",
+    ".agents/skills/testing/SKILL.md": "790a7e701b495d42",
     ".claude/skills/tilemaps-nav/SKILL.md": "2d8cd9b993b402fb",
     ".agents/skills/tilemaps-nav/SKILL.md": "2d8cd9b993b402fb",
     ".claude/skills/touch-input/SKILL.md": "fae8733f94b7b4e1",

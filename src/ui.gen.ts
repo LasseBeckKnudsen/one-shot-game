@@ -200,13 +200,13 @@ declare module '@gameengine/ui' {
      *   - `fromStart`: yesno, default false
      * Events: `resume`, `quit`, `back`
      * Code areas: `sens.hit`, `master.hit`, `music.hit`, `sfx.hit`
-     * Refs: `resume`, `quit`, `back`, `k1`, `k2`, `k3`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `k10`, `sens`, `master`, `music`, `sfx`
+     * Refs: `resume`, `quit`, `back`, `k1`, `k2`, `k3`, `k11`, `k4`, `k5`, `k6`, `k7`, `k8`, `k9`, `k10`, `sens`, `master`, `music`, `sfx`
      * Samples (`view render doc:pause-menu --sample …`): `default`
      */
     'pause-menu': {
       props: { sensAmount: number; sensText: string | { loc: string } | LocText; masterAmount: number; masterText: string | { loc: string } | LocText; musicAmount: number; musicText: string | { loc: string } | LocText; sfxAmount: number; sfxText: string | { loc: string } | LocText; fromStart: boolean };
       areas: 'sens.hit' | 'master.hit' | 'music.hit' | 'sfx.hit';
-      refs: 'resume' | 'quit' | 'back' | 'k1' | 'k2' | 'k3' | 'k4' | 'k5' | 'k6' | 'k7' | 'k8' | 'k9' | 'k10' | 'sens' | 'master' | 'music' | 'sfx';
+      refs: 'resume' | 'quit' | 'back' | 'k1' | 'k2' | 'k3' | 'k11' | 'k4' | 'k5' | 'k6' | 'k7' | 'k8' | 'k9' | 'k10' | 'sens' | 'master' | 'music' | 'sfx';
     };
     /**
      * Rule row: a widget (ui/docs/rule-row.ui.json)

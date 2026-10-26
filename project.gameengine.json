@@ -95,7 +95,8 @@
   ],
   "multiplayer": {
     "mode": "realtime",
-    "players": 2,
+    "players": 4,
+    "lateJoin": true,
     "authority": "server",
     "port": 7600,
     "window": 12,

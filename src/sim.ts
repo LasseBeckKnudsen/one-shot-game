@@ -6,7 +6,7 @@
  */
 import { setAnimParam, triggerAnim, Animator, defineSystem, query, read, write, math, multiplayer, playerInput, PlayerInputs, KeyEvent, ActionState, LocalTransform, MouseDown, MouseUp, PlayMusic, PlaySound, PointerDown, PointerHover, PointerMove, PointerUp } from '@gameengine/runtime';
 import { AirReady } from './schema.gen.ts';
-import { Blocker, Ladder, Jumped, SuperJumped, VmRig, Settings, SetSensitivity, Flow, GameReady, QuitToMenu, ResumeGame, StartSolo } from './schema.gen.ts';
+import { Blocker, Ladder, Jumped, SuperJumped, VmRig, Settings, SetSensitivity, Flow, GameReady, QuitToMenu, ResumeGame, SeatChanged, StartSolo } from './schema.gen.ts';
 import { Announce, Critter, CritterHit, PlayerHit, Match, Platform, Player, PlayerRespawned, SeatBody, ShotFired, Solid, SoloLook, SpawnPoint, Stone, StoneMissed, Temp } from './schema.gen.ts';
 import { BTN_BOARD, BTN_CROUCH, BTN_FIRE, BTN_JUMP, BTN_LOOK, down, isSeatOwner, MAX_SEATS, ownerOfSeat, packLook, PITCH_LIMIT, seatOfOwner, unpackLook } from './input.ts';
 
@@ -201,7 +201,7 @@ export const Move = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i);
-        if (p.state === 'Dead') continue;
+        if (p.state === 'Dead' || !p.active) continue;
         const raw = playerInput(inputs, p.index);
         // frozen (a missed shot): no walking, jumping or crouching, but the look goes on
         const inp = p.freeze > 0 ? { buttons: raw.buttons & ~(BTN_JUMP | BTN_CROUCH), stick: [0, 0] as [number, number] } : raw;
@@ -352,7 +352,7 @@ export const Fire = defineSystem({
         const fire = down(playerInput(inputs, p.index).buttons, BTN_FIRE);
         if (fire !== p.fireHeld) c.set(Player, i, { fireHeld: fire });
         if (!fire || p.fireHeld || !playing) continue; // a press, not a hold
-        if (p.state !== 'Alive' || !p.loaded) continue;
+        if (p.state !== 'Alive' || !p.loaded || !p.active) continue;
         const t = c.get(LocalTransform, i);
         const cp = math.cos(p.pitch);
         const dir: [number, number, number] = [-math.sin(p.yaw) * cp, math.sin(p.pitch), -math.cos(p.yaw) * cp];
@@ -435,7 +435,7 @@ export const StoneFlight = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         seats.set(p.index, { chunk: c, row: i });
-        if (p.state === 'Alive' && p.protect <= 0) {
+        if (p.state === 'Alive' && p.protect <= 0 && p.active) {
           const t = c.get(LocalTransform, i);
           targets.push({ kind: 'player', id: p.index, x: t.position[0], z: t.position[2], y: t.position[1] - p.eye, h: p.crouch ? 1.2 : 1.75, chunk: c, row: i });
         }
@@ -549,6 +549,35 @@ export const StoneFlight = defineSystem({
   },
 });
 
+/** The spawn point farthest from every critter and every standing player but `self`. */
+function farthestSpawn(spawns: any, critters: any, standing: readonly { index: number; x: number; z: number }[], self: number): [number, number] {
+  let best: [number, number] = [0, 12];
+  let bestD = -1;
+  for (const sc of spawns.chunks()) {
+    for (let s = 0; s < sc.length; s++) {
+      const sp = sc.get(LocalTransform, s).position;
+      let near = 1e9;
+      for (const o of standing) {
+        if (o.index === self) continue;
+        const d = (o.x - sp[0]) ** 2 + (o.z - sp[2]) ** 2;
+        if (d < near) near = d;
+      }
+      for (const cc of critters.chunks()) {
+        for (let k = 0; k < cc.length; k++) {
+          const ct = cc.get(LocalTransform, k).position;
+          const d = (ct[0] - sp[0]) ** 2 + (ct[2] - sp[2]) ** 2;
+          if (d < near) near = d;
+        }
+      }
+      if (near > bestD) {
+        bestD = near;
+        best = [sp[0], sp[2]];
+      }
+    }
+  }
+  return best;
+}
+
 export const Respawn = defineSystem({
   name: 'Respawn',
   runIf: { resource: Flow, field: 'screen', value: 'Playing' },
@@ -565,7 +594,7 @@ export const Respawn = defineSystem({
     for (const pc of player.chunks()) {
       for (let i = 0; i < pc.length; i++) {
         const p = pc.get(Player, i);
-        if (p.state !== 'Dead') {
+        if (p.state !== 'Dead' && p.active) {
           const t = pc.get(LocalTransform, i).position;
           standing.push({ index: p.index, x: t[0], z: t[2] });
         }
@@ -574,6 +603,7 @@ export const Respawn = defineSystem({
     for (const pc of player.chunks()) {
       for (let i = 0; i < pc.length; i++) {
         const p = pc.get(Player, i);
+        if (!p.active) continue;
         if (p.protect > 0) pc.set(Player, i, { protect: math.max(0, p.protect - ctx.dt) });
         if (p.freeze > 0 && p.state !== 'Dead') {
           // thawing: the stone is back in the sling
@@ -593,30 +623,7 @@ export const Respawn = defineSystem({
           continue;
         }
         // Back at the spawn point farthest from every critter and every other player.
-        let best: [number, number] = [0, 12];
-        let bestD = -1;
-        for (const sc of spawns.chunks()) {
-          for (let s = 0; s < sc.length; s++) {
-            const sp = sc.get(LocalTransform, s).position;
-            let near = 1e9;
-            for (const o of standing) {
-              if (o.index === p.index) continue;
-              const d = (o.x - sp[0]) ** 2 + (o.z - sp[2]) ** 2;
-              if (d < near) near = d;
-            }
-            for (const cc of critters.chunks()) {
-              for (let k = 0; k < cc.length; k++) {
-                const ct = cc.get(LocalTransform, k).position;
-                const d = (ct[0] - sp[0]) ** 2 + (ct[2] - sp[2]) ** 2;
-                if (d < near) near = d;
-              }
-            }
-            if (near > bestD) {
-              bestD = near;
-              best = [sp[0], sp[2]];
-            }
-          }
-        }
+        const best = farthestSpawn(spawns, critters, standing, p.index);
         pc.set(Player, i, { state: 'Alive', loaded: true, protect: RESPAWN_PROTECT, freeze: 0, vy: 0, climbing: false });
         pc.set(LocalTransform, i, { position: [best[0], EYE, best[1]] });
         pc.set(Player, i, { eye: EYE, crouch: false });
@@ -662,7 +669,7 @@ export const CritterAI = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i).position;
-        humans.push({ seat: p.index, x: t[0], y: t[1] - p.eye, z: t[2], sneaking: p.crouch, alive: p.state === 'Alive' && p.protect <= 0 });
+        humans.push({ seat: p.index, x: t[0], y: t[1] - p.eye, z: t[2], sneaking: p.crouch, alive: p.state === 'Alive' && p.protect <= 0 && p.active });
       }
     }
     const others: { id: number; x: number; z: number }[] = [];
@@ -929,6 +936,72 @@ export const FlowControl = defineSystem({
   },
 });
 
+/** Seconds an online match waits for the server's first word on who is in a seat before it treats every seat as taken (a fixed match, like a LAN host's, sends none). */
+const PRESENCE_WAIT = 0.75;
+
+/**
+ * Who is in a seat. Online, every seat starts empty and the server's SeatChanged (open rooms) fills or frees it at the same frame on every
+ * device: a new player spawns fresh at the safest spawn point with spawn protection, a player who leaves takes their body with them. A match
+ * whose server sends no presence (a fixed match) gets its seats filled after a moment. Solo seats are always taken.
+ */
+export const SeatPresence = defineSystem({
+  name: 'SeatPresence',
+  runIf: { resource: Flow, field: 'screen', value: 'Playing' },
+  after: ['FlowControl'],
+  queries: {
+    player: query(write(Player), write(LocalTransform)),
+    spawns: query(read(SpawnPoint), read(LocalTransform)),
+    critters: query(read(Critter), read(LocalTransform)),
+  },
+  resources: [write(Flow)],
+  events: [SeatChanged],
+  run(ctx, { player, spawns, critters }) {
+    const online = multiplayer.match();
+    const f = ctx.get(Flow);
+    let { seated, presence, onlineFor } = f;
+    const take = (c: any, i: number, fresh: boolean) => {
+      const p = c.get(Player, i);
+      const standing: { index: number; x: number; z: number }[] = [];
+      for (const oc of player.chunks()) {
+        for (let k = 0; k < oc.length; k++) {
+          const o = oc.get(Player, k);
+          if (o.active && o.state !== 'Dead' && o.index !== p.index) standing.push({ index: o.index, x: oc.get(LocalTransform, k).position[0], z: oc.get(LocalTransform, k).position[2] });
+        }
+      }
+      const at = farthestSpawn(spawns, critters, standing, p.index);
+      const reset = fresh ? { score: 0, hits: 0, misses: 0, deaths: 0, deathBy: 0, superCd: 0 } : {};
+      c.set(Player, i, { ...reset, active: true, state: 'Alive', loaded: true, freeze: 0, protect: RESPAWN_PROTECT, vy: 0, climbing: false, crouch: false, eye: EYE });
+      c.set(LocalTransform, i, { position: [at[0], EYE, at[1]] });
+      ctx.commands.spawn({ LocalTransform: { position: [at[0], 0.05, at[1]] }, ParticleSystem: { effect: 'fx/respawn.vfx.json' }, Temp: { life: 2.2 } });
+    };
+    if (online && !seated) {
+      // the match begins with every seat empty: the server says who is in
+      for (const c of player.chunks()) for (let i = 0; i < c.length; i++) c.set(Player, i, { active: false });
+      seated = true;
+      presence = false;
+      onlineFor = 0;
+    }
+    for (const e of ctx.events.read(SeatChanged)) {
+      presence = true;
+      for (const c of player.chunks()) {
+        for (let i = 0; i < c.length; i++) {
+          if (c.get(Player, i).index !== e.seat) continue;
+          if (e.present) take(c, i, e.fresh); // fresh: a new player (reset the seat's score); else the one it was held for is back
+          else c.set(Player, i, { active: false, freeze: 0, vy: 0, climbing: false });
+        }
+      }
+    }
+    if (online && !presence) {
+      onlineFor += ctx.dt;
+      if (onlineFor >= PRESENCE_WAIT) {
+        for (const c of player.chunks()) for (let i = 0; i < c.length; i++) if (c.get(Player, i).index < online.players) take(c, i, false);
+        presence = true;
+      }
+    }
+    if (seated !== f.seated || presence !== f.presence || onlineFor !== f.onlineFor) ctx.set(Flow, { seated, presence, onlineFor });
+  },
+});
+
 /** Poses every seat's body (what the other players see) from its Player and drives its Animator. */
 export const SeatBodies = defineSystem({
   name: 'SeatBodies',
@@ -941,7 +1014,7 @@ export const SeatBodies = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const p = c.get(Player, i);
         const t = c.get(LocalTransform, i).position;
-        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, airborne: p.vy !== 0 && !p.climbing, frozen: p.freeze > 0, aiming: p.aiming, dead: p.state === 'Dead' });
+        seats.set(p.index, { yaw: p.yaw, x: t[0], y: t[1] - p.eye, z: t[2], walking: p.speed > 0.6 && p.vy === 0 && !p.climbing, airborne: p.vy !== 0 && !p.climbing, frozen: p.freeze > 0, aiming: p.aiming, dead: p.state === 'Dead' || !p.active });
       }
     }
     const fired = new Set<number>();
@@ -950,7 +1023,7 @@ export const SeatBodies = defineSystem({
       for (let i = 0; i < c.length; i++) {
         const b = seats.get(c.get(SeatBody, i).index);
         if (!b) continue;
-        // a dead player leaves a corpse behind; the body itself is hidden until the respawn
+        // a dead player leaves a corpse behind; the body itself is hidden until the respawn (and an empty seat shows none)
         const k = b.dead ? 0 : 1;
         // the model faces +Z and a player's look faces -Z: turn the body round to face where its player looks
         c.set(LocalTransform, i, { position: [b.x, b.y, b.z], rotation: yawPitchQuat(b.yaw + 3.14159265, 0), scale: [k, k, k] });

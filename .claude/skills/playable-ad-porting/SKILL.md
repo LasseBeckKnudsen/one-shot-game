@@ -1,6 +1,6 @@
 ---
 name: playable-ad-porting
-version: 1.10.0
+version: 1.11.0
 tier: required
 description: Porting a playable-ad slice onto @gameengine/playable so the web ad runs the game's own systems — the web entry, supported features, input, sprites, HUD and sound, `gameengine playable verify`. Use when an ad's web build should run the game's code, or when verify reports a divergence.
 ---
@@ -158,10 +158,10 @@ function start(img: Record<string, HTMLImageElement>) {
   const audio = new Sounds(sounds);
   const p = createPlayable({ boot, game, scene: Uint8Array.from(atob(slice.scene), (c) => c.charCodeAt(0)), seed: slice.seed, dt: slice.dt });
   const byAlias = Object.fromEntries(Object.entries(aliases).flatMap(([alias, key]) => (img[key] ? [[alias, img[key]!]] : [])));
-  // Each finger gets its own pointer id; the view event sets the scale gestures measure millimetres in.
-  let pending: InputEvent[] = [viewEvent(stage.canvas, stage.width, stage.height)];
-  window.addEventListener('resize', () => pending.push(viewEvent(stage.canvas, stage.width, stage.height)));
-  listenPointers(stage.canvas, stage.toDesign, (e) => pending.push(e), () => audio.unlock());
+  // Each finger gets its own pointer id; the view and pointers are in points, as gestures measure millimetres.
+  let pending: InputEvent[] = [viewEvent(stage)];
+  window.addEventListener('resize', () => pending.push(viewEvent(stage)));
+  listenPointers(stage, (e) => pending.push(e), () => audio.unlock());
   let ended = false;
   let acc = 0;
   stage.loop((dt) => {
@@ -311,7 +311,7 @@ stage.ctx.drawImage(r.canvas, 0, 0);
 ## Rules for the presentation code
 
 - **Input reaches the sim only as `InputEvent`s** passed to `p.step`: use `listenPointers` (one
-  id per finger, positions in design units) and `viewEvent` (first, and on resize). `p.step`
+  id per finger, positions in view points) and `viewEvent` (first, and on resize), both given the `stage`. `p.step`
   rounds them as the engine does, so `ctx.input` reads the same numbers. Never write components
   or resources from `web/`; a tap the sim should see is a pointer event.
 - **Fixed steps:** step at `slice.dt` from an accumulator (at most 5 steps a frame), never once per

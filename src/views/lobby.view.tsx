@@ -33,10 +33,11 @@ export interface LobbyModel {
 const IDLE_STATUS = 'Pick a size and host, or join a match on your network.';
 
 const findNote = (m: LobbyModel) =>
-  m.noLan ? 'Hosting and finding matches on a network need the desktop game. Use PLAY ON SERVER.'
-    : m.mode === 'hosting' ? 'You are hosting: finding other matches is paused.'
+  m.mode === 'hosting' ? 'You are hosting: finding other matches is paused.'
     : m.mode === 'joining' ? 'You joined a match: finding is paused.'
-      : 'Searching the local network...';
+    : m.hosts.length > 0 ? 'Rooms running now: JOIN one, or PLAY ON SERVER for the fullest.'
+    : m.noLan ? 'No open rooms on the server yet: PLAY ON SERVER starts one.'
+      : 'Searching the server and the local network...';
 
 export const LobbyView = defineView<LobbyModel>({
   name: 'Lobby',

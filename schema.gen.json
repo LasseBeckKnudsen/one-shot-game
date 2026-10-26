@@ -125,6 +125,27 @@
           "scalar": "u8",
           "lanes": 1,
           "doc": "The seats and bots the match does not use were removed"
+        },
+        {
+          "name": "seated",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Online: every seat started empty, to be filled by SeatChanged (or by the fixed-match fallback)"
+        },
+        {
+          "name": "presence",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "doc": "Online: the server told the sim who is in a seat at least once"
+        },
+        {
+          "name": "onlineFor",
+          "kind": "f32",
+          "scalar": "f32",
+          "lanes": 1,
+          "doc": "Online: seconds since the match began while no presence has come yet"
         }
       ],
       "package": "OneShot"
@@ -927,6 +948,14 @@
           "scalar": "u8",
           "lanes": 1,
           "doc": "Crouch-walking (Shift): slower, lower, harder to spot"
+        },
+        {
+          "name": "active",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1,
+          "default": true,
+          "doc": "A player is in this seat (online: set by SeatChanged; an empty seat is hidden and skipped)"
         }
       ],
       "package": "OneShot"
@@ -990,6 +1019,32 @@
           "name": "seat",
           "kind": "u32",
           "scalar": "u32",
+          "lanes": 1
+        }
+      ],
+      "package": "OneShot"
+    },
+    {
+      "name": "SeatChanged",
+      "kind": "event",
+      "sim": true,
+      "fields": [
+        {
+          "name": "seat",
+          "kind": "u32",
+          "scalar": "u32",
+          "lanes": 1
+        },
+        {
+          "name": "present",
+          "kind": "bool",
+          "scalar": "u8",
+          "lanes": 1
+        },
+        {
+          "name": "fresh",
+          "kind": "bool",
+          "scalar": "u8",
           "lanes": 1
         }
       ],

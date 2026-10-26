@@ -128,7 +128,9 @@
       ],
       "@gameengine/pulse/*": [
         "../../../game-engine/packages/pulse/src/*"
-      ]
+      ],
+      "@gameengine/noise": ["../../../game-engine/packages/noise/src/index.ts"],
+      "@gameengine/noise/*": ["../../../game-engine/packages/noise/src/*"]
     }
   },
   "include": [
